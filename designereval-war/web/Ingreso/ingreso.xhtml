@@ -1,0 +1,156 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      >
+    <h:head>
+        <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <link href="././resources/css/estiloLogin.css" rel="stylesheet" type="text/css" />
+        <link href="././resources/imagenes/favicon.ico" rel="shortcut icon"/>
+        <link rel="apple-touch-icon-precomposed" href="././resources/imagenes/quiosco_icono_57x57.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="././resources/imagenes/quiosco_icono_72x72.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="180x180" href="././resources/imagenes/quiosco_icono_180x180.png" />
+        <title>..::Designer.Eval::..</title>
+    </h:head>
+    <h:body style="font-size: 14px;" >
+        <f:metadata>
+            <f:viewParam name="grupo" value="#{controladorIngreso.grupo}" />
+        </f:metadata>
+        <h:form id="fprincipal" style="position: absolute; left: 0px; top: 0px; width: 100%">
+            <p:focus context="pnlIngreso"/>
+            <center>
+                <div class="centrado">
+                    <fieldset style="border-radius: 10px; background: transparent; width: 50px; border:none;">
+                        <p:graphicImage value="resources/imagenes/logodesignerkio.png" alt="Designer logo" style=" max-width: 275px; " />
+                    </fieldset>
+                    <h:outputText value="M&oacute;dulo de evaluaci&oacute;n DESIGNER" style="font-family: Arial; font-size: 20px; color:#000;"/>
+                    <fieldset style="border-radius: 10px; box-shadow: 5px 5px 12px #000000; padding-top: 15px; background: #F8F8F8; width: 405px; position: relative; top: 5px;">
+                        <p:messages id="mensaje" showDetail="true" autoUpdate="true" closable="true" />
+                        <center>
+                            <strong style="text-shadow: 1px 1px 0 #303030, -1px -1px #303030, 1px -1px #303030, -1px 1px #303030, 0 1px #303030, 1px 0 #303030, -1px 0 #303030, 0 -1px #303030;">
+                                <em>
+                                    <!-- <h:outputText value="Kiosco Designer.NOM" style="font-family: Arial; font-size: 28px; color:#0080cd;" styleClass="sombra5"/> -->
+                                    <h:outputText value="Designer.EVAL" style="font-family: Arial; font-size: 28px; color:#0080cd;" styleClass="sombra5"/>
+                                </em>
+                            </strong>
+                            <br/>
+                            <br/>
+                            <h:outputText value="Inicie sesi&oacute;n para consultar sus convocatorias y evaluar" style="font-family: Arial; font-size: 16px; color:#000;"/>
+                            <br/>
+                            <br/>
+                            <h:outputText value="En el campo Usuario, por favor ingrese el nombre de usuario que se le asigno. " style="font-family: Arial; font-size: 10px; color:#000;"/>
+                        </center>
+                        <br/>
+                        <p:panelGrid id="pnlIngreso" styleClass="noBorders">
+                            <p:row>
+                                <p:column>
+                                    <h:outputText value="* Usuario:" style="font-weight: bold"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="user" value="#{controladorIngreso.usuario}" 
+                                                 disabled="#{controladorIngreso.ingresoExitoso ? 'true' : 'false'}"
+                                                 style="width: 260px;" autocomplete="off"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <h:outputText value="* Contrase&ntilde;a:" style="font-weight: bold"/>
+                                </p:column>
+                                <p:column>
+                                    <p:password id="pass" value="#{controladorIngreso.clave}" 
+                                                disabled="#{controladorIngreso.ingresoExitoso ? 'true' : 'false'}"
+                                                style="width: 260px;"
+                                                />
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <h:outputText value="* Empresa:" style="font-weight: bold"/>
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu id="seEmpresa" value="#{controladorIngreso.unidadPersistenciaIngreso}" 
+                                                     disabled="#{controladorIngreso.obtenerCadenasKiosko().size() == 1 ?  'true' : controladorIngreso.ingresoExitoso ? 'true' : 'false'}"
+                                                     style="width: 89%">
+                                        <f:selectItem itemLabel="Seleccione una empresa" itemValue="#{null}"/>
+                                        <f:selectItems value="#{controladorIngreso.obtenerCadenasKiosko()}" var="cadena"
+                                                       itemLabel="#{cadena.descripcion}" itemValue="#{cadena.id}" />
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <p:commandButton id="btnEntrar" value="#{!controladorIngreso.ingresoExitoso ? '' : 'Entrar'}" 
+                                                     action="#{controladorIngreso.entrar()}" 
+                                                     style="float: right" update="pnlIngreso" icon="ui-icon-carat-1-e" iconPos="right"
+                                                     rendered="#{controladorIngreso.ingresoExitoso}"/>
+                                </p:column>
+                                <p:column>
+                                    <p:commandButton id="btnIngreso" value="#{!controladorIngreso.ingresoExitoso ? 'Ingresar' : 'Cerrar Sesi&oacute;n'}" 
+                                                     action="#{controladorIngreso.ingresar()}" onclick="PF('estadoSesion').show()"
+                                                     update="pnlIngreso" icon="ui-icon-carat-1-e" iconPos="right"
+                                                     style="float: right"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="2" style="text-align:center;">
+                                    <a href="http://www.facebook.com/nominads" target="_blank" style="color:#FFF" title="nominads">
+                                        <p:graphicImage value="resources/imagenes/facebook.png" alt="facebook" style="height: 30px; vertical-align: middle;"/>
+                                    </a>
+                                    <p:spacer/>
+                                    <a href="https://www.youtube.com/user/nominads" target="_blank" style="color:#FFF" title="nominads">
+                                        <p:graphicImage value="resources/imagenes/youtube.png" alt="youtube" style="height: 30px; vertical-align: middle;"/>
+                                    </a>
+                                    <p:spacer/>
+                                    <a href="https://twitter.com/#!/NominaDesigner" target="_blank" style="color:#FFF" title="NominaDesigner">
+                                        <p:graphicImage value="resources/imagenes/twiter.png" alt="twiter" style="height: 30px; vertical-align: middle;"/>
+                                    </a>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </fieldset>
+                </div>
+            </center>
+            <p:defaultCommand target="btnIngreso" />
+        </h:form>
+        <h:form>
+            <p:dialog id="estadoSesion" header="Iniciando Sesi&oacute;n" widgetVar="estadoSesion"  resizable="false" draggable="false" modal="true" height="65" width="350" closable="false" >  
+                <p:panelGrid columns="2" styleClass="noBorders">
+                    <h:graphicImage value="resources/imagenes/cargando.gif" width="50" height="50"/>
+                    <h:outputText value="Iniciando sesi&oacute;n, por favor espere." style="width: 240px; text-align: justify; font-weight:bold;" />
+                </p:panelGrid>
+            </p:dialog>
+        </h:form>
+        <h:form>
+            <p:dialog id="dlgSolicitudGrupo" header="&iexcl;Atenci&oacute;n!" widgetVar="dlgSolicitudGrupo"
+                      resizable="false" draggable="true" modal="true" closable="false" width="400">
+                <p:panelGrid columns="2"  styleClass="noBorders">
+                    <h:graphicImage value="resources/imagenes/alerta.jpg" width="90" height="70"  />
+                    <p:column>
+                        <p align="justify" style=" margin: 0px;">
+                            El enlace no es correcto, falta asociar el grupo empresarial.
+                            <br/>Seleccione el grupo al que desea ingresar.
+                        </p>
+                        <h:outputText value="Grupo:" style="font-weight: bold;"/>
+                        <p:selectOneMenu id="seGrupo" value="#{controladorIngreso.grupoSeleccionado}" 
+                                         style="width: 89%;">
+                            <f:selectItem itemLabel="Seleccione un grupo" itemValue="#{null}"/>
+                            <f:selectItems value="#{controladorIngreso.listaGrupos}" />
+                            <p:ajax event="change" update="@this" />
+                        </p:selectOneMenu>
+                        <br/>
+                        <p:commandButton value="Continuar" 
+                                         style="float: right;" process="@this"
+                                         icon="ui-icon-check"
+                                         actionListener="#{controladorIngreso.obtenerParametroURL}"/>
+                    </p:column>
+                </p:panelGrid>
+            </p:dialog>
+        </h:form>
+    </h:body>
+</html>
+

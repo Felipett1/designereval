@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link href="././resources/css/cssLayout.css" rel="stylesheet" type="text/css" />
+        <link href="././resources/css/estilosPersonalizados.css" rel="stylesheet" type="text/css" />
+        <link href="././resources/imagenes/favicon.ico" rel="shortcut icon"/>
+        <link rel="apple-touch-icon-precomposed" href="././resources/imagenes/quiosco_icono_57x57.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="././resources/imagenes/quiosco_icono_72x72.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="180x180" href="././resources/imagenes/quiosco_icono_180x180.png" />
+        <script src="./resources/js/scriptPersonalizado.js"/>
+        <title>..::Designer.Kio::..</title>
+        <script type="text/javascript">
+            var connected = true;
+            function refresh() {
+                if (connected) {
+                    var div = document.getElementById('online');
+                    div.style.display = "block";
+                    setTimeout('document.location.reload()', 1200000);
+                } else {
+                    var div = document.getElementById('offline');
+                    div.style.display = 'block';
+                    setTimeout('document.location.reload()', 5000);
+                }
+            }
+
+            function offline() {
+                connected = false;
+                refresh();
+            }
+            function start() {
+                PF('statusDialog').show();
+            }
+
+            function stop() {
+                PF('statusDialog').hide();
+            }
+        </script>
+    </h:head>
+
+    <h:body>
+        <h:form id="principalForm" enctype="multipart/form-data">
+            <p:growl id="growl" widgetVar="growl" showDetail="true" autoUpdate="true"/>
+            <div id="top" class="top">
+                <ui:insert name="top">
+                    <ui:include src="/Kiosko/inicioKiosko.xhtml" />
+                </ui:insert>
+            </div>
+            <div id="messagesout" class="top">
+                <p:messages id="messagessgeneral" showDetail="true"
+                            autoUpdate="true" closable="true"/>
+
+            </div>
+            <div class="center_content">
+                <ui:insert id="content" name="content">
+                    <ui:include src="#{controlNavegacion.urlNavegation}" />
+                </ui:insert>
+            </div>
+        </h:form>
+    </h:body>
+</html>

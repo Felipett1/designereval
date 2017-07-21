@@ -1,0 +1,63 @@
+html { 
+    background-image: url(../imagenes/fondoMenu.png); background-repeat: no-repeat; background-size: 100% 100%;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+.noBorders tr, .noBorders td {
+    background: none !important;
+    border: none !important;
+}
+
+.centrado {
+    padding:10px;
+    position:absolute;
+    top:35%;
+    left:30%;
+}
+
+/*.ui-fileupload{
+    border: none;
+}
+.ui-fileupload .start {
+    display: none;
+}
+.ui-fileupload .cancel {
+    display: none;
+}
+.ui-fileupload .progress {
+    display: none;
+}
+.ui-fileupload .files {
+    margin: 0px;
+    display: none;
+    visibility: hidden;
+}
+.ui-fileupload .fileupload-content {
+    display: none;
+    visibility: hidden;
+}
+
+.ui-fileupload .fileinput-button {
+    position: absolute;
+    left: -5px;
+    top: -5px;
+}*/
+
+
+.ui-button-opciones{
+    width: 200px; 
+    height: 200px; 
+    border-radius: 100px;
+    font-weight: bold; 
+    background-color: #DCDCDC
+}
+
+.cajaLectura {
+    background-color: transparent;
+    border: none;
+}
+
+
