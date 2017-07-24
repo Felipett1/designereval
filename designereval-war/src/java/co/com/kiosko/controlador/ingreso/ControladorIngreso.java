@@ -4,6 +4,7 @@ import co.com.kiosko.administrar.interfaz.IAdministrarIngreso;
 import co.com.kiosko.clasesAyuda.CadenasKioskos;
 import co.com.kiosko.clasesAyuda.LeerArchivoXML;
 import co.com.kiosko.controlador.autenticacion.Util;
+import co.com.kiosko.entidades.Personas;
 import co.com.kiosko.utilidadesUI.MensajesUI;
 import co.com.kiosko.utilidadesUI.PrimefacesContextUI;
 import java.io.IOException;
@@ -40,6 +41,7 @@ public class ControladorIngreso implements Serializable {
     private String grupo;
     private List<SelectItem> listaGrupos;
     private String grupoSeleccionado;
+    private Personas persona;
 
     public ControladorIngreso() {
         logo = "logonominadesignertrans.png";
@@ -108,13 +110,14 @@ public class ControladorIngreso implements Serializable {
                     nit = cadena.getNit();
                     if (administrarIngreso.conexionIngreso(cadena.getCadena())) {
                         if (administrarIngreso.validarUsuario(usuario)) {
-                            if (administrarIngreso.conexionUsuario(cadena.getCadena(), usuario, clave)) {
+                            persona = administrarIngreso.conexionUsuario(cadena.getCadena(), usuario, clave);
+                            if (persona != null) {
                                 administrarIngreso.adicionarConexionUsuario(ses.getId());
                                 ingresoExitoso = true;
                                 HttpSession session = Util.getSession();
                                 session.setAttribute("idUsuario", usuario);
                                 imprimir("Conectado a: " + session.getId());
-                                //retorno = "plantilla";
+                                retorno = "plantilla";
                             } else {
                                 //CONTRASEÑA INVALIDA.
                                 MensajesUI.error("Contraseña invalida.");
@@ -291,4 +294,9 @@ public class ControladorIngreso implements Serializable {
             System.out.println(mensajeConsola);
         }
     }
+
+    public Personas getPersona() {
+        return persona;
+    }
+
 }

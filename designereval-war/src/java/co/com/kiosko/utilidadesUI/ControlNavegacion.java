@@ -32,8 +32,8 @@ public class ControlNavegacion implements Serializable {
     public void init() {
         System.out.println("ControlNavegacion.init");
         //FacesContext x = FacesContext.getCurrentInstance();
-        System.out.println("URL: "+NavegationPageURL.OPCIONESKIOSKO.getUrl());
-        urlMenuNavegation = NavegationPageURL.OPCIONESKIOSKO.getUrl();
+        //System.out.println("URL: "+NavegationPageURL.OPCIONESKIOSKO.getUrl());
+        //urlMenuNavegation = NavegationPageURL.OPCIONESKIOSKO.getUrl();
         //nitEmpresa = ((ControladorIngreso) x.getApplication().evaluateExpressionGet(x, "#{controladorIngreso}", ControladorIngreso.class)).getNit();
         //pathFoto = administrarInicioKiosko.fotoEmpleado();
     }

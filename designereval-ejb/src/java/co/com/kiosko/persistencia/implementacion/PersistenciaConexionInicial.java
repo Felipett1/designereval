@@ -1,6 +1,7 @@
 package co.com.kiosko.persistencia.implementacion;
 
 import co.com.kiosko.entidades.Perfiles;
+import co.com.kiosko.entidades.Personas;
 import co.com.kiosko.persistencia.interfaz.IPersistenciaConexionInicial;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -55,6 +56,21 @@ public class PersistenciaConexionInicial implements IPersistenciaConexionInicial
             em.getTransaction().commit();
             BigDecimal secPerfil = (BigDecimal) query.getSingleResult();
             return secPerfil.toBigInteger();
+        } catch (Exception e) {
+            System.out.println("Persistencia.PersistenciaConexionInicial.usuarioLogin() e: " + e);
+            return null;
+        }
+    }
+
+    @Override
+    public Personas obtenerPersona(EntityManager eManager, String usuarioBD) {
+        try {
+            em = eManager;
+            em.getTransaction().begin();
+            Query query = em.createNativeQuery("SELECT p.* FROM Usuarios u, Personas p WHERE u.alias = ? AND u.persona = p.secuencia", Personas.class);
+            query.setParameter(1, usuarioBD);
+            em.getTransaction().commit();
+            return (Personas) query.getSingleResult();
         } catch (Exception e) {
             System.out.println("Persistencia.PersistenciaConexionInicial.usuarioLogin() e: " + e);
             return null;

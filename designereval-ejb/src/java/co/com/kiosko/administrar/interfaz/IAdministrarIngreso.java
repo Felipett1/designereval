@@ -1,5 +1,6 @@
 package co.com.kiosko.administrar.interfaz;
 
+import co.com.kiosko.entidades.Personas;
 import javax.ejb.Local;
 
 /**
@@ -19,6 +20,6 @@ public interface IAdministrarIngreso {
 
     public void cerrarSession(String idSesion);
 
-    public boolean conexionUsuario(String baseDatos, String usuario, String contraseña);
+    public Personas conexionUsuario(String baseDatos, String usuario, String contraseña);
 
 }

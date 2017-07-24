@@ -19,6 +19,7 @@ import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import co.com.kiosko.clasesAyuda.CadenasKioskos;
 import co.com.kiosko.clasesAyuda.LeerArchivoXML;
+import co.com.kiosko.entidades.Personas;
 
 /**
  *
@@ -26,12 +27,13 @@ import co.com.kiosko.clasesAyuda.LeerArchivoXML;
  */
 @ManagedBean
 @SessionScoped
-public class ControladorInicioKiosko implements Serializable {
+public class ControladorInformacionBasica implements Serializable {
 
     @EJB
     private IAdministrarInicioKiosko administrarInicioKiosko;
     private String usuario;
     private Date ultimaConexionEmpleado;
+    private Personas persona;
     //FOTO EMPLEADO
     private FileInputStream fis;
     private StreamedContent fotoEmpleado;
@@ -41,7 +43,7 @@ public class ControladorInicioKiosko implements Serializable {
     private String nitEmpresa;
     private String fondoEmpresa;
 
-    public ControladorInicioKiosko() {
+    public ControladorInformacionBasica() {
     }
 
     @PostConstruct
@@ -51,6 +53,7 @@ public class ControladorInicioKiosko implements Serializable {
             FacesContext x = FacesContext.getCurrentInstance();
             HttpSession ses = (HttpSession) x.getExternalContext().getSession(false);
             administrarInicioKiosko.obtenerConexion(ses.getId());
+            persona = ((ControladorIngreso) x.getApplication().evaluateExpressionGet(x, "#{controladorIngreso}", ControladorIngreso.class)).getPersona();
             ultimaConexionEmpleado = ((ControladorIngreso) x.getApplication().evaluateExpressionGet(x, "#{controladorIngreso}", ControladorIngreso.class)).getUltimaConexion();
             nitEmpresa = ((ControladorIngreso) x.getApplication().evaluateExpressionGet(x, "#{controladorIngreso}", ControladorIngreso.class)).getNit();
             pathFoto = administrarInicioKiosko.fotoEmpleado();
@@ -63,7 +66,7 @@ public class ControladorInicioKiosko implements Serializable {
     }
 
     public void obtenerFotoEmpleado() {
-        String formatoFotoEmpleado="image/jpg";
+        String formatoFotoEmpleado = "image/jpg";
         String rutaFoto = pathFoto + ".jpg";
         if (rutaFoto != null) {
             try {
@@ -119,35 +122,36 @@ public class ControladorInicioKiosko implements Serializable {
     }
 
     public void obtenerLogoEmpresa() {
-        String formatoFotoEmpleado="image/png";
-        String logo = "";
-        String rutaLogo = pathFoto + logo+".png";
+        String formatoFotoEmpleado = "image/png";
+        String logo = "LOGO"; //conexionEmpleado.getEmpleado().getEmpresa().getLogo().substring(0,conexionEmpleado.getEmpleado().getEmpresa().getLogo().length()-4);
+        String rutaLogo = pathFoto + logo + ".png";
         if (rutaLogo != null) {
             try {
                 fis = new FileInputStream(new File(rutaLogo));
                 logoEmpresa = new DefaultStreamedContent(fis, formatoFotoEmpleado, logo);
             } catch (FileNotFoundException e) {
                 try {
-                    rutaLogo=pathFoto+"sinLogo.png";
+                    rutaLogo = pathFoto + "sinLogo.png";
                     fis = new FileInputStream(new File(rutaLogo));
                     logoEmpresa = new DefaultStreamedContent(fis, formatoFotoEmpleado, rutaLogo);
                 } catch (FileNotFoundException ex) {
                     System.out.println("ERROR. No se encontro el logo de la empresa. \n");
-                    System.out.println("ruta: "+rutaLogo);
-                    System.out.println("execption: "+ex);
+                    System.out.println("ruta: " + rutaLogo);
+                    System.out.println("execption: " + ex);
                 }
             }
         }
     }
+
     /*private void consultaNitEmpresa(){
         nitEmpresa = String.valueOf(conexionEmpleado.getEmpleado().getEmpresa().getNit());
     }*/
-    
-    public void obtenerFondoEmpresa(){
+
+    public void obtenerFondoEmpresa() {
         //String rutaFondo = null;
         //consultaNitEmpresa();
         for (CadenasKioskos elemento : (new LeerArchivoXML()).leerArchivoEmpresasKiosko()) {
-            if ( elemento.getNit().equals( nitEmpresa ) ){
+            if (elemento.getNit().equals(nitEmpresa)) {
                 fondoEmpresa = elemento.getFondo();
             }
         }
@@ -199,12 +203,16 @@ public class ControladorInicioKiosko implements Serializable {
         if (fondoEmpresa == null) {
             obtenerFondoEmpresa();
         }
-        System.out.println("fondoEmpresa: "+fondoEmpresa);
+        System.out.println("fondoEmpresa: " + fondoEmpresa);
         return fondoEmpresa;
     }
 
     public void setFondoEmpresa(String fondoEmpresa) {
         this.fondoEmpresa = fondoEmpresa;
+    }
+
+    public Personas getPersona() {
+        return persona;
     }
 
 }

@@ -7,22 +7,18 @@
     <h:body style="font-size: 14px;">
         <p:panelGrid id="gridSuperior" columns="3" styleClass="noBorders" style="width: 100%;">
             <p:column id="supleft" width="50%">
-                <p:panelGrid id="gridSupInt1" columns="2" styleClass="noBorders">
-                    <p:column> 
-                        <p:graphicImage value="#{controladorInicioKiosko.fotoEmpleado}" width="91" alt="Foto empleado" onclick="PF('subirFoto').show();"
-                                        cache="false"/>
-                    </p:column>
+                <p:panelGrid id="gridSupInt1" columns="1" styleClass="noBorders">
                     <p:column>
-                        <h3>BIENVENIDO</h3>
-                        <h3 style="font-weight: bold; color: #08088A;"> #{controladorInicioKiosko.conexionEmpleado.empleado.persona.nombreCompleto}</h3>
-                        <h4>Número de identificación: #{controladorInicioKiosko.conexionEmpleado.empleado.persona.numerodocumento}</h4>
+                        <h3>BIENVENIDO(A)</h3>
+                        <h3 style="font-weight: bold; color: #08088A;"> #{controladorInformacionBasica.persona.nombreCompleto}</h3>
+                        <h4>Número de identificación: #{controladorInformacionBasica.persona.numerodocumento}</h4>
                     </p:column>
                 </p:panelGrid>
             </p:column>
             <p:column id="supcenter">
                 <center>
                     <img src="resources/imagenes/blanco.png" onload="refresh();" onerror="offline();" style="display: none;" />
-                    <p:graphicImage value="#{controladorInicioKiosko.logoEmpresa}" alt="Logo empresa"
+                    <p:graphicImage value="#{controladorInformacionBasica.logoEmpresa}" alt="Logo empresa"
                                     cache="false" style="height: 91px;"/>
                 </center>
             </p:column>
@@ -30,12 +26,10 @@
                 <p:panelGrid id="gridSupInt2" columns="1" style="float: right; font-size: 16px; font-weight: bold;">
                     <p:column>
                         <h:outputText value="Ultima conexión: "/>
-                        <h:outputText value="#{controladorInicioKiosko.ultimaConexionEmpleado}">
+                        <h:outputText value="#{controladorInformacionBasica.ultimaConexionEmpleado}">
                             <f:convertDateTime pattern="dd/MM/yyyy  -  hh:mm a"/>
                         </h:outputText>
                     </p:column>
-                    <p:commandLink value="Cambiar contraseña" process="@this" actionListener="#{controlNavegacion.configuracionAction_CambiarClave}"
-                                   update=":principalForm" style="color: #013ADF; float: right;"/>
                     <p:commandLink value=" Salir" actionListener="#{controladorIngreso.ingresar()}"
                                    process="@this" style="color: #B40404; float: right;"/>
                     <div id="online" style="display: none; color: Green; font-weight: bold;">
@@ -47,14 +41,6 @@
                 </p:panelGrid>
             </p:column>
         </p:panelGrid>
-
-        <p:dialog id="subirFoto" header="Cargar foto" widgetVar="subirFoto"  resizable="false" draggable="false" modal="true" closable="true">  
-            <p:panelGrid columns="2" styleClass="noBorders">
-                <h:outputText value="Por favor seleccione una imagen con extensión (.JPG) y con un tamaño no mayor a 150 KB." style="font-weight: bold; width: 335px; color: black"/>
-                <p:fileUpload  id="FileUp" mode="advanced" style="font-size: 11px; border: none" fileUploadListener="#{controladorInicioKiosko.subirFotoEmpleado}"
-                               label="Examinar..." auto="true" styleClass="ui-fileupload" />
-            </p:panelGrid> 
-        </p:dialog>
     </h:body>
 </html>
 

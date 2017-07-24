@@ -6,6 +6,7 @@ import co.com.kiosko.clasesAyuda.SessionEntityManager;
 import co.com.kiosko.conexionFuente.implementacion.SesionEntityManagerFactory;
 import co.com.kiosko.conexionFuente.interfaz.ISesionEntityManagerFactory;
 import co.com.kiosko.entidades.Perfiles;
+import co.com.kiosko.entidades.Personas;
 import co.com.kiosko.persistencia.interfaz.IPersistenciaConexionInicial;
 import java.math.BigInteger;
 import javax.ejb.EJB;
@@ -33,6 +34,7 @@ public class AdministrarIngreso implements IAdministrarIngreso {
     private EntityManagerFactory emf;
     private BigInteger secPerfil;
     private Perfiles perfilUsuario;
+    private Personas persona;
 
     public AdministrarIngreso() {
         sessionEMF = new SesionEntityManagerFactory();
@@ -81,7 +83,7 @@ public class AdministrarIngreso implements IAdministrarIngreso {
     }
 
     @Override
-    public boolean conexionUsuario(String baseDatos, String usuario, String contraseña) {
+    public Personas conexionUsuario(String baseDatos, String usuario, String contraseña) {
         try {
             EntityManager em = emf.createEntityManager();
             secPerfil = persistenciaConexionInicial.usuarioLogin(em, usuario);
@@ -89,11 +91,13 @@ public class AdministrarIngreso implements IAdministrarIngreso {
             em.close();
             emf.close();
             emf = sessionEMF.crearFactoryUsuario(usuario, contraseña, baseDatos);
+            em = emf.createEntityManager();
             setearRol();
-            return true;
+            persona = persistenciaConexionInicial.obtenerPersona(em, usuario);
+            return persona;
         } catch (Exception e) {
             System.out.println("Error creando EMF AdministrarIngreso.conexionUsuario: " + e);
-            return false;
+            return null;
         }
     }
 
@@ -158,4 +162,9 @@ public class AdministrarIngreso implements IAdministrarIngreso {
             System.out.println("Error general " + "cerrarSession" + ": " + e);
         }
     }
+
+    public Personas getPersona() {
+        return persona;
+    }
+
 }//Fin de la clase.
