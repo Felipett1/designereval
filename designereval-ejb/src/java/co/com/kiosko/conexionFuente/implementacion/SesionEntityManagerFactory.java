@@ -26,11 +26,11 @@ public class SesionEntityManagerFactory implements ISesionEntityManagerFactory, 
     }
 
     @Override
-    public EntityManagerFactory crearFactoryUsuario(String usuario, String contraseña, String baseDatos) {
+    public EntityManagerFactory crearFactoryUsuario(String usuario, String clave, String baseDatos) {
         try {
             Map<String, String> properties = new HashMap<String, String>();
             properties.put("javax.persistence.jdbc.user", usuario);
-            properties.put("javax.persistence.jdbc.password", contraseña);
+            properties.put("javax.persistence.jdbc.password", clave);
             /*System.out.println("Usuario: " + usuario);
             System.out.println("Contraseña: " + contraseña);
             System.out.println("Base de Datos: " + baseDatos);*/

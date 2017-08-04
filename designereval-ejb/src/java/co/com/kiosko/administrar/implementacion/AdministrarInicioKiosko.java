@@ -43,7 +43,7 @@ public class AdministrarInicioKiosko implements IAdministrarInicioKiosko {
     }
 
     @Override
-    public String fotoEmpleado() {
+    public String obtenerRutaImagenes() {
         String rutaFoto;
         EntityManager em = emf.createEntityManager();
         Generales general = persistenciaGenerales.consultarRutasGenerales(em);

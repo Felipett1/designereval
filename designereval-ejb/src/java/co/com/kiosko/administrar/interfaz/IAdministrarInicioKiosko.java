@@ -13,5 +13,5 @@ public interface IAdministrarInicioKiosko {
 
     public Empleados consultarEmpleado(BigInteger codigoEmpleado, long nit);
 
-    public String fotoEmpleado();
+    public String obtenerRutaImagenes();
 }

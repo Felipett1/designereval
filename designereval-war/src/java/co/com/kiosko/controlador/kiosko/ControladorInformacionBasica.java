@@ -31,14 +31,13 @@ public class ControladorInformacionBasica implements Serializable {
 
     @EJB
     private IAdministrarInicioKiosko administrarInicioKiosko;
-    private String usuario;
     private Date ultimaConexionEmpleado;
     private Personas persona;
     //FOTO EMPLEADO
     private FileInputStream fis;
     private StreamedContent fotoEmpleado;
     private StreamedContent logoEmpresa;
-    private String pathFoto;
+    private String pathImagenes;
     private BigInteger identificacionEmpleado;
     private String nitEmpresa;
     private String fondoEmpresa;
@@ -56,8 +55,8 @@ public class ControladorInformacionBasica implements Serializable {
             persona = ((ControladorIngreso) x.getApplication().evaluateExpressionGet(x, "#{controladorIngreso}", ControladorIngreso.class)).getPersona();
             ultimaConexionEmpleado = ((ControladorIngreso) x.getApplication().evaluateExpressionGet(x, "#{controladorIngreso}", ControladorIngreso.class)).getUltimaConexion();
             nitEmpresa = ((ControladorIngreso) x.getApplication().evaluateExpressionGet(x, "#{controladorIngreso}", ControladorIngreso.class)).getNit();
-            pathFoto = administrarInicioKiosko.fotoEmpleado();
-            obtenerFotoEmpleado();
+            pathImagenes = administrarInicioKiosko.obtenerRutaImagenes();
+            //obtenerFotoEmpleado();
             System.out.println("Inicializado");
         } catch (ELException e) {
             System.out.println("Error postconstruct " + this.getClass().getName() + ": " + e);
@@ -67,14 +66,14 @@ public class ControladorInformacionBasica implements Serializable {
 
     public void obtenerFotoEmpleado() {
         String formatoFotoEmpleado = "image/jpg";
-        String rutaFoto = pathFoto + ".jpg";
+        String rutaFoto = pathImagenes + ".jpg";
         if (rutaFoto != null) {
             try {
                 fis = new FileInputStream(new File(rutaFoto));
                 fotoEmpleado = new DefaultStreamedContent(fis, formatoFotoEmpleado);
             } catch (FileNotFoundException e) {
                 try {
-                    fis = new FileInputStream(new File(pathFoto + "sinFoto.jpg"));
+                    fis = new FileInputStream(new File(pathImagenes + "sinFoto.jpg"));
                     fotoEmpleado = new DefaultStreamedContent(fis, formatoFotoEmpleado);
                     //System.out.println("Foto del empleado no encontrada. \n" + e);
                 } catch (FileNotFoundException ex) {
@@ -107,7 +106,7 @@ public class ControladorInformacionBasica implements Serializable {
 
     public void transformarArchivo(long size, InputStream in) {
         try {
-            OutputStream out = new FileOutputStream(new File(pathFoto + identificacionEmpleado + ".jpg"));
+            OutputStream out = new FileOutputStream(new File(pathImagenes + identificacionEmpleado + ".jpg"));
             int reader = 0;
             byte[] bytes = new byte[(int) size];
             while ((reader = in.read(bytes)) != -1) {
@@ -124,14 +123,15 @@ public class ControladorInformacionBasica implements Serializable {
     public void obtenerLogoEmpresa() {
         String formatoFotoEmpleado = "image/png";
         String logo = "LOGO"; //conexionEmpleado.getEmpleado().getEmpresa().getLogo().substring(0,conexionEmpleado.getEmpleado().getEmpresa().getLogo().length()-4);
-        String rutaLogo = pathFoto + logo + ".png";
+        String rutaLogo = pathImagenes + logo + ".png";
         if (rutaLogo != null) {
             try {
                 fis = new FileInputStream(new File(rutaLogo));
                 logoEmpresa = new DefaultStreamedContent(fis, formatoFotoEmpleado, logo);
+                System.out.println("rutaLogo: " + rutaLogo);
             } catch (FileNotFoundException e) {
                 try {
-                    rutaLogo = pathFoto + "sinLogo.png";
+                    rutaLogo = pathImagenes + "sinLogo.png";
                     fis = new FileInputStream(new File(rutaLogo));
                     logoEmpresa = new DefaultStreamedContent(fis, formatoFotoEmpleado, rutaLogo);
                 } catch (FileNotFoundException ex) {

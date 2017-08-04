@@ -5,9 +5,11 @@ import co.com.kiosko.administrar.interfaz.IAdministrarSesiones;
 import co.com.kiosko.clasesAyuda.SessionEntityManager;
 import co.com.kiosko.conexionFuente.implementacion.SesionEntityManagerFactory;
 import co.com.kiosko.conexionFuente.interfaz.ISesionEntityManagerFactory;
+import co.com.kiosko.entidades.Conexiones;
 import co.com.kiosko.entidades.Perfiles;
 import co.com.kiosko.entidades.Personas;
 import co.com.kiosko.persistencia.interfaz.IPersistenciaConexionInicial;
+import co.com.kiosko.persistencia.interfaz.IPersistenciaConexiones;
 import java.math.BigInteger;
 import javax.ejb.EJB;
 import javax.ejb.Stateful;
@@ -25,6 +27,8 @@ public class AdministrarIngreso implements IAdministrarIngreso {
 
     @EJB
     private IPersistenciaConexionInicial persistenciaConexionInicial;
+    @EJB
+    private IPersistenciaConexiones persistenciaConexiones;
     @EJB
     private IAdministrarSesiones administrarSessiones;
 
@@ -91,8 +95,8 @@ public class AdministrarIngreso implements IAdministrarIngreso {
             em.close();
             emf.close();
             emf = sessionEMF.crearFactoryUsuario(usuario, contraseña, baseDatos);
-            em = emf.createEntityManager();
             setearRol();
+            em = emf.createEntityManager();
             persona = persistenciaConexionInicial.obtenerPersona(em, usuario);
             return persona;
         } catch (Exception e) {
@@ -113,6 +117,38 @@ public class AdministrarIngreso implements IAdministrarIngreso {
             return false;
         } catch (Exception e) {
             System.out.println("Error AdministrarIngreso.validarConexionUsuario: " + e);
+            return false;
+        }
+    }
+
+    @Override
+    public Conexiones ultimaConexionUsuario(String usuario) {
+        try {
+            EntityManager em = emf.createEntityManager();
+            if (em != null) {
+                if (em.isOpen()) {
+                    return persistenciaConexionInicial.conexionUsuario(em, usuario);
+                }
+            }
+            return null;
+        } catch (Exception e) {
+            System.out.println("Error AdministrarIngreso.ultimaConexionUsuario: " + e);
+            return null;
+        }
+    }
+
+    @Override
+    public boolean insertarUltimaConexion(Conexiones conexion) {
+        try {
+            EntityManager em = emf.createEntityManager();
+            if (em != null) {
+                if (em.isOpen()) {
+                    return persistenciaConexiones.insertarUltimaConexion(em, conexion);
+                }
+            }
+            return false;
+        } catch (Exception e) {
+            System.out.println("Error AdministrarIngreso.insertarUltimaConexion: " + e);
             return false;
         }
     }
@@ -142,7 +178,7 @@ public class AdministrarIngreso implements IAdministrarIngreso {
         System.out.println(this.getClass().getName() + ".adicionarConexionUsuario()");
         boolean resul = false;
         try {
-            SessionEntityManager sem = new SessionEntityManager(idSesion, unidadPersistencia);
+            SessionEntityManager sem = new SessionEntityManager(idSesion, unidadPersistencia, emf);
             administrarSessiones.adicionarSesion(sem);
             resul = true;
         } catch (Exception e) {

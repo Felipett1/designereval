@@ -33,7 +33,7 @@ public class ControlNavegacion implements Serializable {
         System.out.println("ControlNavegacion.init");
         //FacesContext x = FacesContext.getCurrentInstance();
         //System.out.println("URL: "+NavegationPageURL.OPCIONESKIOSKO.getUrl());
-        //urlMenuNavegation = NavegationPageURL.OPCIONESKIOSKO.getUrl();
+        urlMenuNavegation = NavegationPageURL.INICIO_EVALUADOR.getUrl();
         //nitEmpresa = ((ControladorIngreso) x.getApplication().evaluateExpressionGet(x, "#{controladorIngreso}", ControladorIngreso.class)).getNit();
         //pathFoto = administrarInicioKiosko.fotoEmpleado();
     }
@@ -56,7 +56,7 @@ public class ControlNavegacion implements Serializable {
 
     public void configuracionAction_OpcionesKiosko() throws Exception {
         try {
-            this.urlMenuNavegation = NavegationPageURL.OPCIONESKIOSKO.getUrl();
+            this.urlMenuNavegation = NavegationPageURL.INICIO_EVALUADOR.getUrl();
             System.out.println("ControlNavegacion.configuracionAction_OpcionesKiosko");
         } catch (Exception e) {
             System.out.println("Error configuracionAction_OpcionesKiosko: " + e.getMessage());

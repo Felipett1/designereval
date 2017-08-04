@@ -7,6 +7,6 @@ public interface ISesionEntityManagerFactory {
 
     public EntityManagerFactory crearConexionUsuario(String unidadPersistencia);
 
-    public EntityManagerFactory crearFactoryUsuario(String usuario, String contraseña, String baseDatos);
+    public EntityManagerFactory crearFactoryUsuario(String usuario, String clave, String baseDatos);
 
 }

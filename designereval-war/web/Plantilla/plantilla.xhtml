@@ -7,6 +7,7 @@
     <h:head>
         <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link rel="stylesheet" href="./resources/css/menu.css"/>
         <link href="././resources/css/cssLayout.css" rel="stylesheet" type="text/css" />
         <link href="././resources/css/estilosPersonalizados.css" rel="stylesheet" type="text/css" />
         <link href="././resources/imagenes/favicon.ico" rel="shortcut icon"/>
@@ -14,6 +15,7 @@
         <link rel="apple-touch-icon-precomposed" sizes="72x72" href="././resources/imagenes/quiosco_icono_72x72.png" />
         <link rel="apple-touch-icon-precomposed" sizes="180x180" href="././resources/imagenes/quiosco_icono_180x180.png" />
         <script src="./resources/js/scriptPersonalizado.js"/>
+        <script src="./resources/js/funciones.js"/>
         <title>..::Designer.Eval::..</title>
         <script type="text/javascript">
             var connected = true;
@@ -56,10 +58,23 @@
                             autoUpdate="true" closable="true"/>
 
             </div>
-            <div class="center_content">
+            <!--div class="center_content">
                 <ui:insert id="content" name="content">
                     <ui:include src="#{controlNavegacion.urlNavegation}" />
                 </ui:insert>
+            </div-->
+
+            <div>
+                <!--div id="left">
+                    <ui:insert name="top">
+                        <ui:include src="/Plantilla/menu.xhtml" />
+                    </ui:insert>
+                </div-->
+                <div id="content" class="left_content">
+                    <ui:insert id="content" name="content">                        
+                        <ui:include src="#{controlNavegacion.urlNavegation}" />
+                    </ui:insert>
+                </div>
             </div>
         </h:form>
     </h:body>

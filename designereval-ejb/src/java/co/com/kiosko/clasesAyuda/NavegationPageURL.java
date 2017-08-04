@@ -2,7 +2,7 @@ package co.com.kiosko.clasesAyuda;
 
 public enum NavegationPageURL {
 
-	OPCIONESKIOSKO("Opciones Kiosko","/Kiosko/opcionesKiosko.xhtml"), 
+	INICIO_EVALUADOR("Inicio Evaluador","/Evaluador/inicioEval.xhtml"), 
 	CAMBIARCLAVE("Cambiar clave","/Ingreso/cambiarClave.xhtml"), 
 	GENERARREPORTE("Generar Reporte","/Kiosko/generarReporte.xhtml");
 

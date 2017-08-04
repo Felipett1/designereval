@@ -21,12 +21,12 @@ public class SessionEntityManager {
 //        this.idSession = idSession;
 //        this.emf = emf;
 //    }
-
     public SessionEntityManager(String idSession, String unidadPersistencia) {
         this.idSession = idSession;
         this.unidadPersistencia = unidadPersistencia;
     }
-    public SessionEntityManager(String idSession, String unidadPersistencia, EntityManagerFactory emf){
+
+    public SessionEntityManager(String idSession, String unidadPersistencia, EntityManagerFactory emf) {
         this.idSession = idSession;
         this.unidadPersistencia = unidadPersistencia;
         this.emf = emf;
@@ -54,24 +54,22 @@ public class SessionEntityManager {
 //        }
 //        return em;
 //    }
-
 //    public void setEm(EntityManager em) {
 //        this.em = em;
 //    }
-
 //    @PreDestroy
 //    public void destruct() {
 //        emf.close();
 //    }
-
     public String getUnidadPersistencia() {
         return unidadPersistencia;
     }
 
     public void setUnidadPersistencia(String unidadPersistencia) {
-        System.out.println(this.getClass().getName()+".setUnidadPersistencia()");
-        System.out.println("unidad de persistencia: "+this.unidadPersistencia);
+        System.out.println(this.getClass().getName() + ".setUnidadPersistencia()");
+        System.out.println("unidad de persistencia: " + this.unidadPersistencia);
         this.unidadPersistencia = unidadPersistencia;
     }
+
     
 }

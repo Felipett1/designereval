@@ -1,5 +1,6 @@
 package co.com.kiosko.persistencia.interfaz;
 
+import co.com.kiosko.entidades.Conexiones;
 import co.com.kiosko.entidades.Perfiles;
 import co.com.kiosko.entidades.Personas;
 import java.math.BigInteger;
@@ -21,5 +22,7 @@ public interface IPersistenciaConexionInicial {
     public void setearUsuario(EntityManager eManager, String rol, String pwd);
 
     public Personas obtenerPersona(EntityManager eManager, String usuarioBD);
+
+    public Conexiones conexionUsuario(EntityManager eManager, String usuario);
 
 }

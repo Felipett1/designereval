@@ -1,5 +1,6 @@
 package co.com.kiosko.persistencia.implementacion;
 
+import co.com.kiosko.entidades.Conexiones;
 import co.com.kiosko.entidades.Perfiles;
 import co.com.kiosko.entidades.Personas;
 import co.com.kiosko.persistencia.interfaz.IPersistenciaConexionInicial;
@@ -89,6 +90,22 @@ public class PersistenciaConexionInicial implements IPersistenciaConexionInicial
             return perfil;
         } catch (Exception e) {
             System.out.println("Persistencia.PersistenciaConexionInicial.perfilUsuario() e: " + e);
+            return null;
+        }
+    }
+    
+    @Override
+    public Conexiones conexionUsuario(EntityManager eManager, String usuario) {
+        try {
+            em = eManager;
+            em.getTransaction().begin();
+            Query query = em.createQuery("SELECT c FROM Conexiones c WHERE c.usuarioBD = :usuario ORDER BY  c.ultimaEntrada DESC");
+            query.setParameter("usuario", usuario);
+            Conexiones conexion = (Conexiones) query.getResultList().get(0);
+            em.getTransaction().commit();
+            return conexion;
+        } catch (Exception e) {
+            System.out.println("Persistencia.PersistenciaConexionInicial.conexionUsuario() e: " + e);
             return null;
         }
     }

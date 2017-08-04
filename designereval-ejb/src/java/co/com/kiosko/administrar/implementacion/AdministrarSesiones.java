@@ -47,7 +47,6 @@ public class AdministrarSesiones implements IAdministrarSesiones {
         System.out.println(this.getClass().getName() + "." + "obtenerConexionSesion" + "()");
         SessionEntityManager sesionActual = null;
 //        EntityManager eManager = null;
-        
         try {
             if (!sessionesActivas.isEmpty()) {
                 for (int i = 0; i < sessionesActivas.size(); i++) {
@@ -64,7 +63,7 @@ public class AdministrarSesiones implements IAdministrarSesiones {
         }
         EntityManagerFactory emf = null;
         if (sesionActual != null) {
-            emf = sessionEMF.crearConexionUsuario(sesionActual.getUnidadPersistencia());
+            emf = sesionActual.getEmf();
 //            eManager = emf.createEntityManager();
             System.out.println("Se creó entityManagerFactory.");
             System.out.println("eManager" + emf.toString());

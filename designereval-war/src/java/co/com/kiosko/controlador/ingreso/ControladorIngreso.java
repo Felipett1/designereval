@@ -4,11 +4,14 @@ import co.com.kiosko.administrar.interfaz.IAdministrarIngreso;
 import co.com.kiosko.clasesAyuda.CadenasKioskos;
 import co.com.kiosko.clasesAyuda.LeerArchivoXML;
 import co.com.kiosko.controlador.autenticacion.Util;
+import co.com.kiosko.entidades.Conexiones;
 import co.com.kiosko.entidades.Personas;
 import co.com.kiosko.utilidadesUI.MensajesUI;
 import co.com.kiosko.utilidadesUI.PrimefacesContextUI;
 import java.io.IOException;
 import java.io.Serializable;
+import java.math.BigInteger;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -21,6 +24,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -42,6 +46,7 @@ public class ControladorIngreso implements Serializable {
     private List<SelectItem> listaGrupos;
     private String grupoSeleccionado;
     private Personas persona;
+    private Conexiones conexion;
 
     public ControladorIngreso() {
         logo = "logonominadesignertrans.png";
@@ -113,6 +118,9 @@ public class ControladorIngreso implements Serializable {
                             persona = administrarIngreso.conexionUsuario(cadena.getCadena(), usuario, clave);
                             if (persona != null) {
                                 administrarIngreso.adicionarConexionUsuario(ses.getId());
+                                conexion = administrarIngreso.ultimaConexionUsuario(usuario);
+                                ultimaConexion = conexion.getUltimaEntrada();
+                                guardarUltimaConexion();
                                 ingresoExitoso = true;
                                 HttpSession session = Util.getSession();
                                 session.setAttribute("idUsuario", usuario);
@@ -209,6 +217,29 @@ public class ControladorIngreso implements Serializable {
             ex.printStackTrace();
         }
         //return ruta;
+    }
+
+    public void guardarUltimaConexion() throws UnknownHostException {
+        FacesContext contextoF = FacesContext.getCurrentInstance();
+        HttpServletRequest request = (HttpServletRequest) (contextoF.getExternalContext().getRequest());
+        String Ip, nombreEquipo;
+        java.net.InetAddress localMachine;
+        if (request.getRemoteAddr().startsWith("127.0.0.1")) {
+            localMachine = java.net.InetAddress.getLocalHost();
+            Ip = localMachine.getHostAddress();
+        } else {
+            Ip = request.getRemoteAddr();
+        }
+        localMachine = java.net.InetAddress.getByName(Ip);
+        nombreEquipo = localMachine.getHostName();
+        Conexiones ultimaConexion = new Conexiones();
+        ultimaConexion.setDireccionIP(Ip);
+        ultimaConexion.setEstacion(nombreEquipo);
+        ultimaConexion.setSecuencia(BigInteger.valueOf(1));
+        ultimaConexion.setUltimaEntrada(new Date());
+        ultimaConexion.setUsuarioso(System.getProperty("os.name") + " / " + System.getProperty("user.name"));
+        ultimaConexion.setUsuarioBD(usuario);
+        administrarIngreso.insertarUltimaConexion(ultimaConexion);
     }
 
     //GETTER AND SETTER

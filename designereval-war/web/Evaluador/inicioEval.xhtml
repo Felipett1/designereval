@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <p:panelGrid columns="2">
+        <p:column>
+            <p:dataTable id="dtbConvocatorias" var="convocatoria" widgetVar="dtbConvocatorias"
+                         scrollRows="8" scrollable="true" scrollHeight="110"
+                         emptyMessage="No hay datos" selectionMode="single" 
+                         selection="#{controladorInicioEval.convocatoria}" rowKey="#{convocatoria.secuencia}"
+                         value="#{controladorInicioEval.convocatorias}">
+                <p:ajax event="rowSelect" listener="#{controladorInicioEval.seleccionConvocatoria(1)}" 
+                        update=":principalForm:dtbEvaluados, :principalForm:informacion,
+                        :principalForm:dtbPruebas" />
+                <p:ajax event="rowUnselect" listener="#{controladorInicioEval.seleccionConvocatoria(0)}" 
+                        update=":principalForm:informacion, :principalForm:dtbEvaluados,
+                        :principalForm:dtbPruebas"/>
+                <f:facet name="header">
+                    <h:outputText value="Convocatorias"/>
+                </f:facet>
+
+                <p:column headerText="Convocatoria">
+                    <h:outputText value="#{convocatoria.codigo}"/>
+                </p:column>
+
+                <p:column headerText="Enfoque" width="120">
+                    <h:outputText value="#{convocatoria.enfoque}"/>
+                </p:column>
+            </p:dataTable>
+        </p:column>
+        <p:column>
+            <p:panelGrid id="informacion" columns="2">
+                <h:outputText value="Total empleados asignados:"/>
+                <h:outputText value="#{controladorInicioEval.totalEmpleadosAsignados != null ?
+                                       controladorInicioEval.totalEmpleadosAsignados : '-'}"/>
+                <h:outputText value="Empleados convocados:"/>
+                <h:outputText value="#{controladorInicioEval.empleadosConvocados != null ?
+                                       controladorInicioEval.empleadosConvocados : '-'}"/>
+                <h:outputText value="Empleados asignados al usuario:"/>
+                <h:outputText value="#{controladorInicioEval.empleadosAsignados != null ?
+                                       controladorInicioEval.empleadosAsignados : '-'}"/>
+                <h:outputText value="Empleados evaluados:"/>
+                <h:outputText value="#{controladorInicioEval.empleadosEvaluados != null ?
+                                       controladorInicioEval.empleadosEvaluados : '-'}"/>
+                <h:outputText value="Empleados sin evaluar:"/>
+                <h:outputText value="#{controladorInicioEval.empleadosAsignados != null 
+                                       and controladorInicioEval.empleadosEvaluados != null ? 
+                                       controladorInicioEval.empleadosAsignados - controladorInicioEval.empleadosEvaluados : '-'}"/>
+            </p:panelGrid>
+        </p:column>
+        <p:column width="40%">
+            <p:dataTable id="dtbEvaluados" var="evaluado" widgetVar="dtbEvaluados"
+                         scrollRows="8" scrollable="true" liveScroll="true" scrollHeight="150"
+                         emptyMessage="No hay datos" selectionMode="single" 
+                         selection="#{controladorInicioEval.evaluado}" rowKey="#{evaluado.secuencia}"
+                         value="#{controladorInicioEval.evaluados}">
+                <p:ajax event="rowSelect" listener="#{controladorInicioEval.seleccionEvaluado(1)}" update=":principalForm:dtbPruebas" />
+                <p:ajax event="rowUnselect" listener="#{controladorInicioEval.seleccionEvaluado(0)}" update=":principalForm:dtbPruebas"/>
+                <f:facet name="header">
+                    <h:outputText value="Empleados a evaluar"/>
+                </f:facet>
+
+                <p:column headerText="Nombre">
+                    <h:outputText value="#{evaluado.nombrePersona}"/>
+                </p:column>
+
+                <p:column headerText="Puntaje" width="120">
+                    <h:outputText value="#{evaluado.puntajeObtenido != null ?
+                                           evaluado.puntajeObtenido : 0}"/>
+                </p:column>
+            </p:dataTable>
+        </p:column>
+        <p:column>
+            <p:dataTable id="dtbPruebas" var="prueba" widgetVar="dtbPruebas"
+                         scrollRows="8" scrollable="true" liveScroll="true" scrollHeight="150"
+                         emptyMessage="No hay datos" 
+                         value="#{controladorInicioEval.pruebas}">
+                <f:facet name="header">
+                    <h:outputText value="Pruebas"/>
+                </f:facet>
+
+                <p:column headerText="Nombre" width="200">
+                    <h:outputText value="#{prueba.prueba}"/>
+                </p:column>
+
+                <p:column headerText="Factor" width="150">
+                    <h:outputText value="#{prueba.factor}"/>
+                </p:column>
+
+                <p:column headerText="%" width="30">
+                    <h:outputText value="#{prueba.puntoObtenido != null ? prueba.puntoObtenido : 0}"/>
+                </p:column>
+                <p:column>
+                    <p:commandButton value="Evaluar"/>
+                </p:column>
+            </p:dataTable>
+        </p:column>
+    </p:panelGrid>
+</ui:composition>

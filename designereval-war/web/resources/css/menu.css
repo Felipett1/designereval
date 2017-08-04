@@ -1,0 +1,202 @@
+/* Base Styles */
+#cssmenu,
+#cssmenu ul,
+#cssmenu li,
+#cssmenu a {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    list-style: none;
+    font-weight: normal;
+    text-decoration: none;
+    line-height: 1;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 14px;
+    position: relative;
+}
+#cssmenu {
+    width: 250px;
+    border-bottom: 4px solid #656659;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+#cssmenu a {
+    line-height: 1.3;
+}
+/*#cssmenu > ul > li:first-child {
+    background: #6F706A;
+    background: -moz-linear-gradient(#6F706A 0%, #868780 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #6F706A), color-stop(100%, #868780));
+    background: -webkit-linear-gradient(#6F706A 0%, #868780 100%);
+    background: linear-gradient(#6F706A 0%, #868780 100%);
+    border: 1px solid #868780;
+    -webkit-border-radius: 3px 3px 0 0;
+    -moz-border-radius: 3px 3px 0 0;
+    border-radius: 3px 3px 0 0;
+}*/
+/*#cssmenu > ul > li:first-child > a {
+    padding: 15px 10px;
+    background: url("../img/pattern.png") top left repeat;
+    border: none;
+    border-top: 1px solid #818176;
+    -webkit-border-radius: 3px 3px 0 0;
+    -moz-border-radius: 3px 3px 0 0;
+    border-radius: 3px 3px 0 0;
+    font-family: 'Ubuntu', sans-serif;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 300;
+    text-shadow: 0 -1px 1px #000000;
+}
+#cssmenu > ul > li:first-child > a > span {
+    padding: 0;
+}
+#cssmenu > ul > li:first-child:hover {
+    background: #6F706A;
+    background: -moz-linear-gradient(#6F706A 0%, #868780 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #6F706A), color-stop(100%, #868780));
+    background: -webkit-linear-gradient(#6F706A 0%, #868780 100%);
+    background: linear-gradient(#6F706A 0%, #868780 100%);
+}*/
+#cssmenu > ul > li {
+    background: #1F73A6;
+    background: -moz-linear-gradient(#1F73A6 0%, #217FBA 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #1F73A6), color-stop(100%, #217FBA));
+    background: -webkit-linear-gradient(#1F73A6 0%, #217FBA 100%);
+    background: linear-gradient(#1F73A6 0%, #217FBA 100%);
+}
+#cssmenu > ul > li:hover {
+    background: #2585C1;
+    background: -moz-linear-gradient(#2585C1 0%, #2B95D7 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #2585C1), color-stop(100%, #2B95D7));
+    background: -webkit-linear-gradient(#2585C1 0%, #164AC3 100%);
+    background: linear-gradient(#2585C1 0%, #2B95D7 100%);
+}
+#cssmenu > ul > li > a {
+    font-size: 14px;
+    display: block;
+    background: url("../img/pattern.png") top left repeat;
+    color: #ffffff;
+    border: 1px solid #288FCF;
+    border-top: none;
+    text-shadow: 0 -1px 1px #150C76;
+}
+#cssmenu > ul > li > a > span {
+    display: block;
+    padding: 12px 10px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+#cssmenu > ul > li > a:hover {
+    text-decoration: none;
+}
+#cssmenu > ul > li.active {
+    border-bottom: none;
+}
+#cssmenu > ul > li.has-sub > a span {
+    background: url("../img/icon_plus.png") 96% center no-repeat;
+}
+#cssmenu > ul > li.has-sub.active > a span {
+    background: url("../img/icon_minus.png") 96% center no-repeat;
+}
+
+#cssmenu > ul > li.has-sub > a span > span {
+    background: none;
+}
+#cssmenu > ul > li.has-sub.active > a span > span {
+    background: none;
+}
+/* Sub menu */
+#cssmenu ul ul {
+    display: none;
+    background: #fff;
+    border-right: 1px solid #a2a194;
+    border-left: 1px solid #a2a194;
+}
+#cssmenu ul ul li {
+    padding: 0;
+    border-bottom: 1px solid #d4d4d4;
+    border-top: none;
+    background: #96A3AC;
+    background: -moz-linear-gradient(#96A3AC 0%, #96A3AC 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #96A3AC), color-stop(100%, #96A3AC));
+    background: -webkit-linear-gradient(#96A3AC 0%, #96A3AC 100%);
+    background: linear-gradient(#96A3AC 0%, #96A3AC 100%);
+}
+#cssmenu ul ul li:last-child {
+    border-bottom: none;
+}
+#cssmenu ul > li > ul > li > a {
+    padding: 10px 0px 10px 25px;
+    font-size: 14px;
+    display: block;
+    background: url("../img/pattern.png") top left repeat;
+    color: #ffffff;
+    border: 1px solid #288FCF;
+    border-top: none;
+    text-shadow: 0 -1px 1px #150C76;
+}
+
+#cssmenu ul ul a:before {
+    position: absolute;
+    left: 10px;
+    color: #ffffff;
+}
+#cssmenu ul ul a:hover {
+    color: #ffffff;
+}
+
+#cssmenu > ul ul a > span {
+    display: block;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+
+#cssmenu > ul > li.has-sub > ul > li.has-sub > a > span {
+    background: url("../img/icon_plus.png") 96% center no-repeat;
+}
+#cssmenu > ul > li.has-sub.active > ul > li.has-sub.active > a > span {
+    background: url("../img/icon_minus.png") 96% center no-repeat;
+}
+/* Nivel 3 */
+#cssmenu ul ul ul {
+    display: none;
+    background: #fff;
+    border-right: 1px solid #a2a194;
+    border-left: 1px solid #a2a194;
+}
+#cssmenu ul ul ul > li {
+    padding: 0;
+    border-bottom: 1px solid #d4d4d4;
+    border-top: none;
+    background: #f7f7f7;
+    background: -moz-linear-gradient(#f7f7f7 0%, #ececec 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f7f7f7), color-stop(100%, #ececec));
+    background: -webkit-linear-gradient(#f7f7f7 0%, #ececec 100%);
+    background: linear-gradient(#f7f7f7 0%, #ececec 100%);
+}
+#cssmenu ul ul ul li:last-child {
+    border-bottom: none;
+}
+#cssmenu ul ul ul a {
+    padding: 10px 10px 10px 50px !important;
+    display: block !important;
+    color: #2C2E30 !important;
+    font-size: 12px !important;
+    font-weight: normal !important;
+    background: none !important;
+    text-shadow: 0 0px 0px #ffffff !important;
+    font-weight: bold !important;
+}
+
+#cssmenu ul ul ul a:before {
+    position: absolute;
+    left: 10px;
+    color: #2585C1;
+}
+#cssmenu ul ul ul a:hover {
+    color: #2585C1;
+}
