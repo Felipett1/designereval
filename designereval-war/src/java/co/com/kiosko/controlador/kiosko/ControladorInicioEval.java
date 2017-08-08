@@ -35,6 +35,7 @@ public class ControladorInicioEval implements Serializable {
     //SELECCION
     private Convocatorias convocatoria;
     private Evaluados evaluado;
+    private Pruebas prueba;
 
     //private Convocatorias convocatoria;
     public ControladorInicioEval() {
@@ -86,6 +87,30 @@ public class ControladorInicioEval implements Serializable {
         }
     }
 
+    public String obtenerInformacion(int opcion) {
+        /*
+        0 - Evaluado
+        1 - Evaluador
+        2 - Convocatoria
+        3 - Prueba
+        4 - Indagacion
+         */
+        if (opcion == 0) {
+            return evaluado.getNombrePersona();
+        } else if (opcion == 1) {
+            FacesContext x = FacesContext.getCurrentInstance();
+            HttpSession ses = (HttpSession) x.getExternalContext().getSession(false);
+            return ((ControladorInformacionBasica) x.getApplication().evaluateExpressionGet(x, "#{controladorInformacionBasica}", ControladorInformacionBasica.class)).getPersona().getNombreCompleto();
+        } else if (opcion == 2) {
+            return convocatoria.getCodigo() + " - " + convocatoria.getEnfoque();
+        } else if (opcion == 3) {
+            return prueba.getPrueba();
+        } else {
+            return prueba.getSecuencia().toString();
+        }
+    }
+
+    //GETTER AND SETTER
     public List<Convocatorias> getConvocatorias() {
         return convocatorias;
     }
@@ -128,6 +153,14 @@ public class ControladorInicioEval implements Serializable {
 
     public List<Pruebas> getPruebas() {
         return pruebas;
+    }
+
+    public Pruebas getPrueba() {
+        return prueba;
+    }
+
+    public void setPrueba(Pruebas prueba) {
+        this.prueba = prueba;
     }
 
 }

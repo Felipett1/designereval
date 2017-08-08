@@ -34,6 +34,8 @@ public class Pruebas implements Serializable {
     private String prueba;
     @Column(name = "FACTOR")
     private String factor;
+    @Column(name = "SECPRUEBA")
+    private BigInteger secPrueba;
 
     public Pruebas() {
     }
@@ -92,6 +94,14 @@ public class Pruebas implements Serializable {
 
     public void setEmpleadoEvaluador(BigInteger empleadoEvaluador) {
         this.empleadoEvaluador = empleadoEvaluador;
+    }
+
+    public BigInteger getSecPrueba() {
+        return secPrueba;
+    }
+
+    public void setSecPrueba(BigInteger secPrueba) {
+        this.secPrueba = secPrueba;
     }
 
     @Override
