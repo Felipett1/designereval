@@ -1,0 +1,232 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pm="http://primefaces.org/mobile"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <f:view renderKitId="PRIMEFACES_MOBILE" />
+
+    <h:head>
+        <link rel="stylesheet" href="./resources/css/estilosPersonalizados.css"/>
+    </h:head>
+
+    <h:body>
+        <h:form>
+            <p:remoteCommand name="seleccionConvocatoria" actionListener="#{controladorInicioEval.seleccionConvocatoria(1)}"
+                             update="evaluados"
+                             oncomplete="PrimeFaces.Mobile.navigate('#evaluados', {transition: 'flip'}); return false;"/>
+            <p:remoteCommand name="seleccionEvaluado" actionListener="#{controladorInicioEval.seleccionEvaluado(1)}"
+                             update="pruebas"
+                             oncomplete="PrimeFaces.Mobile.navigate('#pruebas', {transition: 'flip'}); return false;"/>
+            <p:remoteCommand name="seleccionPrueba" actionListener="#{controladorEvaluacion.cargarPreguntas()}"
+                             update="preguntas"
+                             oncomplete="PrimeFaces.Mobile.navigate('#preguntas', {transition: 'flip'}); return false;"/>
+            <p:remoteCommand name="seleccion" actionListener="#{controladorInicioEval.seleccion}"/>
+            <p:remoteCommand name="cerrarSesion" actionListener="#{controladorIngreso.ingresar()}"/>
+        </h:form>
+        <pm:page id="uno">
+            <h:form>
+                <pm:header title="Modulo de evaluación DESIGNER" swatch="b"
+                           styleClass="ui-header">
+                    <p:button styleClass="ui-btn-right ui-btn-inline" value="Salir" onclick="cerrarSesion();"/>
+                    <p:tabMenu activeIndex="0">
+                        <p:menuitem value="Inicio" icon="ui-icon-home" outcome="pm:uno?transition=flip" iconPos="top"/>
+                        <p:menuitem value="Convocatorias" icon="ui-icon-gear" outcome="pm:dos?transition=flip" iconPos="top"/>
+                    </p:tabMenu>
+                </pm:header>
+                <pm:content>
+                    <center> 
+                        <h3>BIENVENIDO(A)</h3>
+                        <h3 style="font-weight: bold; color: #08088A;"> #{controladorInformacionBasica.persona.nombreCompleto}</h3>
+                        <h4>Número de identificación: #{controladorInformacionBasica.persona.numerodocumento}</h4>
+                        <br/>
+                        <br/>
+                        <p:graphicImage value="#{controladorInformacionBasica.logoEmpresa}" alt="Logo empresa"
+                                        cache="false" style="height: 91px;"/>
+                    </center>
+                </pm:content>
+            </h:form>
+        </pm:page>
+        <pm:page id="dos">
+            <h:form>
+                <pm:header title="Modulo de evaluación DESIGNER" swatch="b"
+                           styleClass="ui-header">
+                    <p:button styleClass="ui-btn-right ui-btn-inline" value="Salir" onclick="cerrarSesion();"/>
+                    <p:tabMenu activeIndex="1">
+                        <p:menuitem value="Inicio" icon="ui-icon-home" outcome="pm:uno?transition=flip" iconPos="top"/>
+                        <p:menuitem value="Convocatorias" icon="ui-icon-gear" outcome="pm:dos?transition=flip" iconPos="top"/>
+                    </p:tabMenu>
+                </pm:header>
+
+                <pm:content>
+                    <p:dataList value="#{controladorInicioEval.convocatorias}" var="cv" rowIndexVar="indexC">
+                        <h:outputLink value="#" 
+                                      onclick="seleccion([{name: 'valor', value:#{indexC}}, {name: 'tipo', value: '0'}]);">
+                            <p>#{cv.codigo}</p>
+                            <p><strong>Enfoque:</strong> #{cv.enfoque}</p>
+                        </h:outputLink>  
+                    </p:dataList>
+                </pm:content>
+            </h:form>
+        </pm:page>
+
+        <pm:page id="evaluados">
+            <h:form>
+                <pm:header title="Empleados a evaluar" swatch="b"
+                           styleClass="ui-header">
+                    <p:button styleClass="ui-btn-right ui-btn-inline" value="Salir" onclick="cerrarSesion();"/>
+                    <p:button styleClass="ui-btn-left ui-btn-inline" value="Volver" icon="ui-icon-arrow-l" outcome="pm:dos?transition=flip"/>
+                </pm:header>
+
+                <pm:content>
+                    <p:dataList value="#{controladorInicioEval.evaluados}" var="ev" rowIndexVar="indexE">
+                        <h:outputLink value="#" onclick="seleccion([{name: 'valor', value:#{indexE}}, {name: 'tipo', value: '1'}]);">
+                            <p>#{ev.nombrePersona}</p>
+                            <p><strong>Puntaje: </strong>#{evaluado.puntajeObtenido != null ?
+                                                           evaluado.puntajeObtenido : 0}</p>
+                        </h:outputLink>
+                    </p:dataList>
+                </pm:content>
+            </h:form>
+        </pm:page>
+
+        <pm:page id="pruebas">
+            <h:form>
+                <pm:header title="Pruebas" swatch="b"
+                           styleClass="ui-header">
+                    <p:button styleClass="ui-btn-right ui-btn-inline" value="Salir" onclick="cerrarSesion();"/>
+                    <p:button styleClass="ui-btn-left ui-btn-inline" value="Volver" icon="ui-icon-arrow-l" outcome="pm:evaluados?transition=flip"/>
+                </pm:header>
+
+                <pm:content>
+                    <p:dataList value="#{controladorInicioEval.pruebas}" var="prb" rowIndexVar="indexP">
+                        <h:outputLink value="#" onclick="seleccion([{name: 'valor', value:#{indexP}}, {name: 'tipo', value: '2'}]);">
+                            <p>#{prb.prueba}</p>
+                            <p><strong>Factor: </strong>#{prb.factor}</p>
+                            <p><strong>#{prb.puntoObtenido != null ?
+                                         eprb.puntoObtenido : 0}%</strong></p>
+                        </h:outputLink>
+                    </p:dataList>
+                </pm:content>
+            </h:form>
+        </pm:page>
+
+        <pm:page id="preguntas">
+            <h:form id="formulario">
+                <pm:header title="Preguntas" swatch="b"
+                           styleClass="ui-header">
+                    <p:button styleClass="ui-btn-right ui-btn-inline" value="Salir" onclick="cerrarSesion();"/>
+                    <p:button styleClass="ui-btn-left ui-btn-inline" value="Volver" icon="ui-icon-arrow-l" outcome="pm:pruebas?transition=flip"/>
+                </pm:header>
+                <pm:content>
+                    <p:growl id="growl" widgetVar="growl" showDetail="true" autoUpdate="true"/>
+                    <p:panel header="Información">
+                        <center>
+                            <h:outputText value="Nombre" style="font-weight: bold; color: #122AB5"/>
+                            <br/>
+                            <h:outputText value="#{controladorEvaluacion.evaluado}"
+                                          style="font-weight: bold;"/>
+                            <br/>
+                            <h:outputText value="Nro. Preguntas" style="font-weight: bold; color: #122AB5"/>
+                            <br/>
+                            <h:outputText value="#{controladorEvaluacion.nroPreguntas}"
+                                          style="font-weight: bold;"/>
+                            <br/>
+                            <h:outputText value="Convocatoria" style="font-weight: bold; color: #122AB5"/>
+                            <br/>
+                            <h:outputText value="#{controladorEvaluacion.convocatoria}"
+                                          style="font-weight: bold;"/>
+                            <br/>
+                            <h:outputText value="Evaluador" style="font-weight: bold; color: #122AB5"/>
+                            <br/>
+                            <h:outputText value="#{controladorEvaluacion.evaluador}"
+                                          style="font-weight: bold;"/>
+                            <br/>
+                            <h:outputText value="Puntaje maximo" style="font-weight: bold; color: #122AB5"/>
+                            <br/>
+                            <p:column/>
+                            <br/>
+                            <h:outputText value="Prueba" style="font-weight: bold; color: #122AB5"/>
+                            <br/>
+                            <h:outputText value="#{controladorEvaluacion.prueba}"
+                                          style="font-weight: bold;"/>
+                        </center>
+
+                        <center><p:commandButton value="Eliminar todas las respuestas" onclick="PF('alertaEliminar').show();"
+                                                 process="@this"
+                                                 style="display: #{controladorEvaluacion.tieneRespuestas ? '' : 'none'}"/></center>
+                    </p:panel>
+                    <p:panel header="Evaluación">
+                        <ui:repeat var="pregunta" value="#{controladorEvaluacion.preguntas}" varStatus="status">
+                            <div style="background-color: #{pregunta.respuesta == null ? '#F8B7B7' : '#B7F8BE'}">
+                                <h:outputText value="#{pregunta.descripcion}"
+                                              style="font-weight: bold"/>
+                            </div>
+                            <p:selectOneRadio value="#{pregunta.respuesta}">
+                                <f:selectItems value="#{pregunta.respuestas}" var="r" 
+                                               itemLabel=" #{r.cuantitativo} - #{r.cualitativo}" 
+                                               itemValue="#{r.secuencia}"/>
+                                <p:ajax update=":preguntas:formulario" process="@this"/>
+                            </p:selectOneRadio>
+                            <br/>
+                        </ui:repeat>
+
+                        <h:outputText value="Observación:" style="font-weight: bold"/>
+                        <br/>
+                        <p:inputTextarea value="#{controladorEvaluacion.observacion}"/>
+
+                        <br/>
+
+                        <center><p:commandButton value="Enviar" onclick="PF('alerta').show();"
+                                                 process="@this" style="font-size: 18px"/></center>
+                    </p:panel>
+
+                    <p:dialog id="alerta" header="Información" widgetVar="alerta"  resizable="false" 
+                              draggable="false" modal="true" closable="false" closeOnEscape="true">  
+                        <p:panelGrid styleClass="noBorders">
+                            <p:column>
+                                <center>
+                                    <h:outputText value="¿Esta seguro(a) de que desea enviar la evaluación?"/>
+                                </center>
+                            </p:column>
+                        </p:panelGrid>
+                        <p:panelGrid columns="2" styleClass="noBorders">
+                            <p:commandButton value="Si"
+                                             actionListener="#{controladorEvaluacion.enviarRespuestas()}"
+                                             onclick="PF('alerta').hide();"
+                                             process="@this"/>
+                            <p:commandButton value="No"
+                                             onclick="PF('alerta').hide();"
+                                             process="@this"/>
+                        </p:panelGrid>
+                    </p:dialog>
+
+                    <p:dialog id="alertaEliminar" header="Atención" widgetVar="alertaEliminar"  resizable="false" 
+                              draggable="false" modal="true" closable="false" closeOnEscape="true">  
+                        <p:panelGrid columns="1" styleClass="noBorders">
+                            <p:column>
+                                <center>
+                                    <h:outputText value="¿Esta seguro(a) de que desea eliminar todas las respuestas?"/>
+                                </center>
+                            </p:column>
+                        </p:panelGrid>
+                        <p:panelGrid columns="2" styleClass="noBorders">
+                            <p:commandButton value="Si" 
+                                             actionListener="#{controladorEvaluacion.eliminarRespuestas()}"
+                                             update=":preguntas:formulario"
+                                             onclick="PF('alertaEliminar').hide();"
+                                             process="@this" />
+                            <p:commandButton value="No"
+                                             onclick="PF('alertaEliminar').hide();"
+                                             process="@this"/>
+                        </p:panelGrid>
+                    </p:dialog>
+                </pm:content>
+            </h:form>
+        </pm:page>
+    </h:body>
+
+</html>

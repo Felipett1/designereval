@@ -29,7 +29,10 @@ public class filtroAutenticacion implements Filter {
             HttpServletResponse res = (HttpServletResponse) response;
             HttpSession ses = req.getSession(false);
             String reqURI = req.getRequestURI();
-            if (reqURI.equals(req.getContextPath() + "/") || reqURI.indexOf("/faces/Ingreso/ingreso.xhtml") >= 0 || (ses != null && ses.getAttribute("idUsuario") != null)
+            if (reqURI.equals(req.getContextPath() + "/") || reqURI.indexOf("/faces/Ingreso/ingreso.xhtml") >= 0 || reqURI.indexOf("/faces/Movil/ingreso.xhtml") >= 0
+                    || reqURI.indexOf("/faces/index.xhtml") >= 0
+                    || reqURI.indexOf("/faces/resources/") >= 0
+                    || (ses != null && ses.getAttribute("idUsuario") != null)
                     || reqURI.indexOf("/public/") >= 0 || reqURI.contains("javax.faces.resource")) {
                 chain.doFilter(request, response);
             } else {

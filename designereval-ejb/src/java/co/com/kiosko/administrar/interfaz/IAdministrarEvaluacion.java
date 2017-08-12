@@ -17,5 +17,9 @@ public interface IAdministrarEvaluacion {
     public BigInteger obtenerNroPreguntas(BigInteger secPrueba);
 
     public boolean registrarRespuesta(BigInteger secIndagacion, BigInteger secPregunta, BigInteger secRespuesta);
+
+    public boolean actualizarRespuesta(BigInteger secIndagacion, BigInteger secPregunta, BigInteger secRespuesta);
+
+    public boolean eliminarRespuestas(BigInteger secIndagacion);
     
 }

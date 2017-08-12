@@ -74,4 +74,17 @@ public class AdministrarEvaluacion implements IAdministrarEvaluacion {
         return persistenciaRespuestas.registrarRespuesta(em, secIndagacion, secPregunta, secRespuesta);
     }
 
+    @Override
+    public boolean actualizarRespuesta(BigInteger secIndagacion,
+            BigInteger secPregunta, BigInteger secRespuesta) {
+        EntityManager em = emf.createEntityManager();
+        return persistenciaRespuestas.actualizarRespuesta(em, secIndagacion, secPregunta, secRespuesta);
+    }
+
+    @Override
+    public boolean eliminarRespuestas(BigInteger secIndagacion) {
+        EntityManager em = emf.createEntityManager();
+        return persistenciaRespuestas.eliminarRespuestas(em, secIndagacion);
+    }
+
 }

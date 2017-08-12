@@ -54,7 +54,7 @@ public class ControladorIngreso implements Serializable {
 
     @PostConstruct
     public void inicializarAdministrador() {
-        validarGrupo();
+        //validarGrupo();
     }
 
     public List<CadenasKioskos> obtenerCadenasKiosko() {
@@ -158,18 +158,22 @@ public class ControladorIngreso implements Serializable {
 
                 try {
                     ec.invalidateSession();
-                } catch (NullPointerException npe) {
+                } catch (Exception npe) {
                     System.out.println("ExternalContext vacio");
                 }
                 administrarIngreso.cerrarSession(ses.getId());
-                ec.redirect(ec.getRequestContextPath() + "/" + "?grupo=" + grupoSeleccionado);
+                if (grupoSeleccionado != null) {
+                    ec.redirect(ec.getRequestContextPath() + "/" + "?grupo=" + grupoSeleccionado);
+                } else {
+                    ec.redirect(ec.getRequestContextPath());
+                }
             }
         } catch (EJBTransactionRolledbackException etre) {
             System.out.println(this.getClass().getName() + ".ingresar() exception");
             System.out.println("La transacción se deshizo.");
             System.out.println(etre);
         }
-        PrimefacesContextUI.ejecutar("PF('estadoSesion').hide()");
+        //PrimefacesContextUI.ejecutar("PF('estadoSesion').hide()");
         //return "";
         return retorno;
     }
@@ -188,7 +192,7 @@ public class ControladorIngreso implements Serializable {
         return retorno;
     }
 
-    private boolean validarGrupo() {
+    public boolean validarGrupo() {
         boolean respuesta = false;
         if ((this.grupo == null) || (this.grupo.isEmpty())) {
             //System.out.println("El grupo esta nulo.");
@@ -196,7 +200,7 @@ public class ControladorIngreso implements Serializable {
             respuesta = false;
         } else {
             //System.out.println("El grupo es: " + this.grupo);
-            PrimefacesContextUI.ejecutar("PF('dlgSolicitudGrupo').hide();");
+            //PrimefacesContextUI.ejecutar("PF('dlgSolicitudGrupo').hide();");
             this.grupoSeleccionado = this.grupo;
             respuesta = true;
         }
@@ -240,6 +244,11 @@ public class ControladorIngreso implements Serializable {
         ultimaConexion.setUsuarioso(System.getProperty("os.name") + " / " + System.getProperty("user.name"));
         ultimaConexion.setUsuarioBD(usuario);
         administrarIngreso.insertarUltimaConexion(ultimaConexion);
+    }
+
+    public String prueba() {
+        System.out.println("holanda");
+        return "ingresoEscritorio";
     }
 
     //GETTER AND SETTER
@@ -296,7 +305,7 @@ public class ControladorIngreso implements Serializable {
 
     public void setGrupo(String grupo) {
         this.grupo = grupo;
-        validarGrupo();
+        //validarGrupo();
     }
 
     public String getGrupoSeleccionado() {

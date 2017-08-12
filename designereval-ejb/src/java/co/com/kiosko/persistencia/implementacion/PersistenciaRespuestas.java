@@ -58,16 +58,17 @@ public class PersistenciaRespuestas implements IPersistenciaRespuestas {
         }
     }
 
+    @Override
     public boolean actualizarRespuesta(EntityManager em, BigInteger secIndagacion,
             BigInteger secPregunta, BigInteger secRespuesta) {
         try {
             em.getTransaction().begin();
             Query q = em.createNativeQuery("UPDATE EVALRESPUESTASINDAGACIONES \n"
-                    + "SET CUALITATIVOASIGNADO = (SELECT CUALITATIVO FROM EVALRESPUESTAS WHERE SECUENCIA = :?) ,\n"
+                    + "SET CUALITATIVOASIGNADO = (SELECT CUALITATIVO FROM EVALRESPUESTAS WHERE SECUENCIA = ?) ,\n"
                     + "CUANTITATIVOASIGNADO = (SELECT CUANTITATIVO FROM EVALRESPUESTAS WHERE SECUENCIA = ?) ,\n"
-                    + "EVALRESPUESTA = :?\n"
+                    + "EVALRESPUESTA = ?\n"
                     + "WHERE EVALINDAGACION = ?\n"
-                    + "EVALPREGUNTA = ?");
+                    + "AND EVALPREGUNTA = ?");
             q.setParameter(1, secRespuesta);
             q.setParameter(2, secRespuesta);
             q.setParameter(3, secRespuesta);
@@ -99,6 +100,22 @@ public class PersistenciaRespuestas implements IPersistenciaRespuestas {
         } catch (Exception ex) {
             System.out.println("Error PersistenciaRespuestas.consultarRespuesta: " + ex);
             return null;
+        }
+    }
+
+    @Override
+    public boolean eliminarRespuestas(EntityManager em, BigInteger secIndagacion) {
+        try {
+            em.getTransaction().begin();
+            Query q = em.createNativeQuery("DELETE EVALRESPUESTASINDAGACIONES \n"
+                    + "WHERE EVALINDAGACION = ?");
+            q.setParameter(1, secIndagacion);
+            q.executeUpdate();
+            em.getTransaction().commit();
+            return true;
+        } catch (Exception ex) {
+            System.out.println("Error PersistenciaRespuestas.eliminarRespuestas: " + ex);
+            return false;
         }
     }
 }

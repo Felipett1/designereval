@@ -8,7 +8,7 @@
     <p:remoteCommand name="pantallaDinamica" actionListener="#{controlNavegacion.pantallaDinamica('/Evaluador/cuestionario.xhtml')}"
                      process="@this" update=":principalForm"/>
 
-    <p:panelGrid columns="2">
+    <p:panelGrid columns="2" >
         <p:column>
             <p:dataTable id="dtbConvocatorias" var="convocatoria" widgetVar="dtbConvocatorias"
                          scrollRows="8" scrollable="true" scrollHeight="110"
@@ -35,7 +35,7 @@
             </p:dataTable>
         </p:column>
         <p:column>
-            <p:panelGrid id="informacion" columns="2">
+            <p:panelGrid id="informacion" columns="2" styleClass="noBorders">
                 <h:outputText value="Total empleados asignados:"/>
                 <h:outputText value="#{controladorInicioEval.totalEmpleadosAsignados != null ?
                                        controladorInicioEval.totalEmpleadosAsignados : '-'}"/>
@@ -97,11 +97,19 @@
                     <h:outputText value="#{prueba.puntoObtenido != null ? prueba.puntoObtenido : 0}"/>
                 </p:column>
                 <p:column>
-                    <p:commandButton value="Evaluar" actionListener="#{controladorEvaluacion.cargarPreguntas(prueba.secPrueba)}"
-                                     oncomplete="pantallaDinamica();"
-                                     onclick="PF('dtbPruebas').unselectAllRows(); PF('dtbPruebas').selectRow(#{i}, true);"/>
+                    <p:commandButton value="Evaluar" actionListener="#{controladorEvaluacion.cargarPreguntas()}"
+                                     oncomplete="PF('cargarConvocatoria').hide(); pantallaDinamica();"
+                                     onclick="PF('dtbPruebas').unselectAllRows(); PF('dtbPruebas').selectRow(#{i}, true);
+                                             PF('cargarConvocatoria').show();"/>
                 </p:column>
             </p:dataTable>
         </p:column>
     </p:panelGrid>
+
+    <p:dialog id="cargarConvocatoria" header="Cargando convocatoria" widgetVar="cargarConvocatoria"  resizable="false" draggable="false" modal="true" height="65" width="350" closable="false" >  
+        <p:panelGrid columns="2" styleClass="noBorders">
+            <h:graphicImage value="resources/imagenes/cargando.gif" width="50" height="50"/>
+            <h:outputText value="Cargando convocatoria, por favor espere." style="width: 240px; text-align: justify; font-weight:bold;" />
+        </p:panelGrid>
+    </p:dialog>
 </ui:composition>

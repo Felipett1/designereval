@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>..::Designer.Eval::.</title>
+    </h:head>
+    <h:body>
+        <f:metadata>
+            <f:viewParam name="grupo" value="#{controladorIngreso.grupo}" />
+        </f:metadata>
+        <h:form>
+            <p:remoteCommand name="movil" action="ingresoMovil"
+                             process="@this" />
+            <p:remoteCommand name="escritorio" action="ingresoEscritorio"
+                             process="@this"/>
+        </h:form>
+        <script>
+            var device = navigator.userAgent;
+
+            if (device.match(/Iphone/i) || device.match(/Ipod/i) || device.match(/Android/i) || device.match(/J2ME/i) || device.match(/BlackBerry/i) || device.match(/iPhone|iPad|iPod/i) || device.match(/Opera Mini/i) || device.match(/IEMobile/i) || device.match(/Mobile/i) || device.match(/Windows Phone/i) || device.match(/windows mobile/i) || device.match(/windows ce/i) || device.match(/webOS/i) || device.match(/palm/i) || device.match(/bada/i) || device.match(/series60/i) || device.match(/nokia/i) || device.match(/symbian/i) || device.match(/HTC/i))
+            {
+                //alert('Movil');
+                movil();
+            } else
+            {
+                //alert('Escritorio');
+                escritorio();
+            }
+        </script>
+    </h:body>
+</html>
+

@@ -18,5 +18,7 @@ public interface IPersistenciaRespuestas {
     public BigInteger consultarRespuesta(EntityManager em, BigInteger secIndagacion, BigInteger secPregunta);
 
     public boolean actualizarRespuesta(EntityManager em, BigInteger secIndagacion, BigInteger secPregunta, BigInteger secRespuesta);
+
+    public boolean eliminarRespuestas(EntityManager em, BigInteger secIndagacion);
     
 }

@@ -5,6 +5,7 @@ import co.com.kiosko.controlador.ingreso.ControladorIngreso;
 import co.com.kiosko.entidades.Convocatorias;
 import co.com.kiosko.entidades.Evaluados;
 import co.com.kiosko.entidades.Pruebas;
+import co.com.kiosko.utilidadesUI.PrimefacesContextUI;
 import java.io.*;
 import java.math.BigDecimal;
 import java.util.List;
@@ -87,13 +88,12 @@ public class ControladorInicioEval implements Serializable {
         }
     }
 
-    public String obtenerInformacion(int opcion) {
+    public Object obtenerInformacion(int opcion) {
         /*
         0 - Evaluado
         1 - Evaluador
         2 - Convocatoria
         3 - Prueba
-        4 - Indagacion
          */
         if (opcion == 0) {
             return evaluado.getNombrePersona();
@@ -103,10 +103,23 @@ public class ControladorInicioEval implements Serializable {
             return ((ControladorInformacionBasica) x.getApplication().evaluateExpressionGet(x, "#{controladorInformacionBasica}", ControladorInformacionBasica.class)).getPersona().getNombreCompleto();
         } else if (opcion == 2) {
             return convocatoria.getCodigo() + " - " + convocatoria.getEnfoque();
-        } else if (opcion == 3) {
-            return prueba.getPrueba();
         } else {
-            return prueba.getSecuencia().toString();
+            return prueba;
+        }
+    }
+
+    public void seleccion() {
+        int index = Integer.parseInt(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("valor"));
+        String i = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("tipo");
+        if (i.equals("0")) {
+            convocatoria = convocatorias.get(index);
+            PrimefacesContextUI.ejecutar("seleccionConvocatoria();");
+        } else if (i.equals("1")) {
+            evaluado = evaluados.get(index);
+            PrimefacesContextUI.ejecutar("seleccionEvaluado();");
+        } else {
+            prueba = pruebas.get(index);
+            PrimefacesContextUI.ejecutar("seleccionPrueba();");
         }
     }
 

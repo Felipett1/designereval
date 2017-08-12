@@ -2,6 +2,7 @@ package co.com.kiosko.controlador.kiosko;
 
 import co.com.kiosko.administrar.interfaz.IAdministrarEvaluacion;
 import co.com.kiosko.entidades.Preguntas;
+import co.com.kiosko.entidades.Pruebas;
 import co.com.kiosko.utilidadesUI.MensajesUI;
 import java.io.*;
 import java.math.BigInteger;
@@ -28,7 +29,8 @@ public class ControladorEvaluacion implements Serializable {
 
     //Informacion general
     private String evaluado, evaluador, convocatoria, prueba, observacion;
-    private BigInteger nroPreguntas, puntajeMaximo, secIndigacion;
+    private BigInteger nroPreguntas, puntajeMaximo, secIndigacion, secPrueba;
+    private boolean tieneRespuestas;
 
     public ControladorEvaluacion() {
     }
@@ -47,16 +49,22 @@ public class ControladorEvaluacion implements Serializable {
         }
     }
 
-    public void cargarPreguntas(BigInteger secPrueba) {
+    public void cargarPreguntas() {
         FacesContext x = FacesContext.getCurrentInstance();
         HttpSession ses = (HttpSession) x.getExternalContext().getSession(false);
-        evaluado = ((ControladorInicioEval) x.getApplication().evaluateExpressionGet(x, "#{controladorInicioEval}", ControladorInicioEval.class)).obtenerInformacion(0);
-        evaluador = ((ControladorInicioEval) x.getApplication().evaluateExpressionGet(x, "#{controladorInicioEval}", ControladorInicioEval.class)).obtenerInformacion(1);
-        convocatoria = ((ControladorInicioEval) x.getApplication().evaluateExpressionGet(x, "#{controladorInicioEval}", ControladorInicioEval.class)).obtenerInformacion(2);
-        prueba = ((ControladorInicioEval) x.getApplication().evaluateExpressionGet(x, "#{controladorInicioEval}", ControladorInicioEval.class)).obtenerInformacion(3);
-        secIndigacion = new BigInteger(((ControladorInicioEval) x.getApplication().evaluateExpressionGet(x, "#{controladorInicioEval}", ControladorInicioEval.class)).obtenerInformacion(4));
+        evaluado = (String) ((ControladorInicioEval) x.getApplication().evaluateExpressionGet(x, "#{controladorInicioEval}", ControladorInicioEval.class)).obtenerInformacion(0);
+        evaluador = (String) ((ControladorInicioEval) x.getApplication().evaluateExpressionGet(x, "#{controladorInicioEval}", ControladorInicioEval.class)).obtenerInformacion(1);
+        convocatoria = (String) ((ControladorInicioEval) x.getApplication().evaluateExpressionGet(x, "#{controladorInicioEval}", ControladorInicioEval.class)).obtenerInformacion(2);
+        prueba = ((Pruebas) ((ControladorInicioEval) x.getApplication().evaluateExpressionGet(x, "#{controladorInicioEval}", ControladorInicioEval.class)).obtenerInformacion(3)).getPrueba();
+        secIndigacion = ((Pruebas) ((ControladorInicioEval) x.getApplication().evaluateExpressionGet(x, "#{controladorInicioEval}", ControladorInicioEval.class)).obtenerInformacion(3)).getSecuencia();
+        this.secPrueba = ((Pruebas) ((ControladorInicioEval) x.getApplication().evaluateExpressionGet(x, "#{controladorInicioEval}", ControladorInicioEval.class)).obtenerInformacion(3)).getSecPrueba();
+        cargarDetallePreguntas();
+    }
+
+    public void cargarDetallePreguntas() {
         preguntas = administrarEvaluacion.obtenerCuestinonario(secPrueba, secIndigacion);
         nroPreguntas = administrarEvaluacion.obtenerNroPreguntas(secPrueba);
+        validarSiExistenRespuestas();
     }
 
     public void enviarRespuestas() {
@@ -70,8 +78,11 @@ public class ControladorEvaluacion implements Serializable {
         if (todas) {
             boolean error = false;
             for (Preguntas pregunta : preguntas) {
-                if (administrarEvaluacion.registrarRespuesta(secIndigacion, pregunta.getSecuencia(), pregunta.getRespuesta())) {
+                if (pregunta.isNuevo()
+                        && administrarEvaluacion.registrarRespuesta(secIndigacion, pregunta.getSecuencia(), pregunta.getRespuesta())) {
                     continue;
+                } else if (!pregunta.isNuevo()
+                        && administrarEvaluacion.actualizarRespuesta(secIndigacion, pregunta.getSecuencia(), pregunta.getRespuesta())) {
                 } else {
                     MensajesUI.error("No fue posible registrar las respuesta.");
                     error = true;
@@ -80,9 +91,29 @@ public class ControladorEvaluacion implements Serializable {
             }
             if (!error) {
                 MensajesUI.info("Respuestas guardadas exitosamente.");
+                //PrimefacesContextUI.ejecutar("pantallaDinamica();");
             }
         } else {
             MensajesUI.error("Antes de enviar la evaluación debe responder todas las preguntas.");
+        }
+    }
+
+    public void eliminarRespuestas() {
+        if (administrarEvaluacion.eliminarRespuestas(secIndigacion)) {
+            MensajesUI.info("Respuestas eliminadas exitosamente.");
+        } else {
+            MensajesUI.error("No fue posible eliminar las respuestas.");
+        }
+        cargarDetallePreguntas();
+    }
+
+    public void validarSiExistenRespuestas() {
+        tieneRespuestas = false;
+        for (Preguntas pregunta : preguntas) {
+            if (!pregunta.isNuevo()) {
+                tieneRespuestas = true;
+                break;
+            }
         }
     }
 
@@ -121,6 +152,10 @@ public class ControladorEvaluacion implements Serializable {
 
     public void setObservacion(String observacion) {
         this.observacion = observacion;
+    }
+
+    public boolean isTieneRespuestas() {
+        return tieneRespuestas;
     }
 
 }

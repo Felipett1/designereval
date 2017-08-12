@@ -42,4 +42,22 @@
             <to-view-id>/Kiosko/opcionesKiosko.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
+    <navigation-rule>
+        <from-view-id>/index.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>ingresoEscritorio</from-outcome>
+            <to-view-id>/Ingreso/ingreso.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>ingresoMovil</from-outcome>
+            <to-view-id>/Movil/ingreso.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <from-view-id>/Movil/ingreso.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>plantilla</from-outcome>
+            <to-view-id>/Movil/inicioEval.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
 </faces-config>

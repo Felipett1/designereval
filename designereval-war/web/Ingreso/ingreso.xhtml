@@ -16,12 +16,16 @@
         <link rel="apple-touch-icon-precomposed" sizes="72x72" href="././resources/imagenes/quiosco_icono_72x72.png" />
         <link rel="apple-touch-icon-precomposed" sizes="180x180" href="././resources/imagenes/quiosco_icono_180x180.png" />
         <title>..::Designer.Eval::..</title>
+        <script type="text/javascript">
+            jQuery(document).ready(function () {
+                validarGrupo();
+            });
+        </script>
     </h:head>
-    <h:body style="font-size: 14px;" >
-        <f:metadata>
-            <f:viewParam name="grupo" value="#{controladorIngreso.grupo}" />
-        </f:metadata>
+    <h:body style="font-size: 14px;">
         <h:form id="fprincipal" style="position: absolute; left: 0px; top: 0px; width: 100%">
+            <p:remoteCommand name="validarGrupo" actionListener="#{controladorIngreso.validarGrupo()}"
+                             process="@this" />
             <p:focus context="pnlIngreso"/>
             <center>
                 <div class="centrado">

@@ -5,10 +5,12 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <p:panelGrid id="cuestionario" columns="1">
+    <p:remoteCommand name="pantallaDinamica" actionListener="#{controlNavegacion.pantallaDinamica('/Evaluador/inicioEval.xhtml')}"
+                     process="@this" update=":principalForm"/>
+    <p:panelGrid id="cuestionario" columns="1" styleClass="noBorders">
         <p:column>
             <center>
-                <p:panelGrid columns="6">
+                <p:panelGrid columns="6" styleClass="noBorders">
                     <h:outputText value="Nombre: " style="font-weight: bold; color: #122AB5"/>
                     <h:outputText value="#{controladorEvaluacion.evaluado}"
                                   style="font-weight: bold;"/>
@@ -30,6 +32,11 @@
             </center>
         </p:column>
         <p:column>
+            <center><p:commandButton value="Eliminar todas las respuestas" onclick="PF('alertaEliminar').show();"
+                                     process="@this"
+                                     style="display: #{controladorEvaluacion.tieneRespuestas ? '' : 'none'}"/></center>
+        </p:column>
+        <p:column>
             <ui:repeat var="pregunta" value="#{controladorEvaluacion.preguntas}" varStatus="status">
                 <div style="background-color: #{pregunta.respuesta == null ? '#F8B7B7' : '#B7F8BE'}">
                     <h:outputText value="#{pregunta.descripcion}"
@@ -37,8 +44,7 @@
                     <p:selectOneRadio layout="pageDirection" value="#{pregunta.respuesta}">
                         <f:selectItems value="#{pregunta.respuestas}" var="r" 
                                        itemLabel=" #{r.cuantitativo} - #{r.cualitativo}" 
-                                       itemValue="#{r.secuencia}"/>
-                        <p:ajax update=":principalForm:cuestionario"/>
+                                       itemValue="#{r.secuencia}"/>                        
                     </p:selectOneRadio>
                     <br/>
                 </div>
@@ -52,7 +58,12 @@
                              style="width: 50%; height: 150px"/>
         </p:column>
         <p:column>
-            <center><p:commandButton value="Enviar" onclick="PF('alerta').show();"/></center>
+            <center>
+                <p:commandButton value="Volver" onclick="pantallaDinamica();"
+                                 process="@this" style="font-size: 18px"/>
+                <p:commandButton value="Enviar" onclick="PF('alerta').show();"
+                                 process="@this" style="font-size: 18px"/>
+            </center>
         </p:column>
     </p:panelGrid>
 
@@ -66,10 +77,32 @@
             </p:column>
             <p:column>
                 <p:commandButton value="No" style="float: right"
-                                 onclick="PF('alerta').hide();"/>
+                                 onclick="PF('alerta').hide();"
+                                 process="@this"/>
                 <p:commandButton value="Si" style="float: right" 
                                  actionListener="#{controladorEvaluacion.enviarRespuestas()}"
-                                 onclick="PF('alerta').hide();"/>
+                                 onclick="PF('alerta').hide();"
+                                 process="@this"/>
+            </p:column>
+        </p:panelGrid>
+    </p:dialog>
+
+    <p:dialog id="alertaEliminar" header="Atención" widgetVar="alertaEliminar"  resizable="false" 
+              draggable="false" modal="true" closable="false" closeOnEscape="true">  
+        <p:panelGrid columns="1" styleClass="noBorders">
+            <p:column>
+                <center>
+                    <h:outputText value="¿Esta seguro(a) de que desea eliminar todas las respuestas?"/>
+                </center>
+            </p:column>
+            <p:column>
+                <p:commandButton value="No" style="float: right"
+                                 onclick="PF('alertaEliminar').hide();"
+                                 process="@this"/>
+                <p:commandButton value="Si" style="float: right" 
+                                 actionListener="#{controladorEvaluacion.eliminarRespuestas()}"
+                                 onclick="PF('alertaEliminar').hide();"
+                                 process="@this" />
             </p:column>
         </p:panelGrid>
     </p:dialog>
