@@ -44,7 +44,8 @@
                     <p:selectOneRadio layout="pageDirection" value="#{pregunta.respuesta}">
                         <f:selectItems value="#{pregunta.respuestas}" var="r" 
                                        itemLabel=" #{r.cuantitativo} - #{r.cualitativo}" 
-                                       itemValue="#{r.secuencia}"/>                        
+                                       itemValue="#{r.secuencia}"/>  
+                        <p:ajax update=":principalForm:cuestionario"/>
                     </p:selectOneRadio>
                     <br/>
                 </div>

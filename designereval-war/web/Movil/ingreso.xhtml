@@ -91,9 +91,9 @@
                                     <p:column>
                                         <pm:field>
                                             <p:selectOneMenu id="seEmpresa" value="#{controladorIngreso.unidadPersistenciaIngreso}" 
-                                                             disabled="#{controladorIngreso.obtenerCadenasKiosko().size() == 1 ?  'true' : controladorIngreso.ingresoExitoso ? 'true' : 'false'}">
+                                                             disabled="#{controladorIngreso.obtenerCadenasConexion().size() == 1 ?  'true' : controladorIngreso.ingresoExitoso ? 'true' : 'false'}">
                                                 <f:selectItem itemLabel="Seleccione una empresa" itemValue="#{null}"/>
-                                                <f:selectItems value="#{controladorIngreso.obtenerCadenasKiosko()}" var="cadena"
+                                                <f:selectItems value="#{controladorIngreso.obtenerCadenasConexion()}" var="cadena"
                                                                itemLabel="#{cadena.descripcion}" itemValue="#{cadena.id}" />
                                             </p:selectOneMenu>
                                         </pm:field>

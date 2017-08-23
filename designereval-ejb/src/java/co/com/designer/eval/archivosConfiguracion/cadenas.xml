@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<conexiones>
+    <cadenas id="1">
+        <descripcion>DESIGNER SOFTWARE LTDA</descripcion>
+        <cadena>DEFAULT1</cadena>
+        <nit>830045567</nit>
+        <fondo>fondoMenu.png</fondo>
+        <grupo>GrupoEmpresarial1</grupo>
+    </cadenas>
+    <cadenas id="2">
+        <descripcion>SIETE24</descripcion>
+        <cadena>DEFAULT2</cadena>
+        <nit>860351812</nit>
+        <fondo>fondoMenu.png</fondo>
+        <grupo>GrupoEmpresarial2</grupo>
+    </cadenas>
+</conexiones>
