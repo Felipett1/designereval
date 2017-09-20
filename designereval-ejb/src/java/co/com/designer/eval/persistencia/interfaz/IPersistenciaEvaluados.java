@@ -12,5 +12,7 @@ import javax.persistence.EntityManager;
 public interface IPersistenciaEvaluados {
 
     public List<Evaluados> obtenerEvaluados(EntityManager em, String usuario, BigInteger secConvocatoria);
+
+    public boolean actualizarPorcentaje(EntityManager em, BigInteger secConvocatoria, BigInteger secEvaluado);
     
 }

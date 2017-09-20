@@ -96,6 +96,7 @@
                                 <p:column>
                                     <p:commandButton id="btnIngreso" value="#{!controladorIngreso.ingresoExitoso ? 'Ingresar' : 'Cerrar Sesi&oacute;n'}" 
                                                      action="#{controladorIngreso.ingresar()}" onclick="PF('estadoSesion').show()"
+                                                     oncomplete="PF('estadoSesion').hide()"
                                                      update="pnlIngreso" icon="ui-icon-carat-1-e" iconPos="right"
                                                      style="float: right"/>
                                 </p:column>

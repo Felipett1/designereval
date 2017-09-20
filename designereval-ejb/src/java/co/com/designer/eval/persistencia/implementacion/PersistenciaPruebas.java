@@ -48,4 +48,21 @@ public class PersistenciaPruebas implements IPersistenciaPruebas {
             return null;
         }
     }
+
+    @Override
+    public boolean actualizarPorcentaje(EntityManager em, BigInteger secPrueba, String observacion, double porcentaje) {
+        try {
+            em.getTransaction().begin();
+            Query q = em.createNativeQuery("UPDATE EVALINDAGACIONES A SET A.PUNTOOBTENIDO = ?, OBSEVALUADOR = ? WHERE A.SECUENCIA = ?");
+            q.setParameter(1, porcentaje);
+            q.setParameter(2, observacion);
+            q.setParameter(3, secPrueba);
+            q.executeUpdate();
+            em.getTransaction().commit();
+            return true;
+        } catch (Exception ex) {
+            System.out.println("Error PersistenciaPruebas.actualizarPorcentaje: " + ex);
+            return false;
+        }
+    }
 }

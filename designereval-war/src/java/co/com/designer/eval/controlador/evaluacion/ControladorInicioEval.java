@@ -5,9 +5,11 @@ import co.com.designer.eval.controlador.ingreso.ControladorIngreso;
 import co.com.designer.eval.entidades.Convocatorias;
 import co.com.designer.eval.entidades.Evaluados;
 import co.com.designer.eval.entidades.Pruebas;
+import co.com.designer.eval.utilidadesUI.MensajesUI;
 import co.com.designer.eval.utilidadesUI.PrimefacesContextUI;
 import java.io.*;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -32,6 +34,8 @@ public class ControladorInicioEval implements Serializable {
     private List<Evaluados> evaluados;
     private List<Pruebas> pruebas;
     private BigDecimal secuenciaEvaluador, totalEmpleadosAsignados, empleadosConvocados, empleadosAsignados, empleadosEvaluados;
+    private BigInteger secConvocatoria;
+    private int estadoConvocatoria = 2;
 
     //SELECCION
     private Convocatorias convocatoria;
@@ -69,6 +73,11 @@ public class ControladorInicioEval implements Serializable {
             empleadosAsignados = administrarInicio.totalEmpleadosEvaluadorConvocatoria(secuenciaEvaluador.toBigInteger(), convocatoria.getSecuencia());
             empleadosEvaluados = administrarInicio.cantidadEvaluados(secuenciaEvaluador.toBigInteger(), convocatoria.getSecuencia());
             evaluado = null;
+        } else if (tipo == 2) {
+            evaluados = administrarInicio.obtenerEvaluados(usuario, convocatoria.getSecuencia());
+            empleadosConvocados = administrarInicio.cantidadEvaluadosConvocatoria(convocatoria.getSecuencia());
+            empleadosAsignados = administrarInicio.totalEmpleadosEvaluadorConvocatoria(secuenciaEvaluador.toBigInteger(), convocatoria.getSecuencia());
+            empleadosEvaluados = administrarInicio.cantidadEvaluados(secuenciaEvaluador.toBigInteger(), convocatoria.getSecuencia());
         } else {
             evaluados = null;
             evaluado = null;
@@ -96,13 +105,13 @@ public class ControladorInicioEval implements Serializable {
         3 - Prueba
          */
         if (opcion == 0) {
-            return evaluado.getNombrePersona();
+            return evaluado;
         } else if (opcion == 1) {
             FacesContext x = FacesContext.getCurrentInstance();
             HttpSession ses = (HttpSession) x.getExternalContext().getSession(false);
             return ((ControladorInformacionBasica) x.getApplication().evaluateExpressionGet(x, "#{controladorInformacionBasica}", ControladorInformacionBasica.class)).getPersona().getNombreCompleto();
         } else if (opcion == 2) {
-            return convocatoria.getCodigo() + " - " + convocatoria.getEnfoque();
+            return convocatoria;
         } else {
             return prueba;
         }
@@ -121,6 +130,46 @@ public class ControladorInicioEval implements Serializable {
             prueba = pruebas.get(index);
             PrimefacesContextUI.ejecutar("seleccionPrueba();");
         }
+    }
+
+    public void obtenerSecuenciaConvocatoria(BigInteger sec) {
+        secConvocatoria = sec;
+    }
+
+    public void cerrarConvocatoria() {
+        if (administrarInicio.cerrarConvocatoria(secConvocatoria)) {
+            MensajesUI.info("Convocatoria cerrada exitosamente.");
+            convocatoria = null;
+            convocatorias = administrarInicio.obtenerConvocatorias(usuario);
+            evaluados = null;
+            evaluado = null;
+            empleadosConvocados = null;
+            empleadosAsignados = null;
+            empleadosEvaluados = null;
+            pruebas = null;
+        } else {
+            MensajesUI.error("Error al cerrar la convocatoria.");
+        }
+    }
+
+    public void cargarConvocatorias() {
+        if (estadoConvocatoria == 1) {
+            convocatorias = administrarInicio.obtenerConvocatoriasAlcance(usuario);
+        } else {
+            convocatorias = administrarInicio.obtenerConvocatorias(usuario);
+        }
+        convocatoria = null;
+        evaluados = null;
+        evaluado = null;
+        empleadosConvocados = null;
+        empleadosAsignados = null;
+        empleadosEvaluados = null;
+        pruebas = null;
+    }
+
+    public void refrescarListas() {
+        seleccionConvocatoria(2);
+        seleccionEvaluado(1);
     }
 
     //GETTER AND SETTER
@@ -174,6 +223,14 @@ public class ControladorInicioEval implements Serializable {
 
     public void setPrueba(Pruebas prueba) {
         this.prueba = prueba;
+    }
+
+    public int getEstadoConvocatoria() {
+        return estadoConvocatoria;
+    }
+
+    public void setEstadoConvocatoria(int estadoConvocatoria) {
+        this.estadoConvocatoria = estadoConvocatoria;
     }
 
 }

@@ -21,5 +21,9 @@ public interface IAdministrarEvaluacion {
     public boolean actualizarRespuesta(BigInteger secIndagacion, BigInteger secPregunta, BigInteger secRespuesta);
 
     public boolean eliminarRespuestas(BigInteger secIndagacion);
+
+    public boolean actualizarPorcentaje(BigInteger secPrueba, String observacion, double porcentaje);
+
+    public boolean actualizarPorcentaje(BigInteger secConvocatoria, BigInteger secEvaluado);
     
 }

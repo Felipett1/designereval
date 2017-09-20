@@ -30,5 +30,9 @@ public interface IAdministrarInicio {
     public BigDecimal obtenerSecuenciaEvaluador(String usuario);
 
     public List<Pruebas> obtenerPruebasEvaluado(String usuario, BigInteger secEmplConvo);
-    
+
+    public boolean cerrarConvocatoria(BigInteger secConvocatoria);
+
+    public List<Convocatorias> obtenerConvocatoriasAlcance(String usuario);
+
 }

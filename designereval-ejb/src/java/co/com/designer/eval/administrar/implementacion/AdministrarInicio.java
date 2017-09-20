@@ -46,6 +46,12 @@ public class AdministrarInicio implements IAdministrarInicio {
         EntityManager em = emf.createEntityManager();
         return persistenciaConvocatorias.obtenerConvocatorias(em, usuario);
     }
+    
+    @Override
+    public List<Convocatorias> obtenerConvocatoriasAlcance(String usuario) {
+        EntityManager em = emf.createEntityManager();
+        return persistenciaConvocatorias.obtenerConvocatoriasAlcance(em, usuario);
+    }
 
     @Override
     public List<Evaluados> obtenerEvaluados(String usuario, BigInteger secConvocatoria) {
@@ -88,5 +94,11 @@ public class AdministrarInicio implements IAdministrarInicio {
     public List<Pruebas> obtenerPruebasEvaluado(String usuario, BigInteger secEmplConvo) {
         EntityManager em = emf.createEntityManager();
         return persistenciaPruebas.obtenerPruebasEvaluado(em, usuario, secEmplConvo);
+    }
+
+    @Override
+    public boolean cerrarConvocatoria(BigInteger secConvocatoria) {
+        EntityManager em = emf.createEntityManager();
+        return persistenciaConvocatorias.cerrarConvocatoria(em, secConvocatoria);
     }
 }

@@ -48,6 +48,37 @@ public class PersistenciaConvocatorias implements IPersistenciaConvocatorias {
     }
 
     @Override
+    public List<Convocatorias> obtenerConvocatoriasAlcance(EntityManager em, String usuario) {
+        try {
+            em.getTransaction().begin();
+            Query q = em.createNativeQuery("SELECT C.SECUENCIA, \n"
+                    + "(SELECT FECHAVIGENCIA FROM EVALVIGCONVOCATORIAS WHERE SECUENCIA = C.EVALVIGCONVOCATORIA) EVALVIGCONVOCATORIA,\n"
+                    + "C.ESTADO, C.CODIGO, \n"
+                    + "(SELECT DESCRIPCION FROM EVALENFOQUES WHERE SECUENCIA = C.ENFOQUE) ENFOQUE\n"
+                    + "FROM EVALCONVOCATORIAS C\n"
+                    + "WHERE C.ENFOQUE=(SELECT SECUENCIA FROM EVALENFOQUES WHERE CODIGO=1) \n"
+                    + "AND C.ESTADO = 'ALCANCE'\n"
+                    + "AND ( EXISTS ( SELECT 1 \n"
+                    + "               FROM EVALINDAGACIONES I, EVALRESULTADOSCONV R \n"
+                    + "               WHERE I.EMPLEADOEVALUADOR=(SELECT P.SECUENCIA\n"
+                    + "                             FROM USUARIOS U, PERSONAS P\n"
+                    + "                             WHERE U.persona = P.secuencia\n"
+                    + "                             AND U.ALIAS = ?)\n"
+                    + "               AND I.evalresultadoconv = R.SECUENCIA\n"
+                    + "               AND R.evalconvocatoria = C.secuencia\n"
+                    + "             ))\n"
+                    + "order by EVALVIGCONVOCATORIA DESC", Convocatorias.class);
+            q.setParameter(1, usuario);
+            List<Convocatorias> lst = q.getResultList();
+            em.getTransaction().commit();
+            return lst;
+        } catch (Exception ex) {
+            System.out.println("Error PersistenciaConvocatorias.obtenerConvocatoriasAlcance: " + ex);
+            return null;
+        }
+    }
+
+    @Override
     public BigDecimal obtenerSecuenciaEvaluador(EntityManager em, String usuario) {
         try {
             em.getTransaction().begin();
@@ -59,6 +90,21 @@ public class PersistenciaConvocatorias implements IPersistenciaConvocatorias {
         } catch (Exception ex) {
             System.out.println("Error PersistenciaConvocatorias.obtenerSecuenciaEvaluador: " + ex);
             return null;
+        }
+    }
+
+    @Override
+    public boolean cerrarConvocatoria(EntityManager em, BigInteger secConvocatoria) {
+        try {
+            em.getTransaction().begin();
+            Query q = em.createNativeQuery("UPDATE EVALCONVOCATORIAS A SET A.ESTADO = 'ALCANCE' WHERE A.SECUENCIA = ?");
+            q.setParameter(1, secConvocatoria);
+            q.executeUpdate();
+            em.getTransaction().commit();
+            return true;
+        } catch (Exception ex) {
+            System.out.println("Error PersistenciaConvocatorias.obtenerSecuenciaEvaluador: " + ex);
+            return false;
         }
     }
 }

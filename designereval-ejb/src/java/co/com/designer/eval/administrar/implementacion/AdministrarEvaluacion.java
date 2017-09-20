@@ -4,7 +4,9 @@ import co.com.designer.eval.administrar.interfaz.IAdministrarEvaluacion;
 import co.com.designer.eval.administrar.interfaz.IAdministrarSesiones;
 import co.com.designer.eval.entidades.Preguntas;
 import co.com.designer.eval.entidades.Respuestas;
+import co.com.designer.eval.persistencia.interfaz.IPersistenciaEvaluados;
 import co.com.designer.eval.persistencia.interfaz.IPersistenciaPreguntas;
+import co.com.designer.eval.persistencia.interfaz.IPersistenciaPruebas;
 import co.com.designer.eval.persistencia.interfaz.IPersistenciaRespuestas;
 import java.math.BigInteger;
 import java.util.List;
@@ -26,6 +28,10 @@ public class AdministrarEvaluacion implements IAdministrarEvaluacion {
     private IPersistenciaPreguntas persistenciaPreguntas;
     @EJB
     private IPersistenciaRespuestas persistenciaRespuestas;
+    @EJB
+    private IPersistenciaPruebas persistenciaPruebas;
+    @EJB
+    private IPersistenciaEvaluados persistenciaEvaluados;
     private EntityManagerFactory emf;
 
     @Override
@@ -85,6 +91,18 @@ public class AdministrarEvaluacion implements IAdministrarEvaluacion {
     public boolean eliminarRespuestas(BigInteger secIndagacion) {
         EntityManager em = emf.createEntityManager();
         return persistenciaRespuestas.eliminarRespuestas(em, secIndagacion);
+    }
+
+    @Override
+    public boolean actualizarPorcentaje(BigInteger secPrueba, String observacion, double porcentaje) {
+        EntityManager em = emf.createEntityManager();
+        return persistenciaPruebas.actualizarPorcentaje(em, secPrueba, observacion, porcentaje);
+    }
+
+    @Override
+    public boolean actualizarPorcentaje(BigInteger secConvocatoria, BigInteger secEvaluado) {
+        EntityManager em = emf.createEntityManager();
+        return persistenciaEvaluados.actualizarPorcentaje(em, secConvocatoria, secEvaluado);
     }
 
 }

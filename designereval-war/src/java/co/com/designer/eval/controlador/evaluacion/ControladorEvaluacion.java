@@ -1,9 +1,13 @@
 package co.com.designer.eval.controlador.evaluacion;
 
 import co.com.designer.eval.administrar.interfaz.IAdministrarEvaluacion;
+import co.com.designer.eval.entidades.Convocatorias;
+import co.com.designer.eval.entidades.Evaluados;
 import co.com.designer.eval.entidades.Preguntas;
 import co.com.designer.eval.entidades.Pruebas;
+import co.com.designer.eval.entidades.Respuestas;
 import co.com.designer.eval.utilidadesUI.MensajesUI;
+import co.com.designer.eval.utilidadesUI.PrimefacesContextUI;
 import java.io.*;
 import java.math.BigInteger;
 import java.util.List;
@@ -29,8 +33,13 @@ public class ControladorEvaluacion implements Serializable {
 
     //Informacion general
     private String evaluado, evaluador, convocatoria, prueba, observacion;
-    private BigInteger nroPreguntas, puntajeMaximo, secIndigacion, secPrueba;
+    private BigInteger nroPreguntas, puntajeMaximo, secIndigacion, secPrueba, secConvocatoria, secEvaluado;
+    private Pruebas pruebaActual;
+    private Convocatorias convocatoriaActual;
+    private Evaluados evaluadoActual;
     private boolean tieneRespuestas;
+    private int puntaje;
+    private double porcentaje;
 
     public ControladorEvaluacion() {
     }
@@ -51,13 +60,18 @@ public class ControladorEvaluacion implements Serializable {
 
     public void cargarPreguntas() {
         FacesContext x = FacesContext.getCurrentInstance();
-        HttpSession ses = (HttpSession) x.getExternalContext().getSession(false);
-        evaluado = (String) ((ControladorInicioEval) x.getApplication().evaluateExpressionGet(x, "#{controladorInicioEval}", ControladorInicioEval.class)).obtenerInformacion(0);
+        evaluadoActual = (Evaluados) ((ControladorInicioEval) x.getApplication().evaluateExpressionGet(x, "#{controladorInicioEval}", ControladorInicioEval.class)).obtenerInformacion(0);
+        evaluado = evaluadoActual.getNombrePersona();
         evaluador = (String) ((ControladorInicioEval) x.getApplication().evaluateExpressionGet(x, "#{controladorInicioEval}", ControladorInicioEval.class)).obtenerInformacion(1);
-        convocatoria = (String) ((ControladorInicioEval) x.getApplication().evaluateExpressionGet(x, "#{controladorInicioEval}", ControladorInicioEval.class)).obtenerInformacion(2);
-        prueba = ((Pruebas) ((ControladorInicioEval) x.getApplication().evaluateExpressionGet(x, "#{controladorInicioEval}", ControladorInicioEval.class)).obtenerInformacion(3)).getPrueba();
-        secIndigacion = ((Pruebas) ((ControladorInicioEval) x.getApplication().evaluateExpressionGet(x, "#{controladorInicioEval}", ControladorInicioEval.class)).obtenerInformacion(3)).getSecuencia();
-        this.secPrueba = ((Pruebas) ((ControladorInicioEval) x.getApplication().evaluateExpressionGet(x, "#{controladorInicioEval}", ControladorInicioEval.class)).obtenerInformacion(3)).getSecPrueba();
+        convocatoriaActual = (Convocatorias) ((ControladorInicioEval) x.getApplication().evaluateExpressionGet(x, "#{controladorInicioEval}", ControladorInicioEval.class)).obtenerInformacion(2);
+        convocatoria = convocatoriaActual.getCodigo() + " - " + convocatoriaActual.getEnfoque();
+        pruebaActual = ((Pruebas) ((ControladorInicioEval) x.getApplication().evaluateExpressionGet(x, "#{controladorInicioEval}", ControladorInicioEval.class)).obtenerInformacion(3));
+        prueba = pruebaActual.getPrueba();
+        observacion = pruebaActual.getObsEvaluador();
+        secIndigacion = pruebaActual.getSecuencia();
+        secConvocatoria = convocatoriaActual.getSecuencia();
+        secEvaluado = evaluadoActual.getSecuencia();
+        this.secPrueba = pruebaActual.getSecPrueba();
         cargarDetallePreguntas();
     }
 
@@ -65,6 +79,8 @@ public class ControladorEvaluacion implements Serializable {
         preguntas = administrarEvaluacion.obtenerCuestinonario(secPrueba, secIndigacion);
         nroPreguntas = administrarEvaluacion.obtenerNroPreguntas(secPrueba);
         validarSiExistenRespuestas();
+        obtenerPuntajeMaximo();
+        calcularPuntajePorcentaje();
     }
 
     public void enviarRespuestas() {
@@ -89,7 +105,13 @@ public class ControladorEvaluacion implements Serializable {
                 }
             }
             if (!error) {
-                MensajesUI.info("Respuestas guardadas exitosamente.");
+                if (administrarEvaluacion.actualizarPorcentaje(secIndigacion, observacion, porcentaje)
+                        && administrarEvaluacion.actualizarPorcentaje(secConvocatoria, secEvaluado)) {
+                    PrimefacesContextUI.ejecutar("PF('envioExitoso').show()");
+                } else {
+                    MensajesUI.error("No fue posible registrar el puntaje, ni la observación en la prueba.");
+                }
+                //MensajesUI.info("Respuestas guardadas exitosamente.");
             }
         } else {
             MensajesUI.error("Antes de enviar la evaluación debe responder todas las preguntas.");
@@ -97,7 +119,10 @@ public class ControladorEvaluacion implements Serializable {
     }
 
     public void eliminarRespuestas() {
-        if (administrarEvaluacion.eliminarRespuestas(secIndigacion)) {
+        observacion = null;
+        if (administrarEvaluacion.eliminarRespuestas(secIndigacion)
+                && administrarEvaluacion.actualizarPorcentaje(secIndigacion, observacion, 0)
+                && administrarEvaluacion.actualizarPorcentaje(secConvocatoria, secEvaluado)) {
             MensajesUI.info("Respuestas eliminadas exitosamente.");
         } else {
             MensajesUI.error("No fue posible eliminar las respuestas.");
@@ -113,6 +138,35 @@ public class ControladorEvaluacion implements Serializable {
                 break;
             }
         }
+    }
+
+    public void obtenerPuntajeMaximo() {
+        puntajeMaximo = BigInteger.ZERO;
+        for (Preguntas pregunta : preguntas) {
+            BigInteger inicio = BigInteger.ZERO;
+            for (Respuestas respuesta : pregunta.getRespuestas()) {
+                if (respuesta.getCuantitativo().compareTo(inicio) == 1) {
+                    inicio = respuesta.getCuantitativo();
+                }
+            }
+            puntajeMaximo = puntajeMaximo.add(inicio);
+        }
+    }
+
+    public void calcularPuntajePorcentaje() {
+        puntaje = 0;
+        porcentaje = 0;
+        for (Preguntas pregunta : preguntas) {
+            if (pregunta.getRespuesta() != null) {
+                for (Respuestas respuesta : pregunta.getRespuestas()) {
+                    if (respuesta.getSecuencia().compareTo(pregunta.getRespuesta()) == 0) {
+                        puntaje = puntaje + respuesta.getCuantitativo().intValue();
+                        break;
+                    }
+                }
+            }
+        }
+        porcentaje = (puntaje * 100) / puntajeMaximo.intValue();
     }
 
     //GETTER AND SETTER
@@ -154,6 +208,14 @@ public class ControladorEvaluacion implements Serializable {
 
     public boolean isTieneRespuestas() {
         return tieneRespuestas;
+    }
+
+    public int getPuntaje() {
+        return puntaje;
+    }
+
+    public double getPorcentaje() {
+        return porcentaje;
     }
 
 }

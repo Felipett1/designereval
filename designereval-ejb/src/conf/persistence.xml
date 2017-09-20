@@ -25,7 +25,7 @@
       <property name="javax.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
       <property name="javax.persistence.jdbc.user" value="ENTRADA"/>
       <property name="javax.persistence.jdbc.password" value="ENTRADA"/>
-      <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@www.nominas.co:1701:asp"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@www.nominas.co:1701:CONTECON"/>
       <property name="eclipselink.logging.level" value="FINE"/>
       <property name="eclipselink.target-database" value="Oracle"/>
       <property name="eclipselink.ddl-generation" value="none" />

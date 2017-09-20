@@ -99,6 +99,7 @@ public class PersistenciaRespuestas implements IPersistenciaRespuestas {
             return resultado.toBigInteger();
         } catch (Exception ex) {
             System.out.println("Error PersistenciaRespuestas.consultarRespuesta: " + ex);
+            em.getTransaction().rollback();
             return null;
         }
     }

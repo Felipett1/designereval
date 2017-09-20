@@ -10,6 +10,14 @@
 
     <p:panelGrid columns="2" >
         <p:column>
+            <p:selectOneRadio value="#{controladorInicioEval.estadoConvocatoria}">
+                <f:selectItem itemLabel="Alcance" itemValue="1"/>
+                <f:selectItem itemLabel="Procesar" itemValue="2" />
+                <p:ajax update=":principalForm:dtbConvocatorias, :principalForm:dtbEvaluados, 
+                        :principalForm:informacion,
+                        :principalForm:dtbPruebas, @this"
+                        listener="#{controladorInicioEval.cargarConvocatorias()}"/>
+            </p:selectOneRadio>
             <p:dataTable id="dtbConvocatorias" var="convocatoria" widgetVar="dtbConvocatorias"
                          scrollRows="8" scrollable="true" scrollHeight="110"
                          emptyMessage="No hay datos" selectionMode="single" 
@@ -32,27 +40,34 @@
                 <p:column headerText="Enfoque" width="120">
                     <h:outputText value="#{convocatoria.enfoque}"/>
                 </p:column>
+
+                <p:column width="70" style="display: #{controladorInicioEval.estadoConvocatoria == 1 ? 'none' : ''}">
+                    <p:commandButton value="Cerrar" actionListener="#{controladorInicioEval.obtenerSecuenciaConvocatoria(convocatoria.secuencia)}"
+                                     onclick="PF('alertaCerrar').show()"/>
+                </p:column>
             </p:dataTable>
         </p:column>
         <p:column>
-            <p:panelGrid id="informacion" columns="2" styleClass="noBorders">
-                <h:outputText value="Total empleados asignados:"/>
-                <h:outputText value="#{controladorInicioEval.totalEmpleadosAsignados != null ?
-                                       controladorInicioEval.totalEmpleadosAsignados : '-'}"/>
-                <h:outputText value="Empleados convocados:"/>
-                <h:outputText value="#{controladorInicioEval.empleadosConvocados != null ?
-                                       controladorInicioEval.empleadosConvocados : '-'}"/>
-                <h:outputText value="Empleados asignados al usuario:"/>
-                <h:outputText value="#{controladorInicioEval.empleadosAsignados != null ?
-                                       controladorInicioEval.empleadosAsignados : '-'}"/>
-                <h:outputText value="Empleados evaluados:"/>
-                <h:outputText value="#{controladorInicioEval.empleadosEvaluados != null ?
-                                       controladorInicioEval.empleadosEvaluados : '-'}"/>
-                <h:outputText value="Empleados sin evaluar:"/>
-                <h:outputText value="#{controladorInicioEval.empleadosAsignados != null 
-                                       and controladorInicioEval.empleadosEvaluados != null ? 
-                                       controladorInicioEval.empleadosAsignados - controladorInicioEval.empleadosEvaluados : '-'}"/>
-            </p:panelGrid>
+            <center>
+                <p:panelGrid id="informacion" columns="2" styleClass="noBorders">
+                    <h:outputText value="Total empleados asignados:"/>
+                    <h:outputText value="#{controladorInicioEval.totalEmpleadosAsignados != null ?
+                                           controladorInicioEval.totalEmpleadosAsignados : '-'}"/>
+                    <h:outputText value="Empleados convocados:"/>
+                    <h:outputText value="#{controladorInicioEval.empleadosConvocados != null ?
+                                           controladorInicioEval.empleadosConvocados : '-'}"/>
+                    <h:outputText value="Empleados asignados al usuario:"/>
+                    <h:outputText value="#{controladorInicioEval.empleadosAsignados != null ?
+                                           controladorInicioEval.empleadosAsignados : '-'}"/>
+                    <h:outputText value="Empleados evaluados:"/>
+                    <h:outputText value="#{controladorInicioEval.empleadosEvaluados != null ?
+                                           controladorInicioEval.empleadosEvaluados : '-'}"/>
+                    <h:outputText value="Empleados sin evaluar:"/>
+                    <h:outputText value="#{controladorInicioEval.empleadosAsignados != null 
+                                           and controladorInicioEval.empleadosEvaluados != null ? 
+                                           controladorInicioEval.empleadosAsignados - controladorInicioEval.empleadosEvaluados : '-'}"/>
+                </p:panelGrid>
+            </center>
         </p:column>
         <p:column width="40%">
             <p:dataTable id="dtbEvaluados" var="evaluado" widgetVar="dtbEvaluados"
@@ -85,7 +100,7 @@
                 <f:facet name="header">
                     <h:outputText value="Pruebas"/>
                 </f:facet>
-                <p:column headerText="Nombre" width="200">
+                <p:column headerText="Nombre">
                     <h:outputText value="#{prueba.prueba}"/>
                 </p:column>
 
@@ -96,7 +111,7 @@
                 <p:column headerText="%" width="30">
                     <h:outputText value="#{prueba.puntoObtenido != null ? prueba.puntoObtenido : 0}"/>
                 </p:column>
-                <p:column>
+                <p:column width="80" style="display: #{controladorInicioEval.estadoConvocatoria == 1 ? 'none' : ''}">
                     <p:commandButton value="Evaluar" actionListener="#{controladorEvaluacion.cargarPreguntas()}"
                                      oncomplete="PF('cargarConvocatoria').hide(); pantallaDinamica();"
                                      onclick="PF('dtbPruebas').unselectAllRows(); PF('dtbPruebas').selectRow(#{i}, true);
@@ -110,6 +125,29 @@
         <p:panelGrid columns="2" styleClass="noBorders">
             <h:graphicImage value="resources/imagenes/cargando.gif" width="50" height="50"/>
             <h:outputText value="Cargando convocatoria, por favor espere." style="width: 240px; text-align: justify; font-weight:bold;" />
+        </p:panelGrid>
+    </p:dialog>
+
+    <p:dialog id="alertaCerrar" header="Atención" widgetVar="alertaCerrar"  resizable="false" 
+              draggable="false" modal="true" closable="false" closeOnEscape="true">  
+        <p:panelGrid columns="1" styleClass="noBorders">
+            <p:column>
+                <center>
+                    <h:outputText value="¿Esta seguro(a) de que desea cerrar la convocatoria?"/>
+                </center>
+            </p:column>
+            <p:column>
+                <p:commandButton value="No" style="float: right"
+                                 onclick="PF('alertaCerrar').hide();"
+                                 process="@this"/>
+                <p:commandButton value="Si" style="float: right" 
+                                 actionListener="#{controladorInicioEval.cerrarConvocatoria()}"
+                                 onclick="PF('alertaCerrar').hide();"
+                                 update=":principalForm:dtbConvocatorias, :principalForm:dtbEvaluados, 
+                                 :principalForm:informacion,
+                                 :principalForm:dtbPruebas"
+                                 process="@this" />
+            </p:column>
         </p:panelGrid>
     </p:dialog>
 </ui:composition>

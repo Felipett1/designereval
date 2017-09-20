@@ -2,6 +2,7 @@ package co.com.designer.eval.persistencia.implementacion;
 
 import co.com.designer.eval.entidades.Evaluados;
 import co.com.designer.eval.persistencia.interfaz.IPersistenciaEvaluados;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -41,7 +42,39 @@ public class PersistenciaEvaluados implements IPersistenciaEvaluados {
             return lst;
         } catch (Exception ex) {
             System.out.println("Error PersistenciaConvocatorias.obtenerEvaluados: " + ex);
+            em.getTransaction().rollback();
             return null;
+        }
+    }
+
+    @Override
+    public boolean actualizarPorcentaje(EntityManager em, BigInteger secConvocatoria, BigInteger secEvaluado) {
+        try {
+            em.getTransaction().begin();
+            Query q = em.createNativeQuery("SELECT COUNT(*) FROM EVALPRUEBAS WHERE CONVOCATORIA = ?");
+            q.setParameter(1, secConvocatoria);
+            Integer total = ((BigDecimal) q.getSingleResult()).intValue();
+            if (total != null && total != 0) {
+                q = em.createNativeQuery("SELECT sum(nvl(a.puntoobtenido,0)*b.puntos)/100/?\n"
+                        + "FROM evalindagaciones a, evalpruebas b\n"
+                        + "WHERE a.evalprueba = b.secuencia\n"
+                        + "AND a.evalresultadoconv = ?");
+                q.setParameter(1, total);
+                q.setParameter(2, secEvaluado);
+                BigDecimal porcentaje = (BigDecimal) q.getSingleResult();
+                if (porcentaje != null) {
+                    q = em.createNativeQuery("UPDATE EVALRESULTADOSCONV A SET A.PUNTAJEOBTENIDO = ? WHERE A.SECUENCIA = ?");
+                    q.setParameter(1, porcentaje);
+                    q.setParameter(2, secEvaluado);
+                    q.executeUpdate();
+                }
+                em.getTransaction().commit();
+            }
+            return true;
+        } catch (Exception ex) {
+            System.out.println("Error PersistenciaEvaluados.actualizarPorcentaje: " + ex);
+            em.getTransaction().rollback();
+            return false;
         }
     }
 }
