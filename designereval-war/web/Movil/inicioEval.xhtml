@@ -33,9 +33,9 @@
                     <p:button styleClass="ui-btn-right ui-btn-inline" value="Salir" onclick="cerrarSesion();"/>
                     <p:tabMenu activeIndex="0">
                         <p:menuitem value="Inicio" icon="ui-icon-home" outcome="pm:uno?transition=flip" iconPos="top"/>
-                        <p:menuitem value="Convocatorias" icon="ui-icon-gear" outcome="pm:dos?transition=flip" iconPos="top"/>
+                        <p:menuitem value="Convocatorias" icon="ui-icon-gear" outcome="pm:convocatorias?transition=flip" iconPos="top"/>
                     </p:tabMenu>
-                </pm:header>
+                </pm:header>|
                 <pm:content>
                     <center> 
                         <h3>BIENVENIDO(A)</h3>
@@ -45,29 +45,60 @@
                         <br/>
                         <p:graphicImage value="#{controladorInformacionBasica.logoEmpresa}" alt="Logo empresa"
                                         cache="false" style="height: 91px;"/>
+                        <br/>
+                        <br/>
+                        <h:outputText value="Estado" style="font-weight: bold"/>
+                        <p:selectOneButton value="#{controladorInicioEval.estadoConvocatoria}">
+                            <f:selectItem itemLabel="Alcance" itemValue="1" />
+                            <f:selectItem itemLabel="Procesar" itemValue="2" />
+                            <p:ajax update="convocatorias, @this"
+                                    listener="#{controladorInicioEval.cargarConvocatorias()}"/>
+                        </p:selectOneButton>
                     </center>
                 </pm:content>
             </h:form>
         </pm:page>
-        <pm:page id="dos">
+        <pm:page id="convocatorias">
             <h:form>
                 <pm:header title="Modulo de evaluación DESIGNER" swatch="b"
                            styleClass="ui-header">
                     <p:button styleClass="ui-btn-right ui-btn-inline" value="Salir" onclick="cerrarSesion();"/>
                     <p:tabMenu activeIndex="1">
                         <p:menuitem value="Inicio" icon="ui-icon-home" outcome="pm:uno?transition=flip" iconPos="top"/>
-                        <p:menuitem value="Convocatorias" icon="ui-icon-gear" outcome="pm:dos?transition=flip" iconPos="top"/>
+                        <p:menuitem value="Convocatorias" icon="ui-icon-gear" outcome="pm:convocatorias?transition=flip" iconPos="top"/>
                     </p:tabMenu>
                 </pm:header>
 
                 <pm:content>
                     <p:dataList value="#{controladorInicioEval.convocatorias}" var="cv" rowIndexVar="indexC">
                         <h:outputLink value="#" 
-                                      onclick="seleccion([{name: 'valor', value:#{indexC}}, {name: 'tipo', value: '0'}]);">
+                                      onclick="seleccion([{name: 'valor', value:#{indexC}}, {name: 'tipo', value: '0'}]);"
+                                      ondblclick="seleccion([{name: 'valor', value:#{indexC}}, {name: 'tipo', value: '3'}]);">
                             <p>#{cv.codigo}</p>
                             <p><strong>Enfoque:</strong> #{cv.enfoque}</p>
                         </h:outputLink>  
                     </p:dataList>
+
+                    <p:dialog id="alertaCC" header="Información" widgetVar="alertaCC"  resizable="false" 
+                              draggable="false" modal="true" closable="false" closeOnEscape="true">  
+                        <p:panelGrid styleClass="noBorders">
+                            <p:column>
+                                <center>
+                                    <h:outputText value="¿Esta seguro(a) de que desea cerrar la convocatoria?"/>
+                                </center>
+                            </p:column>
+                        </p:panelGrid>
+                        <p:panelGrid columns="2" styleClass="noBorders">
+                            <p:commandButton value="Si"
+                                             actionListener="#{controladorInicioEval.cerrarConvocatoria()}"
+                                             onclick="PF('alertaCC').hide();"
+                                             process="@this"
+                                             update="convocatorias"/>
+                            <p:commandButton value="No"
+                                             onclick="PF('alertaCC').hide();"
+                                             process="@this"/>
+                        </p:panelGrid>
+                    </p:dialog>
                 </pm:content>
             </h:form>
         </pm:page>
@@ -77,15 +108,15 @@
                 <pm:header title="Empleados a evaluar" swatch="b"
                            styleClass="ui-header">
                     <p:button styleClass="ui-btn-right ui-btn-inline" value="Salir" onclick="cerrarSesion();"/>
-                    <p:button styleClass="ui-btn-left ui-btn-inline" value="Volver" icon="ui-icon-arrow-l" outcome="pm:dos?transition=flip"/>
+                    <p:button styleClass="ui-btn-left ui-btn-inline" value="Volver" icon="ui-icon-arrow-l" outcome="pm:convocatorias?transition=flip"/>
                 </pm:header>
 
                 <pm:content>
                     <p:dataList value="#{controladorInicioEval.evaluados}" var="ev" rowIndexVar="indexE">
                         <h:outputLink value="#" onclick="seleccion([{name: 'valor', value:#{indexE}}, {name: 'tipo', value: '1'}]);">
                             <p>#{ev.nombrePersona}</p>
-                            <p><strong>Puntaje: </strong>#{evaluado.puntajeObtenido != null ?
-                                                           evaluado.puntajeObtenido : 0}</p>
+                            <p><strong>Puntaje: </strong>#{ev.puntajeObtenido != null ?
+                                                           ev.puntajeObtenido : 0}</p>
                         </h:outputLink>
                     </p:dataList>
                 </pm:content>
@@ -105,8 +136,9 @@
                         <h:outputLink value="#" onclick="seleccion([{name: 'valor', value:#{indexP}}, {name: 'tipo', value: '2'}]);">
                             <p>#{prb.prueba}</p>
                             <p><strong>Factor: </strong>#{prb.factor}</p>
+                            <p><strong>Obsv: </strong>#{prb.obsEvaluador}</p>
                             <p><strong>#{prb.puntoObtenido != null ?
-                                         eprb.puntoObtenido : 0}%</strong></p>
+                                         prb.puntoObtenido : 0}%</strong></p>
                         </h:outputLink>
                     </p:dataList>
                 </pm:content>

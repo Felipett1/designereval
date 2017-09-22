@@ -126,9 +126,12 @@ public class ControladorInicioEval implements Serializable {
         } else if (i.equals("1")) {
             evaluado = evaluados.get(index);
             PrimefacesContextUI.ejecutar("seleccionEvaluado();");
-        } else {
+        } else if (i.equals("2")) {
             prueba = pruebas.get(index);
             PrimefacesContextUI.ejecutar("seleccionPrueba();");
+        } else {
+            secConvocatoria = convocatorias.get(index).getSecuencia();
+            PrimefacesContextUI.ejecutar("PF('alertaCC').show();");
         }
     }
 

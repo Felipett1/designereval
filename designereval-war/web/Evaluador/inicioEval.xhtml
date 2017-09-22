@@ -8,7 +8,7 @@
     <p:remoteCommand name="pantallaDinamica" actionListener="#{controlNavegacion.pantallaDinamica('/Evaluador/cuestionario.xhtml')}"
                      process="@this" update=":principalForm"/>
 
-    <p:panelGrid columns="2" >
+    <p:panelGrid columns="2" columnClasses="rp1,rp2">
         <p:column>
             <p:selectOneRadio value="#{controladorInicioEval.estadoConvocatoria}">
                 <f:selectItem itemLabel="Alcance" itemValue="1"/>
@@ -19,10 +19,10 @@
                         listener="#{controladorInicioEval.cargarConvocatorias()}"/>
             </p:selectOneRadio>
             <p:dataTable id="dtbConvocatorias" var="convocatoria" widgetVar="dtbConvocatorias"
-                         scrollRows="8" scrollable="true" scrollHeight="110"
                          emptyMessage="No hay datos" selectionMode="single" 
                          selection="#{controladorInicioEval.convocatoria}" rowKey="#{convocatoria.secuencia}"
-                         value="#{controladorInicioEval.convocatorias}">
+                         value="#{controladorInicioEval.convocatorias}"
+                         styleClass="ui-datatable-hor-scroll">
                 <p:ajax event="rowSelect" listener="#{controladorInicioEval.seleccionConvocatoria(1)}" 
                         update=":principalForm:dtbEvaluados, :principalForm:informacion,
                         :principalForm:dtbPruebas" />
@@ -69,12 +69,12 @@
                 </p:panelGrid>
             </center>
         </p:column>
-        <p:column width="40%">
+        <p:column>
             <p:dataTable id="dtbEvaluados" var="evaluado" widgetVar="dtbEvaluados"
-                         scrollRows="8" scrollable="true" liveScroll="true" scrollHeight="150"
                          emptyMessage="No hay datos" selectionMode="single" 
                          selection="#{controladorInicioEval.evaluado}" rowKey="#{evaluado.secuencia}"
-                         value="#{controladorInicioEval.evaluados}">
+                         value="#{controladorInicioEval.evaluados}"
+                         styleClass="ui-datatable-hor-scroll">
                 <p:ajax event="rowSelect" listener="#{controladorInicioEval.seleccionEvaluado(1)}" update=":principalForm:dtbPruebas" />
                 <p:ajax event="rowUnselect" listener="#{controladorInicioEval.seleccionEvaluado(0)}" update=":principalForm:dtbPruebas"/>
                 <f:facet name="header">
@@ -93,10 +93,10 @@
         </p:column>
         <p:column>
             <p:dataTable id="dtbPruebas" var="prueba" widgetVar="dtbPruebas"
-                         scrollRows="8" scrollable="true" liveScroll="true" scrollHeight="150"
                          emptyMessage="No hay datos" selectionMode="single" rowIndexVar="i"
                          selection="#{controladorInicioEval.prueba}" rowKey="#{prueba.secuencia}"
-                         value="#{controladorInicioEval.pruebas}">
+                         value="#{controladorInicioEval.pruebas}" styleClass="ui-datatable-hor-scroll"
+                         >
                 <f:facet name="header">
                     <h:outputText value="Pruebas"/>
                 </f:facet>
