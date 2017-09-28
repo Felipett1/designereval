@@ -233,6 +233,7 @@ public class ControladorIngreso implements Serializable {
         registroConexion.setUltimaEntrada(new Date());
         registroConexion.setUsuarioso(System.getProperty("os.name") + " / " + System.getProperty("user.name"));
         registroConexion.setUsuarioBD(usuario);
+        registroConexion.setSid(BigInteger.ZERO);
         administrarIngreso.insertarUltimaConexion(registroConexion);
     }
 

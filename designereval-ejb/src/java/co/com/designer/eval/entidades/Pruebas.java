@@ -36,6 +36,8 @@ public class Pruebas implements Serializable {
     private String factor;
     @Column(name = "SECPRUEBA")
     private BigInteger secPrueba;
+    @Column(name = "ESTADOPRUEBA")
+    private String estado;
 
     public Pruebas() {
     }
@@ -138,6 +140,14 @@ public class Pruebas implements Serializable {
 
     public void setFactor(String factor) {
         this.factor = factor;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
     @Override

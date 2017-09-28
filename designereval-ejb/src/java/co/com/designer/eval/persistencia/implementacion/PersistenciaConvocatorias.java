@@ -7,6 +7,7 @@ import java.math.BigInteger;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
 /**
@@ -99,16 +100,11 @@ public class PersistenciaConvocatorias implements IPersistenciaConvocatorias {
 
     @Override
     public boolean cerrarConvocatoria(EntityManager em, BigInteger secConvocatoria) {
-        try {
-            em.getTransaction().begin();
-            Query q = em.createNativeQuery("UPDATE EVALCONVOCATORIAS A SET A.ESTADO = 'ALCANCE' WHERE A.SECUENCIA = ?");
-            q.setParameter(1, secConvocatoria);
-            q.executeUpdate();
-            em.getTransaction().commit();
-            return true;
-        } catch (Exception ex) {
-            System.out.println("Error PersistenciaConvocatorias.obtenerSecuenciaEvaluador: " + ex);
-            return false;
-        }
+        em.getTransaction().begin();
+        Query q = em.createNativeQuery("CALL EVALCONVOCATORIAS_PKG.CERRAREVALUACION(?)");
+        q.setParameter(1, secConvocatoria);
+        q.executeUpdate();
+        em.getTransaction().commit();
+        return true;
     }
 }

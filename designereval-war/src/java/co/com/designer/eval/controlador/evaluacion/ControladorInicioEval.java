@@ -1,6 +1,7 @@
 package co.com.designer.eval.controlador.evaluacion;
 
 import co.com.designer.eval.administrar.interfaz.IAdministrarInicio;
+import co.com.designer.eval.clasesAyuda.ExtraeCausaExcepcion;
 import co.com.designer.eval.controlador.ingreso.ControladorIngreso;
 import co.com.designer.eval.entidades.Convocatorias;
 import co.com.designer.eval.entidades.Evaluados;
@@ -144,19 +145,23 @@ public class ControladorInicioEval implements Serializable {
     }
 
     public void cerrarConvocatoria() {
-        if (administrarInicio.cerrarConvocatoria(secConvocatoria)) {
-            MensajesUI.info("Convocatoria cerrada exitosamente.");
-            envioCorreoCierreConvocatoria();
-            convocatoria = null;
-            convocatorias = administrarInicio.obtenerConvocatorias(usuario);
-            evaluados = null;
-            evaluado = null;
-            empleadosConvocados = null;
-            empleadosAsignados = null;
-            empleadosEvaluados = null;
-            pruebas = null;
-        } else {
-            MensajesUI.error("Error al cerrar la convocatoria.");
+        try {
+            if (administrarInicio.cerrarConvocatoria(secConvocatoria)) {
+                MensajesUI.info("Convocatoria cerrada exitosamente.");
+                envioCorreoCierreConvocatoria();
+                convocatoria = null;
+                convocatorias = administrarInicio.obtenerConvocatorias(usuario);
+                evaluados = null;
+                evaluado = null;
+                empleadosConvocados = null;
+                empleadosAsignados = null;
+                empleadosEvaluados = null;
+                pruebas = null;
+            } else {
+                MensajesUI.error("Error al cerrar la convocatoria.");
+            }
+        } catch (Exception e) {
+            MensajesUI.error(ExtraeCausaExcepcion.obtenerMensajeSQLException(e));
         }
     }
 
@@ -214,6 +219,10 @@ public class ControladorInicioEval implements Serializable {
         if (pathReporteGenerado == null) {
             MensajesUI.error("El reporte consolidado de la convocatoria no se pudo generar.");
         }
+    }
+
+    public void cambiarEstado(BigInteger secPrueba, String estado) {
+        administrarInicio.actualizarEstado(secPrueba, estado);
     }
 
     //GETTER AND SETTER

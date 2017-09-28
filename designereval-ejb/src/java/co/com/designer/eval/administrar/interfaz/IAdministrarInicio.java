@@ -40,4 +40,6 @@ public interface IAdministrarInicio {
 
     public String generarReporte(String nombreReporte, String tipoReporte, Map parametros, String nombreConvocatoria);
 
+    public boolean actualizarEstado(BigInteger secPrueba, String estado);
+
 }

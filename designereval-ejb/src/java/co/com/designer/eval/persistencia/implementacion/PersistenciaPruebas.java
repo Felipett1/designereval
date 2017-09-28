@@ -30,7 +30,8 @@ public class PersistenciaPruebas implements IPersistenciaPruebas {
                     + "WHERE PR.SECUENCIA = EI.EVALPRUEBA) FACTOR, -- Usa la descripción de evalpruebas para indicar el factor\n"
                     + "(SELECT PR.SECUENCIA\n"
                     + "FROM EVALPRUEBAS PR\n"
-                    + "WHERE PR.SECUENCIA = EI.EVALPRUEBA) SECPRUEBA\n"
+                    + "WHERE PR.SECUENCIA = EI.EVALPRUEBA) SECPRUEBA,\n"
+                    + "EI.ESTADOPRUEBA \n"
                     + "FROM EVALINDAGACIONES EI\n"
                     + "WHERE EI.EMPLEADOEVALUADOR=(\n"
                     + "           SELECT P.SECUENCIA \n"
@@ -62,6 +63,22 @@ public class PersistenciaPruebas implements IPersistenciaPruebas {
             return true;
         } catch (Exception ex) {
             System.out.println("Error PersistenciaPruebas.actualizarPorcentaje: " + ex);
+            return false;
+        }
+    }
+    
+    @Override
+    public boolean actualizarEstado(EntityManager em, BigInteger secPrueba, String estado) {
+        try {
+            em.getTransaction().begin();
+            Query q = em.createNativeQuery("UPDATE EVALINDAGACIONES A SET A.ESTADOPRUEBA = ? WHERE A.SECUENCIA = ?");
+            q.setParameter(1, estado);
+            q.setParameter(2, secPrueba);
+            q.executeUpdate();
+            em.getTransaction().commit();
+            return true;
+        } catch (Exception ex) {
+            System.out.println("Error PersistenciaPruebas.actualizarEstado: " + ex);
             return false;
         }
     }

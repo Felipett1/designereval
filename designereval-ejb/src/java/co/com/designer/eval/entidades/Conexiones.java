@@ -26,6 +26,8 @@ public class Conexiones implements Serializable {
     @NotNull
     @Column(name = "SECUENCIA")
     private BigInteger secuencia;
+    @Column(name = "SID")
+    private BigInteger sid;
     @Column(name = "DIRECCIONIP")
     private String direccionIP;
     @Column(name = "USUARIOSO")
@@ -95,6 +97,14 @@ public class Conexiones implements Serializable {
 
     public void setUsuarioBD(String usuarioBD) {
         this.usuarioBD = usuarioBD;
+    }
+
+    public BigInteger getSid() {
+        return sid;
+    }
+
+    public void setSid(BigInteger sid) {
+        this.sid = sid;
     }
 
     @Override

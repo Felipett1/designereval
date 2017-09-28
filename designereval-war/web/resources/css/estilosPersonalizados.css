@@ -11,6 +11,10 @@ html {
     border: none !important;
 }
 
+.noBorders2 tr, .noBorders2 td {
+    border: none !important;
+}
+
 .centrado {
     padding:10px;
     position:absolute;
@@ -85,11 +89,19 @@ html {
 }
 
 .rp1 {
-    width: 50%;
+    width: 40%;
 }
 
 .rp2 {
-    width: 50%;
+    width: 60%;
+}
+
+.rp3 {
+    width: 70%;
+}
+
+.rp4 {
+    width: 30%;
 }
 
 .ui-datatable-hor-scroll .ui-datatable-tablewrapper,.scrolling-div .ui-datatable-tablewrapper{

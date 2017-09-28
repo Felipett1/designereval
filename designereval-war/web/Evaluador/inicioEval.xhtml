@@ -8,7 +8,7 @@
     <p:remoteCommand name="pantallaDinamica" actionListener="#{controlNavegacion.pantallaDinamica('/Evaluador/cuestionario.xhtml')}"
                      process="@this" update=":principalForm"/>
 
-    <p:panelGrid columns="2" columnClasses="rp1,rp2">
+    <p:panelGrid columns="2" columnClasses="rp3,rp4" styleClass="noBorders2">
         <p:column>
             <p:selectOneRadio value="#{controladorInicioEval.estadoConvocatoria}">
                 <f:selectItem itemLabel="Alcance" itemValue="1"/>
@@ -69,6 +69,8 @@
                 </p:panelGrid>
             </center>
         </p:column>
+    </p:panelGrid>
+    <p:panelGrid columns="2" columnClasses="rp1,rp2" styleClass="noBorders2">
         <p:column>
             <p:dataTable id="dtbEvaluados" var="evaluado" widgetVar="dtbEvaluados"
                          emptyMessage="No hay datos" selectionMode="single" 
@@ -117,11 +119,20 @@
                 <p:column headerText="%" width="30">
                     <h:outputText value="#{prueba.puntoObtenido != null ? prueba.puntoObtenido : 0}"/>
                 </p:column>
+                <p:column headerText="Estado" width="45">
+                    <p:selectOneMenu value="#{prueba.estado}" style="display: #{controladorInicioEval.estadoConvocatoria == 1 ? 'none' : ''}">
+                        <f:selectItem itemLabel="A" itemValue="A" />
+                        <f:selectItem itemLabel="C" itemValue="C" />
+                        <p:ajax update="@this, evaluar" listener="#{controladorInicioEval.cambiarEstado(prueba.secuencia, prueba.estado)}"/>
+                    </p:selectOneMenu>
+                    <center><h:outputText value="#{prueba.estado}" style="display: #{controladorInicioEval.estadoConvocatoria == 1 ? '' : 'none'}"/></center>
+                </p:column>
                 <p:column width="80" style="display: #{controladorInicioEval.estadoConvocatoria == 1 ? 'none' : ''}">
-                    <p:commandButton value="Evaluar" actionListener="#{controladorEvaluacion.cargarPreguntas()}"
+                    <p:commandButton value="Evaluar" id="evaluar" actionListener="#{controladorEvaluacion.cargarPreguntas()}"
                                      oncomplete="PF('cargarConvocatoria').hide(); pantallaDinamica();"
                                      onclick="PF('dtbPruebas').unselectAllRows(); PF('dtbPruebas').selectRow(#{i}, true);
-                                             PF('cargarConvocatoria').show();"/>
+                                             PF('cargarConvocatoria').show();"
+                                     disabled="#{prueba.estado == 'A' ? false : true}"/>
                 </p:column>
             </p:dataTable>
         </p:column>
@@ -138,8 +149,13 @@
               draggable="false" modal="true" closable="false" closeOnEscape="true">  
         <p:panelGrid columns="1" styleClass="noBorders">
             <p:column>
+                <h:outputText value="En el momento en que cierre el proceso de valoraciones &lt;br/&gt; a esta convocatoria, ya no podrá cambiar los datos."
+                              escape="false"/>
+                <br/>
+                <br/>
                 <center>
-                    <h:outputText value="¿Esta seguro(a) de que desea cerrar la convocatoria?"/>
+                    <h:outputText value="¿Está seguro(a) de cerrar el proceso?"
+                                  style="font-weight: bold"/>
                 </center>
             </p:column>
             <p:column>

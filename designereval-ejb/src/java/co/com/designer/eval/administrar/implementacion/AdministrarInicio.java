@@ -172,4 +172,10 @@ public class AdministrarInicio implements IAdministrarInicio {
             return null;
         }
     }
+
+    @Override
+    public boolean actualizarEstado(BigInteger secPrueba, String estado) {
+        EntityManager em = emf.createEntityManager();
+        return persistenciaPruebas.actualizarEstado(em, secPrueba, estado);
+    }
 }
