@@ -29,6 +29,13 @@ public class Convocatorias implements Serializable {
     private String codigo;
     @Column(name = "ENFOQUE")
     private String enfoque;
+    @Column(name = "AGRUPADO")
+    private Integer agrupado;
+    @Column(name = "FECHAINICIO")
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date fechaInicio;
+    @Column(name = "OBJETIVOS")
+    private String objetivos;
 
     public Convocatorias() {
     }
@@ -79,6 +86,30 @@ public class Convocatorias implements Serializable {
 
     public void setEnfoque(String enfoque) {
         this.enfoque = enfoque;
+    }
+
+    public Integer getAgrupado() {
+        return agrupado;
+    }
+
+    public void setAgrupado(Integer agrupado) {
+        this.agrupado = agrupado;
+    }
+
+    public Date getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public void setFechaInicio(Date fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
+
+    public String getObjetivos() {
+        return objetivos;
+    }
+
+    public void setObjetivos(String objetivos) {
+        this.objetivos = objetivos;
     }
 
     @Override

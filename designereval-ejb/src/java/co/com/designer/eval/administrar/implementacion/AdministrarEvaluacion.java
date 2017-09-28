@@ -100,9 +100,9 @@ public class AdministrarEvaluacion implements IAdministrarEvaluacion {
     }
 
     @Override
-    public boolean actualizarPorcentaje(BigInteger secConvocatoria, BigInteger secEvaluado) {
+    public boolean actualizarPorcentaje(BigInteger secConvocatoria, BigInteger secEvaluado, Integer agrupado) {
         EntityManager em = emf.createEntityManager();
-        return persistenciaEvaluados.actualizarPorcentaje(em, secConvocatoria, secEvaluado);
+        return persistenciaEvaluados.actualizarPorcentaje(em, secConvocatoria, secEvaluado, agrupado);
     }
 
 }

@@ -24,6 +24,6 @@ public interface IAdministrarEvaluacion {
 
     public boolean actualizarPorcentaje(BigInteger secPrueba, String observacion, double porcentaje);
 
-    public boolean actualizarPorcentaje(BigInteger secConvocatoria, BigInteger secEvaluado);
+    public boolean actualizarPorcentaje(BigInteger secConvocatoria, BigInteger secEvaluado, Integer agrupado);
     
 }

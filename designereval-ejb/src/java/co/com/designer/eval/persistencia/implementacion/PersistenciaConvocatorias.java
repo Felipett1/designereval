@@ -23,7 +23,8 @@ public class PersistenciaConvocatorias implements IPersistenciaConvocatorias {
             Query q = em.createNativeQuery("SELECT C.SECUENCIA, \n"
                     + "(SELECT FECHAVIGENCIA FROM EVALVIGCONVOCATORIAS WHERE SECUENCIA = C.EVALVIGCONVOCATORIA) EVALVIGCONVOCATORIA,\n"
                     + "C.ESTADO, C.CODIGO, \n"
-                    + "(SELECT DESCRIPCION FROM EVALENFOQUES WHERE SECUENCIA = C.ENFOQUE) ENFOQUE\n"
+                    + "(SELECT DESCRIPCION FROM EVALENFOQUES WHERE SECUENCIA = C.ENFOQUE) ENFOQUE,\n"
+                    + "C.AGRUPADO, C.FECHAINICIO, C.OBJETIVOS \n"
                     + "FROM EVALCONVOCATORIAS C\n"
                     + "WHERE C.ENFOQUE=(SELECT SECUENCIA FROM EVALENFOQUES WHERE CODIGO=1) \n"
                     + "AND C.ESTADO = 'PROCESAR'\n"
@@ -43,6 +44,7 @@ public class PersistenciaConvocatorias implements IPersistenciaConvocatorias {
             return lst;
         } catch (Exception ex) {
             System.out.println("Error PersistenciaConvocatorias.obtenerConvocatorias: " + ex);
+            em.getTransaction().rollback();
             return null;
         }
     }
@@ -54,7 +56,8 @@ public class PersistenciaConvocatorias implements IPersistenciaConvocatorias {
             Query q = em.createNativeQuery("SELECT C.SECUENCIA, \n"
                     + "(SELECT FECHAVIGENCIA FROM EVALVIGCONVOCATORIAS WHERE SECUENCIA = C.EVALVIGCONVOCATORIA) EVALVIGCONVOCATORIA,\n"
                     + "C.ESTADO, C.CODIGO, \n"
-                    + "(SELECT DESCRIPCION FROM EVALENFOQUES WHERE SECUENCIA = C.ENFOQUE) ENFOQUE\n"
+                    + "(SELECT DESCRIPCION FROM EVALENFOQUES WHERE SECUENCIA = C.ENFOQUE) ENFOQUE,\n"
+                    + "C.AGRUPADO, C.FECHAINICIO, C.OBJETIVOS \n"
                     + "FROM EVALCONVOCATORIAS C\n"
                     + "WHERE C.ENFOQUE=(SELECT SECUENCIA FROM EVALENFOQUES WHERE CODIGO=1) \n"
                     + "AND C.ESTADO = 'ALCANCE'\n"
@@ -74,6 +77,7 @@ public class PersistenciaConvocatorias implements IPersistenciaConvocatorias {
             return lst;
         } catch (Exception ex) {
             System.out.println("Error PersistenciaConvocatorias.obtenerConvocatoriasAlcance: " + ex);
+            em.getTransaction().rollback();
             return null;
         }
     }

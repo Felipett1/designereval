@@ -13,6 +13,6 @@ public interface IPersistenciaEvaluados {
 
     public List<Evaluados> obtenerEvaluados(EntityManager em, String usuario, BigInteger secConvocatoria);
 
-    public boolean actualizarPorcentaje(EntityManager em, BigInteger secConvocatoria, BigInteger secEvaluado);
+    public boolean actualizarPorcentaje(EntityManager em, BigInteger secConvocatoria, BigInteger secEvaluado, Integer agrupado);
     
 }

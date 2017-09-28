@@ -102,6 +102,12 @@
                 </f:facet>
                 <p:column headerText="Nombre">
                     <h:outputText value="#{prueba.prueba}"/>
+                    <br/>
+                    <h:outputText value="Observación:" style="font-weight: bold"/>
+                    <br/>
+                    <h:outputText value="#{prueba.obsEvaluador != null ? 
+                                           prueba.obsEvaluador.length() > 30 ? prueba.obsEvaluador.substring(0, 30).concat('...') : 
+                                           prueba.obsEvaluador.substring(0, prueba.obsEvaluador.length()) : ''}"/>
                 </p:column>
 
                 <p:column headerText="Factor" width="150">

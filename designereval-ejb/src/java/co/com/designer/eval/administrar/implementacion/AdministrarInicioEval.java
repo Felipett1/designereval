@@ -4,16 +4,17 @@ import co.com.designer.eval.entidades.Generales;
 import co.com.designer.eval.administrar.interfaz.IAdministrarSesiones;
 import co.com.designer.eval.persistencia.interfaz.IPersistenciaGenerales;
 import javax.ejb.EJB;
-import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import co.com.designer.eval.administrar.interfaz.IAdministrarInicioEval;
+import co.com.designer.eval.persistencia.interfaz.IPersistenciaConfiguracionCorreo;
+import javax.ejb.Stateful;
 
 /**
  *
  * @author Felipe Triviño
  */
-@Stateless
+@Stateful
 public class AdministrarInicioEval implements IAdministrarInicioEval {
 
     @EJB

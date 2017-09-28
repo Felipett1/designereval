@@ -65,7 +65,7 @@ public class PersistenciaUtilidadesBD implements IPersistenciaUtilidadesBD {
     public BigDecimal cantidadEvaluadosConvocatoria(EntityManager em, BigInteger secConvocatoria) {
         try {
             em.getTransaction().begin();
-            Query q = em.createNativeQuery("SELECT EVALPREGUNTAS_PKG.CantidadEvaluadosConvocatoria(?) FROM DUAL");
+            Query q = em.createNativeQuery("SELECT EVALPREGUNTAS_PKG.TotalEmpleadosConvocatoria(?) FROM DUAL");
             q.setParameter(1, secConvocatoria);
             BigDecimal resultado = (BigDecimal) q.getSingleResult();
             em.getTransaction().commit();

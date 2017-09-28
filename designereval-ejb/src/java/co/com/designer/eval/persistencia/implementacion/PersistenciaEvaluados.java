@@ -48,12 +48,21 @@ public class PersistenciaEvaluados implements IPersistenciaEvaluados {
     }
 
     @Override
-    public boolean actualizarPorcentaje(EntityManager em, BigInteger secConvocatoria, BigInteger secEvaluado) {
+    public boolean actualizarPorcentaje(EntityManager em, BigInteger secConvocatoria, BigInteger secEvaluado, Integer agrupado) {
         try {
             em.getTransaction().begin();
-            Query q = em.createNativeQuery("SELECT COUNT(*) FROM EVALPRUEBAS WHERE CONVOCATORIA = ?");
-            q.setParameter(1, secConvocatoria);
-            Integer total = ((BigDecimal) q.getSingleResult()).intValue();
+            Query q;
+            Integer total;
+            if (agrupado == 1) {
+                q = em.createNativeQuery("SELECT COUNT(*) FROM EVALPRUEBAS WHERE CONVOCATORIA = ? GROUP BY PLANILLA");
+                q.setParameter(1, secConvocatoria);
+                total = (Integer) q.getResultList().size();
+            } else {
+                q = em.createNativeQuery("SELECT COUNT(*) FROM EVALPRUEBAS WHERE CONVOCATORIA = ?");
+                q.setParameter(1, secConvocatoria);
+                total = ((BigDecimal) q.getSingleResult()).intValue();
+            }
+
             if (total != null && total != 0) {
                 q = em.createNativeQuery("SELECT sum(nvl(a.puntoobtenido,0)*b.puntos)/100/?\n"
                         + "FROM evalindagaciones a, evalpruebas b\n"

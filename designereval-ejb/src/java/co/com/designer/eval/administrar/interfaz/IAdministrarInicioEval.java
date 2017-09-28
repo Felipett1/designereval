@@ -11,4 +11,5 @@ public interface IAdministrarInicioEval {
     public String obtenerRutaImagenes();
 
     public String logoEmpresa(String nit);
+
 }

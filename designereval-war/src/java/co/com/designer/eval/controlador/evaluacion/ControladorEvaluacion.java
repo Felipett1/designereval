@@ -32,11 +32,12 @@ public class ControladorEvaluacion implements Serializable {
     private List<Preguntas> preguntas;
 
     //Informacion general
-    private String evaluado, evaluador, convocatoria, prueba, observacion;
+    private String evaluado, evaluador, convocatoria, prueba, observacionEvaluador;
     private BigInteger nroPreguntas, puntajeMaximo, secIndigacion, secPrueba, secConvocatoria, secEvaluado;
     private Pruebas pruebaActual;
     private Convocatorias convocatoriaActual;
     private Evaluados evaluadoActual;
+    private Integer agrupado;
     private boolean tieneRespuestas;
     private int puntaje;
     private double porcentaje;
@@ -67,9 +68,10 @@ public class ControladorEvaluacion implements Serializable {
         convocatoria = convocatoriaActual.getCodigo() + " - " + convocatoriaActual.getEnfoque();
         pruebaActual = ((Pruebas) ((ControladorInicioEval) x.getApplication().evaluateExpressionGet(x, "#{controladorInicioEval}", ControladorInicioEval.class)).obtenerInformacion(3));
         prueba = pruebaActual.getPrueba();
-        observacion = pruebaActual.getObsEvaluador();
+        observacionEvaluador = pruebaActual.getObsEvaluador();
         secIndigacion = pruebaActual.getSecuencia();
         secConvocatoria = convocatoriaActual.getSecuencia();
+        agrupado = convocatoriaActual.getAgrupado();
         secEvaluado = evaluadoActual.getSecuencia();
         this.secPrueba = pruebaActual.getSecPrueba();
         cargarDetallePreguntas();
@@ -105,8 +107,8 @@ public class ControladorEvaluacion implements Serializable {
                 }
             }
             if (!error) {
-                if (administrarEvaluacion.actualizarPorcentaje(secIndigacion, observacion, porcentaje)
-                        && administrarEvaluacion.actualizarPorcentaje(secConvocatoria, secEvaluado)) {
+                if (administrarEvaluacion.actualizarPorcentaje(secIndigacion, observacionEvaluador, porcentaje)
+                        && administrarEvaluacion.actualizarPorcentaje(secConvocatoria, secEvaluado, agrupado)) {
                     PrimefacesContextUI.ejecutar("PF('envioExitoso').show()");
                 } else {
                     MensajesUI.error("No fue posible registrar el puntaje, ni la observación en la prueba.");
@@ -119,10 +121,10 @@ public class ControladorEvaluacion implements Serializable {
     }
 
     public void eliminarRespuestas() {
-        observacion = null;
+        observacionEvaluador = null;
         if (administrarEvaluacion.eliminarRespuestas(secIndigacion)
-                && administrarEvaluacion.actualizarPorcentaje(secIndigacion, observacion, 0)
-                && administrarEvaluacion.actualizarPorcentaje(secConvocatoria, secEvaluado)) {
+                && administrarEvaluacion.actualizarPorcentaje(secIndigacion, observacionEvaluador, 0)
+                && administrarEvaluacion.actualizarPorcentaje(secConvocatoria, secEvaluado, agrupado)) {
             MensajesUI.info("Respuestas eliminadas exitosamente.");
         } else {
             MensajesUI.error("No fue posible eliminar las respuestas.");
@@ -198,12 +200,12 @@ public class ControladorEvaluacion implements Serializable {
         return prueba;
     }
 
-    public String getObservacion() {
-        return observacion;
+    public String getObservacionEvaluador() {
+        return observacionEvaluador;
     }
 
-    public void setObservacion(String observacion) {
-        this.observacion = observacion;
+    public void setObservacionEvaluador(String observacionEvaluador) {
+        this.observacionEvaluador = observacionEvaluador;
     }
 
     public boolean isTieneRespuestas() {

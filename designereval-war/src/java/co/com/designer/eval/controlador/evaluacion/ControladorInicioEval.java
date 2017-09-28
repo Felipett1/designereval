@@ -10,7 +10,9 @@ import co.com.designer.eval.utilidadesUI.PrimefacesContextUI;
 import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.el.ELException;
@@ -29,7 +31,7 @@ public class ControladorInicioEval implements Serializable {
 
     @EJB
     private IAdministrarInicio administrarInicio;
-    private String usuario;
+    private String usuario, nitEmpresa, email, pathReporteGenerado;
     private List<Convocatorias> convocatorias;
     private List<Evaluados> evaluados;
     private List<Pruebas> pruebas;
@@ -57,6 +59,8 @@ public class ControladorInicioEval implements Serializable {
             convocatorias = administrarInicio.obtenerConvocatorias(usuario);
             secuenciaEvaluador = administrarInicio.obtenerSecuenciaEvaluador(usuario);
             totalEmpleadosAsignados = administrarInicio.totalEmpleadosEvaluador(secuenciaEvaluador.toBigInteger());
+            nitEmpresa = ((ControladorIngreso) x.getApplication().evaluateExpressionGet(x, "#{controladorIngreso}", ControladorIngreso.class)).getNit();
+            email = ((ControladorIngreso) x.getApplication().evaluateExpressionGet(x, "#{controladorIngreso}", ControladorIngreso.class)).getPersona().getEmail();
             System.out.println("Inicializado");
         } catch (ELException e) {
             System.out.println("Error postconstruct " + this.getClass().getName() + ": " + e);
@@ -142,6 +146,7 @@ public class ControladorInicioEval implements Serializable {
     public void cerrarConvocatoria() {
         if (administrarInicio.cerrarConvocatoria(secConvocatoria)) {
             MensajesUI.info("Convocatoria cerrada exitosamente.");
+            envioCorreoCierreConvocatoria();
             convocatoria = null;
             convocatorias = administrarInicio.obtenerConvocatorias(usuario);
             evaluados = null;
@@ -173,6 +178,42 @@ public class ControladorInicioEval implements Serializable {
     public void refrescarListas() {
         seleccionConvocatoria(2);
         seleccionEvaluado(1);
+    }
+
+    public void envioCorreoCierreConvocatoria() {
+        if (secConvocatoria != null) {
+            Convocatorias c = null;
+            for (Convocatorias cvc : convocatorias) {
+                if (cvc.getSecuencia().compareTo(secConvocatoria) == 0) {
+                    c = cvc;
+                }
+            }
+            if (email != null && !email.isEmpty()) {
+                if (c != null) {
+                    generarReporte(c);
+                    if (pathReporteGenerado != null && administrarInicio.enviarCorreo(nitEmpresa, email,
+                            "Reporte Convocatoria - " + c.getCodigo(), "Mensaje enviado automáticamente, por favor no responda a este correo.",
+                            pathReporteGenerado)) {
+                        MensajesUI.info("Se ha enviado un reporte con los resultados de la convocatoria a su dirección de correo.");
+                    } else {
+                        MensajesUI.error("No fue posible enviar el reporte consolidado de la convocatoria que acaba de cerrar, por favor comuníquese con soporte.");
+                    }
+                } else {
+                    MensajesUI.error("Error al intentar obtener la convocatoria, por favor comuníquese con soporte.");
+                }
+            } else {
+                MensajesUI.error("No es posible enviar el correo de confirmacion, ya que no esta configurado el correo de destino.");
+            }
+        }
+    }
+
+    public void generarReporte(Convocatorias c) {
+        Map parametros = new HashMap();
+        parametros.put("secuenciaconvocatoria", secConvocatoria);
+        pathReporteGenerado = administrarInicio.generarReporte("evalcompetenciacerrada", "PDF", parametros, c.getCodigo());
+        if (pathReporteGenerado == null) {
+            MensajesUI.error("El reporte consolidado de la convocatoria no se pudo generar.");
+        }
     }
 
     //GETTER AND SETTER

@@ -6,6 +6,7 @@ import co.com.designer.eval.entidades.Pruebas;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -34,5 +35,9 @@ public interface IAdministrarInicio {
     public boolean cerrarConvocatoria(BigInteger secConvocatoria);
 
     public List<Convocatorias> obtenerConvocatoriasAlcance(String usuario);
+
+    public boolean enviarCorreo(String nitEmpresa, String destinatario, String asunto, String mensaje, String pathAdjunto);
+
+    public String generarReporte(String nombreReporte, String tipoReporte, Map parametros, String nombreConvocatoria);
 
 }

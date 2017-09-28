@@ -61,8 +61,9 @@
         <p:column>
             <h:outputText value="Observación:" style="font-weight: bold"/>
             <br/>
-            <p:inputTextarea value="#{controladorEvaluacion.observacion}"
+            <p:inputTextarea value="#{controladorEvaluacion.observacionEvaluador}"
                              style="width: 50%; height: 150px">
+                <p:ajax update="@this"/>
             </p:inputTextarea>
         </p:column>
         <p:column>
