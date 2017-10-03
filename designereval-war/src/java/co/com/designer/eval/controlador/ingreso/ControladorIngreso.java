@@ -111,7 +111,7 @@ public class ControladorIngreso implements Serializable {
                         && cadena != null) {
                     nit = cadena.getNit();
                     if (administrarIngreso.conexionIngreso(cadena.getCadena())) {
-                        if (administrarIngreso.validarUsuario(usuario)) {
+                        //if (administrarIngreso.validarUsuario(usuario)) {
                             persona = administrarIngreso.conexionUsuario(cadena.getCadena(), usuario, clave);
                             if (persona != null) {
                                 administrarIngreso.adicionarConexionUsuario(ses.getId());
@@ -128,11 +128,11 @@ public class ControladorIngreso implements Serializable {
                                 MensajesUI.error("Contraseña invalida.");
                                 ingresoExitoso = false;
                             }
-                        } else {
+                        /*} else {
                             //EL USUARIO NO EXISTE O ESTA INACTIVO.
                             MensajesUI.error("El usuario " + usuario + " no existe o esta inactivo, por favor contactar al área de soporte.");
                             ingresoExitoso = false;
-                        }
+                        }*/
                     } else {
                         //UNIDAD DE PERSISTENCIA INVALIDA - REVISAR ARCHIVO DE CONFIGURACION
                         MensajesUI.fatal("Unidad de persistencia inválida, por favor contactar al área de soporte.");

@@ -19,7 +19,7 @@ public interface IAdministrarIngreso {
 
     public void cerrarSession(String idSesion);
 
-    public Personas conexionUsuario(String baseDatos, String usuario, String contraseña);
+    public Personas conexionUsuario(String baseDatos, String usuario, String clave);
 
     public Conexiones ultimaConexionUsuario(String usuario);
 

@@ -85,14 +85,14 @@ public class AdministrarIngreso implements IAdministrarIngreso {
     }
 
     @Override
-    public Personas conexionUsuario(String baseDatos, String usuario, String contraseña) {
+    public Personas conexionUsuario(String baseDatos, String usuario, String clave) {
         try {
             EntityManager em = emf.createEntityManager();
             secPerfil = persistenciaConexionInicial.usuarioLogin(em, usuario);
             perfilUsuario = persistenciaConexionInicial.perfilUsuario(em, secPerfil);
             em.close();
             emf.close();
-            emf = sessionEMF.crearFactoryUsuario(usuario, contraseña, baseDatos);
+            emf = sessionEMF.crearFactoryUsuario(usuario, clave, baseDatos);
             setearRol();
             em = emf.createEntityManager();
             persona = persistenciaConexionInicial.obtenerPersona(em, usuario);
