@@ -16,7 +16,7 @@ public interface IPersistenciaConvocatorias {
 
     public BigDecimal obtenerSecuenciaEvaluador(EntityManager em, String usuario);
 
-    public boolean cerrarConvocatoria(EntityManager em, BigInteger secConvocatoria);
+    public boolean cerrarConvocatoria(EntityManager em, BigDecimal secConvocatoria);
 
     public List<Convocatorias> obtenerConvocatoriasAlcance(EntityManager em, String usuario);
 

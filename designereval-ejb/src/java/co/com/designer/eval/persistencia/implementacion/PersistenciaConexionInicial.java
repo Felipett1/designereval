@@ -27,7 +27,7 @@ public class PersistenciaConexionInicial implements IPersistenciaConexionInicial
             String sqlQuery = "SET ROLE ROLENTRADA";
             Query query = em.createNativeQuery(sqlQuery);
             query.executeUpdate();
-            sqlQuery = "select COUNT(*) from usuarios where alias = ? AND activo = 'S'";
+            sqlQuery = "select COUNT(*) from usuarios where alias = ? AND activo = 'S' ";
             query = em.createNativeQuery(sqlQuery);
             query.setParameter(1, usuario);
             BigDecimal retorno = (BigDecimal) query.getSingleResult();
@@ -68,7 +68,7 @@ public class PersistenciaConexionInicial implements IPersistenciaConexionInicial
         try {
             em = eManager;
             em.getTransaction().begin();
-            Query query = em.createNativeQuery("SELECT p.* FROM Usuarios u, Personas p WHERE u.alias = ? AND u.persona = p.secuencia", Personas.class);
+            Query query = em.createNativeQuery("SELECT p.* FROM Usuarios u, Personas p WHERE u.alias = ? AND u.persona = p.secuencia ", Personas.class);
             query.setParameter(1, usuarioBD);
             em.getTransaction().commit();
             return (Personas) query.getSingleResult();
@@ -99,7 +99,7 @@ public class PersistenciaConexionInicial implements IPersistenciaConexionInicial
         try {
             em = eManager;
             em.getTransaction().begin();
-            Query query = em.createQuery("SELECT c FROM Conexiones c WHERE c.usuarioBD = :usuario ORDER BY  c.ultimaEntrada DESC");
+            Query query = em.createQuery("SELECT c FROM Conexiones c WHERE c.usuarioBD = :usuario ORDER BY  c.ultimaEntrada DESC ");
             query.setParameter("usuario", usuario);
             Conexiones conexion = (Conexiones) query.getResultList().get(0);
             em.getTransaction().commit();
@@ -112,12 +112,19 @@ public class PersistenciaConexionInicial implements IPersistenciaConexionInicial
 
     @Override
     public void setearUsuario(EntityManager eManager, String rol, String pwd) {
+        System.out.println(this.getClass().getName()+".setearUsuario()");
+        System.out.println("setearUsuario:rol: "+rol);
+        System.out.println("setearUsuario:pwd: "+pwd);
+        String texto = "SET ROLE " + rol + " IDENTIFIED BY " + pwd;
+//        String texto = "SET ROLE ? IDENTIFIED BY ? ";
+        System.out.println("setearUsuario:texto: "+texto);
+        em = eManager;
         try {
-            String texto = "SET ROLE " + rol + " IDENTIFIED BY " + pwd;
-            em = eManager;
             em.getTransaction().begin();
             String sqlQuery = texto;
             Query query = em.createNativeQuery(sqlQuery);
+//            query.setParameter(1, rol);
+//            query.setParameter(2, pwd);
             query.executeUpdate();
             em.getTransaction().commit();
         } catch (Exception e) {
@@ -133,7 +140,7 @@ public class PersistenciaConexionInicial implements IPersistenciaConexionInicial
                     + "WHERE ck.EMPLEADO = e.SECUENCIA "
                     + "AND e.empresa = em.secuencia "
                     + "AND e.codigoempleado = ? "
-                    + "AND ck.PWD = GENERALES_PKG.ENCRYPT(?) "
+                    + "AND ck.PWD = GENERALES_PKG.ENCRYPT( ? ) "
                     + "AND em.nit = ? ";
             Query query = eManager.createNativeQuery(sqlQuery);
             query.setParameter(1, usuario);

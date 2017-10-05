@@ -20,10 +20,10 @@ public class PersistenciaRespuestas implements IPersistenciaRespuestas {
     public List<Respuestas> obtenerRespuestas(EntityManager em, BigInteger secPregunta) {
         try {
             em.getTransaction().begin();
-            Query q = em.createNativeQuery("SELECT SECUENCIA, CUALITATIVO, CUANTITATIVO, DESCRIPCION\n"
-                    + "FROM EVALRESPUESTAS RES\n"
-                    + "WHERE RES.EVALPREGUNTAS = ?\n"
-                    + "ORDER BY CUANTITATIVO ASC", Respuestas.class);
+            Query q = em.createNativeQuery("SELECT SECUENCIA, CUALITATIVO, CUANTITATIVO, DESCRIPCION "
+                    + "FROM EVALRESPUESTAS RES "
+                    + "WHERE RES.EVALPREGUNTAS = ? "
+                    + "ORDER BY CUANTITATIVO ASC ", Respuestas.class);
             q.setParameter(1, secPregunta);
             List<Respuestas> lst = q.getResultList();
             em.getTransaction().commit();
@@ -39,11 +39,11 @@ public class PersistenciaRespuestas implements IPersistenciaRespuestas {
             BigInteger secPregunta, BigInteger secRespuesta) {
         try {
             em.getTransaction().begin();
-            Query q = em.createNativeQuery("INSERT INTO EVALRESPUESTASINDAGACIONES (EVALINDAGACION, EVALPREGUNTA, EVALRESPUESTA, CUALITATIVOASIGNADO, CUANTITATIVOASIGNADO )\n"
-                    + "VALUES ( ?, ?, ?, \n"
-                    + "(SELECT CUALITATIVO FROM EVALRESPUESTAS WHERE SECUENCIA = ?),\n"
-                    + "(SELECT CUANTITATIVO FROM EVALRESPUESTAS WHERE SECUENCIA = ?)\n"
-                    + ")");
+            Query q = em.createNativeQuery("INSERT INTO EVALRESPUESTASINDAGACIONES (EVALINDAGACION, EVALPREGUNTA, EVALRESPUESTA, CUALITATIVOASIGNADO, CUANTITATIVOASIGNADO ) "
+                    + "VALUES ( ?, ?, ?, "
+                    + "(SELECT CUALITATIVO FROM EVALRESPUESTAS WHERE SECUENCIA = ?), "
+                    + "(SELECT CUANTITATIVO FROM EVALRESPUESTAS WHERE SECUENCIA = ?) "
+                    + ") ");
             q.setParameter(1, secIndagacion);
             q.setParameter(2, secPregunta);
             q.setParameter(3, secRespuesta);
@@ -63,12 +63,12 @@ public class PersistenciaRespuestas implements IPersistenciaRespuestas {
             BigInteger secPregunta, BigInteger secRespuesta) {
         try {
             em.getTransaction().begin();
-            Query q = em.createNativeQuery("UPDATE EVALRESPUESTASINDAGACIONES \n"
-                    + "SET CUALITATIVOASIGNADO = (SELECT CUALITATIVO FROM EVALRESPUESTAS WHERE SECUENCIA = ?) ,\n"
-                    + "CUANTITATIVOASIGNADO = (SELECT CUANTITATIVO FROM EVALRESPUESTAS WHERE SECUENCIA = ?) ,\n"
-                    + "EVALRESPUESTA = ?\n"
-                    + "WHERE EVALINDAGACION = ?\n"
-                    + "AND EVALPREGUNTA = ?");
+            Query q = em.createNativeQuery("UPDATE EVALRESPUESTASINDAGACIONES "
+                    + "SET CUALITATIVOASIGNADO = (SELECT CUALITATIVO FROM EVALRESPUESTAS WHERE SECUENCIA = ?) , "
+                    + "CUANTITATIVOASIGNADO = (SELECT CUANTITATIVO FROM EVALRESPUESTAS WHERE SECUENCIA = ?) , "
+                    + "EVALRESPUESTA = ? "
+                    + "WHERE EVALINDAGACION = ? "
+                    + "AND EVALPREGUNTA = ? ");
             q.setParameter(1, secRespuesta);
             q.setParameter(2, secRespuesta);
             q.setParameter(3, secRespuesta);
@@ -88,10 +88,10 @@ public class PersistenciaRespuestas implements IPersistenciaRespuestas {
             BigInteger secPregunta) {
         try {
             em.getTransaction().begin();
-            Query q = em.createNativeQuery("SELECT EVALRESPUESTA\n"
-                    + "FROM EVALRESPUESTASINDAGACIONES \n"
-                    + "WHERE EVALINDAGACION = ?\n"
-                    + "AND EVALPREGUNTA = ?");
+            Query q = em.createNativeQuery("SELECT EVALRESPUESTA "
+                    + "FROM EVALRESPUESTASINDAGACIONES "
+                    + "WHERE EVALINDAGACION = ? "
+                    + "AND EVALPREGUNTA = ? ");
             q.setParameter(1, secIndagacion);
             q.setParameter(2, secPregunta);
             BigDecimal resultado = (BigDecimal) q.getSingleResult();
@@ -108,8 +108,8 @@ public class PersistenciaRespuestas implements IPersistenciaRespuestas {
     public boolean eliminarRespuestas(EntityManager em, BigInteger secIndagacion) {
         try {
             em.getTransaction().begin();
-            Query q = em.createNativeQuery("DELETE EVALRESPUESTASINDAGACIONES \n"
-                    + "WHERE EVALINDAGACION = ?");
+            Query q = em.createNativeQuery("DELETE EVALRESPUESTASINDAGACIONES "
+                    + "WHERE EVALINDAGACION = ? ");
             q.setParameter(1, secIndagacion);
             q.executeUpdate();
             em.getTransaction().commit();

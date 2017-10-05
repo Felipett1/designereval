@@ -54,7 +54,7 @@ public class PersistenciaPruebas implements IPersistenciaPruebas {
     public boolean actualizarPorcentaje(EntityManager em, BigInteger secPrueba, String observacion, double porcentaje) {
         try {
             em.getTransaction().begin();
-            Query q = em.createNativeQuery("UPDATE EVALINDAGACIONES A SET A.PUNTOOBTENIDO = ?, OBSEVALUADOR = ? WHERE A.SECUENCIA = ?");
+            Query q = em.createNativeQuery("UPDATE EVALINDAGACIONES A SET A.PUNTOOBTENIDO = ? , OBSEVALUADOR = ? WHERE A.SECUENCIA = ? ");
             q.setParameter(1, porcentaje);
             q.setParameter(2, observacion);
             q.setParameter(3, secPrueba);
@@ -71,7 +71,7 @@ public class PersistenciaPruebas implements IPersistenciaPruebas {
     public boolean actualizarEstado(EntityManager em, BigInteger secPrueba, String estado) {
         try {
             em.getTransaction().begin();
-            Query q = em.createNativeQuery("UPDATE EVALINDAGACIONES A SET A.ESTADOPRUEBA = ? WHERE A.SECUENCIA = ?");
+            Query q = em.createNativeQuery("UPDATE EVALINDAGACIONES A SET A.ESTADOPRUEBA = ? WHERE A.SECUENCIA = ? ");
             q.setParameter(1, estado);
             q.setParameter(2, secPrueba);
             q.executeUpdate();

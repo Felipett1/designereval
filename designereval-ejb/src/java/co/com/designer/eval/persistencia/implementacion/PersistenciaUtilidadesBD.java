@@ -17,7 +17,7 @@ public class PersistenciaUtilidadesBD implements IPersistenciaUtilidadesBD {
     @Override
     public byte[] encriptar(EntityManager eManager, String valor) {
         try {
-            String sqlQuery = "SELECT GENERALES_PKG.ENCRYPT(?) FROM DUAL";
+            String sqlQuery = "SELECT GENERALES_PKG.ENCRYPT( ? ) FROM DUAL ";
             Query query = eManager.createNativeQuery(sqlQuery);
             query.setParameter(1, valor);
             return (byte[]) query.getSingleResult();
@@ -34,7 +34,7 @@ public class PersistenciaUtilidadesBD implements IPersistenciaUtilidadesBD {
 //        System.out.println(valor);
         String resultado = "";
         try {
-            String sqlQuery = "SELECT GENERALES_PKG.DECRYPT(?) FROM DUAL";
+            String sqlQuery = "SELECT GENERALES_PKG.DECRYPT( ? ) FROM DUAL ";
             Query query = eManager.createNativeQuery(sqlQuery);
             query.setParameter(1, valor);
             resultado = (String) query.getSingleResult();

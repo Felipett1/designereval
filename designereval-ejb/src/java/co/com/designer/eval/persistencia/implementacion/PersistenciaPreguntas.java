@@ -20,13 +20,13 @@ public class PersistenciaPreguntas implements IPersistenciaPreguntas {
     public List<Preguntas> obtenerPreguntas(EntityManager em, BigInteger secPrueba) {
         try {
             em.getTransaction().begin();
-            Query q = em.createNativeQuery("SELECT SECUENCIA, CONSECUTIVO, DESCRIPCION, OBSERVACIONES \n"
-                    + "FROM EVALPREGUNTAS\n"
-                    + "WHERE EVALPLANILLA=(SELECT PL.SECUENCIA \n"
-                    + "       FROM EVALPRUEBAS PR, EVALPLANILLAS PL\n"
-                    + "	   WHERE PR.PLANILLA = PL.SECUENCIA\n"
-                    + "	   AND PR.SECUENCIA = ?\n"
-                    + "       )\n"
+            Query q = em.createNativeQuery("SELECT SECUENCIA, CONSECUTIVO, DESCRIPCION, OBSERVACIONES "
+                    + "FROM EVALPREGUNTAS "
+                    + "WHERE EVALPLANILLA=(SELECT PL.SECUENCIA "
+                    + "       FROM EVALPRUEBAS PR, EVALPLANILLAS PL "
+                    + "	   WHERE PR.PLANILLA = PL.SECUENCIA "
+                    + "	   AND PR.SECUENCIA = ? "
+                    + "       ) "
                     + "ORDER BY CONSECUTIVO ASC", Preguntas.class);
             q.setParameter(1, secPrueba);
             List<Preguntas> lst = q.getResultList();
@@ -42,9 +42,9 @@ public class PersistenciaPreguntas implements IPersistenciaPreguntas {
     public BigInteger obtenerNroPreguntas(EntityManager em, BigInteger secPrueba) {
         try {
             em.getTransaction().begin();
-            Query q = em.createNativeQuery("SELECT PL.NUMEROPREGUNTA\n"
-                    + "FROM EVALPRUEBAS PR, EVALPLANILLAS PL\n"
-                    + "WHERE PR.PLANILLA = PL.SECUENCIA\n"
+            Query q = em.createNativeQuery("SELECT PL.NUMEROPREGUNTA "
+                    + "FROM EVALPRUEBAS PR, EVALPLANILLAS PL "
+                    + "WHERE PR.PLANILLA = PL.SECUENCIA "
                     + "AND PR.SECUENCIA = ? ");
             q.setParameter(1, secPrueba);
             BigDecimal resultado = (BigDecimal) q.getSingleResult();

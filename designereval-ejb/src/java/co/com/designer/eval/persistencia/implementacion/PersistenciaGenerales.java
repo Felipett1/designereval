@@ -32,7 +32,7 @@ public class PersistenciaGenerales implements IPersistenciaGenerales {
     public String logoEmpresa(EntityManager eManager, String nit) {
         try {
             eManager.getTransaction().begin();
-            String sqlQuery = "SELECT LOGO FROM EMPRESAS WHERE NIT = ?";
+            String sqlQuery = "SELECT LOGO FROM EMPRESAS WHERE NIT = ? ";
             Query query = eManager.createNativeQuery(sqlQuery);
             query.setParameter(1, nit);
             String logo = (String) query.getSingleResult();

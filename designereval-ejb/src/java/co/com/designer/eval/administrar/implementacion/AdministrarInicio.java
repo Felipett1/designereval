@@ -17,6 +17,7 @@ import co.com.designer.eval.persistencia.interfaz.IPersistenciaUtilidadesBD;
 import co.com.designer.eval.reportes.IniciarReporteInterface;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
@@ -110,7 +111,7 @@ public class AdministrarInicio implements IAdministrarInicio {
     }
 
     @Override
-    public boolean cerrarConvocatoria(BigInteger secConvocatoria) {
+    public boolean cerrarConvocatoria(BigDecimal secConvocatoria) {
         EntityManager em = emf.createEntityManager();
         return persistenciaConvocatorias.cerrarConvocatoria(em, secConvocatoria);
     }
@@ -137,11 +138,12 @@ public class AdministrarInicio implements IAdministrarInicio {
             EntityManager em = emf.createEntityManager();
             Generales general = persistenciaGenerales.consultarRutasGenerales(em);
             em.close();
-
+            Calendar fecha = Calendar.getInstance();
             String pathReporteGenerado = null;
             String nombreArchivo;
             if (general != null) {
-                nombreArchivo = "EVAL - Reporte resumen convocatoria " + nombreConvocatoria;
+//                nombreArchivo = "EVAL - Reporte resumen convocatoria " + nombreConvocatoria ;
+                nombreArchivo = "EVAL-resumen_convocatoria_" + nombreConvocatoria + fecha.get(Calendar.YEAR)+"_"+(fecha.get(Calendar.MONTH)+1)+"_"+fecha.get(Calendar.DAY_OF_MONTH)+"_"+fecha.get(Calendar.HOUR)+"_"+fecha.get(Calendar.MINUTE)+"_"+fecha.get(Calendar.SECOND)+"_"+fecha.get(Calendar.MILLISECOND);
                 String rutaReporte = general.getPathreportes();
                 String rutaGenerado = general.getUbicareportes();
                 if (tipoReporte.equals("PDF")) {

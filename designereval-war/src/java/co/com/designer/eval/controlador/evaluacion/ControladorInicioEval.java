@@ -8,7 +8,8 @@ import co.com.designer.eval.entidades.Evaluados;
 import co.com.designer.eval.entidades.Pruebas;
 import co.com.designer.eval.utilidadesUI.MensajesUI;
 import co.com.designer.eval.utilidadesUI.PrimefacesContextUI;
-import java.io.*;
+import java.io.Serializable;
+//import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashMap;
@@ -37,7 +38,8 @@ public class ControladorInicioEval implements Serializable {
     private List<Evaluados> evaluados;
     private List<Pruebas> pruebas;
     private BigDecimal secuenciaEvaluador, totalEmpleadosAsignados, empleadosConvocados, empleadosAsignados, empleadosEvaluados;
-    private BigInteger secConvocatoria;
+//    private BigInteger secConvocatoria;
+    private BigDecimal secConvocatoria;
     private int estadoConvocatoria = 2;
 
     //SELECCION
@@ -135,12 +137,14 @@ public class ControladorInicioEval implements Serializable {
             prueba = pruebas.get(index);
             PrimefacesContextUI.ejecutar("seleccionPrueba();");
         } else {
-            secConvocatoria = convocatorias.get(index).getSecuencia();
+//            secConvocatoria = convocatorias.get(index).getSecuencia();
+            secConvocatoria = new BigDecimal(convocatorias.get(index).getSecuencia());
             PrimefacesContextUI.ejecutar("PF('alertaCC').show();");
         }
     }
 
-    public void obtenerSecuenciaConvocatoria(BigInteger sec) {
+//    public void obtenerSecuenciaConvocatoria(BigInteger sec) {
+    public void obtenerSecuenciaConvocatoria(BigDecimal sec) {
         secConvocatoria = sec;
     }
 
@@ -160,6 +164,15 @@ public class ControladorInicioEval implements Serializable {
             } else {
                 MensajesUI.error("Error al cerrar la convocatoria.");
             }
+        } catch (Exception e) {
+            MensajesUI.error(ExtraeCausaExcepcion.obtenerMensajeSQLException(e));
+        }
+    }
+
+    public void generarReporteHistoEval() {
+        try {
+            envioCorreoCierreConvocatoria();
+            MensajesUI.info("Convocatoria cerrada exitosamente.");
         } catch (Exception e) {
             MensajesUI.error(ExtraeCausaExcepcion.obtenerMensajeSQLException(e));
         }
@@ -189,7 +202,7 @@ public class ControladorInicioEval implements Serializable {
         if (secConvocatoria != null) {
             Convocatorias c = null;
             for (Convocatorias cvc : convocatorias) {
-                if (cvc.getSecuencia().compareTo(secConvocatoria) == 0) {
+                if (new BigDecimal(cvc.getSecuencia()).compareTo(secConvocatoria) == 0) {
                     c = cvc;
                 }
             }

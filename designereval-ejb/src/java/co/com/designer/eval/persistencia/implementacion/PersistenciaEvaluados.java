@@ -20,20 +20,20 @@ public class PersistenciaEvaluados implements IPersistenciaEvaluados {
     public List<Evaluados> obtenerEvaluados(EntityManager em, String usuario, BigInteger secConvocatoria) {
         try {
             em.getTransaction().begin();
-            Query q = em.createNativeQuery("SELECT R.SECUENCIA, R.EMPLEADO, CONCAT(CONCAT(CONCAT(CONCAT(PE.NOMBRE,' '),PE.PRIMERAPELLIDO),' '),PE.SEGUNDOAPELLIDO) NOMBREPERSONA, R.PUNTAJEOBTENIDO, \n"
-                    + "R.FECHAPERIODODESDE, R.FECHAPERIODOHASTA, R.EVALCONVOCATORIA, \n"
-                    + "R.NOMBREPRUEBA, R.ESTADOEVAL \n"
-                    + "FROM EVALRESULTADOSCONV R, EMPLEADOS E, PERSONAS PE\n"
-                    + "WHERE (EXISTS(SELECT 'X' \n"
-                    + "              FROM EVALINDAGACIONES I \n"
-                    + "			  WHERE I.EMPLEADOEVALUADOR=(SELECT P.SECUENCIA \n"
-                    + "                     FROM USUARIOS U, PERSONAS P\n"
-                    + "                     WHERE U.persona=P.secuencia\n"
-                    + "                     AND U.ALIAS=?)\n"
-                    + "              AND R.SECUENCIA=I.evalresultadoconv)\n"
-                    + "      )\n"
-                    + "AND R.EVALCONVOCATORIA = ?\n"
-                    + "AND R.EMPLEADO = E.SECUENCIA\n"
+            Query q = em.createNativeQuery("SELECT R.SECUENCIA, R.EMPLEADO, CONCAT(CONCAT(CONCAT(CONCAT(PE.NOMBRE,' '),PE.PRIMERAPELLIDO),' '),PE.SEGUNDOAPELLIDO) NOMBREPERSONA, R.PUNTAJEOBTENIDO, "
+                    + "R.FECHAPERIODODESDE, R.FECHAPERIODOHASTA, R.EVALCONVOCATORIA, "
+                    + "R.NOMBREPRUEBA, R.ESTADOEVAL "
+                    + "FROM EVALRESULTADOSCONV R, EMPLEADOS E, PERSONAS PE "
+                    + "WHERE (EXISTS(SELECT 'X' "
+                    + "              FROM EVALINDAGACIONES I "
+                    + "			  WHERE I.EMPLEADOEVALUADOR=(SELECT P.SECUENCIA "
+                    + "                     FROM USUARIOS U, PERSONAS P "
+                    + "                     WHERE U.persona=P.secuencia "
+                    + "                     AND U.ALIAS=?) "
+                    + "              AND R.SECUENCIA=I.evalresultadoconv) "
+                    + "      ) "
+                    + "AND R.EVALCONVOCATORIA = ? "
+                    + "AND R.EMPLEADO = E.SECUENCIA "
                     + "AND E.PERSONA = PE.SECUENCIA ", Evaluados.class);
             q.setParameter(1, usuario);
             q.setParameter(2, secConvocatoria);
@@ -54,25 +54,25 @@ public class PersistenciaEvaluados implements IPersistenciaEvaluados {
             Query q;
             Integer total;
             if (agrupado == 1) {
-                q = em.createNativeQuery("SELECT COUNT(*) FROM EVALPRUEBAS WHERE CONVOCATORIA = ? GROUP BY PLANILLA");
+                q = em.createNativeQuery("SELECT COUNT(*) FROM EVALPRUEBAS WHERE CONVOCATORIA = ? GROUP BY PLANILLA ");
                 q.setParameter(1, secConvocatoria);
                 total = (Integer) q.getResultList().size();
             } else {
-                q = em.createNativeQuery("SELECT COUNT(*) FROM EVALPRUEBAS WHERE CONVOCATORIA = ?");
+                q = em.createNativeQuery("SELECT COUNT(*) FROM EVALPRUEBAS WHERE CONVOCATORIA = ? ");
                 q.setParameter(1, secConvocatoria);
                 total = ((BigDecimal) q.getSingleResult()).intValue();
             }
 
             if (total != null && total != 0) {
-                q = em.createNativeQuery("SELECT sum(nvl(a.puntoobtenido,0)*b.puntos)/100/?\n"
-                        + "FROM evalindagaciones a, evalpruebas b\n"
-                        + "WHERE a.evalprueba = b.secuencia\n"
-                        + "AND a.evalresultadoconv = ?");
+                q = em.createNativeQuery("SELECT sum(nvl(a.puntoobtenido,0)*b.puntos)/100/? "
+                        + "FROM evalindagaciones a, evalpruebas b "
+                        + "WHERE a.evalprueba = b.secuencia "
+                        + "AND a.evalresultadoconv = ? ");
                 q.setParameter(1, total);
                 q.setParameter(2, secEvaluado);
                 BigDecimal porcentaje = (BigDecimal) q.getSingleResult();
                 if (porcentaje != null) {
-                    q = em.createNativeQuery("UPDATE EVALRESULTADOSCONV A SET A.PUNTAJEOBTENIDO = ? WHERE A.SECUENCIA = ?");
+                    q = em.createNativeQuery("UPDATE EVALRESULTADOSCONV A SET A.PUNTAJEOBTENIDO = ? WHERE A.SECUENCIA = ? ");
                     q.setParameter(1, porcentaje);
                     q.setParameter(2, secEvaluado);
                     q.executeUpdate();

@@ -32,7 +32,7 @@ public interface IAdministrarInicio {
 
     public List<Pruebas> obtenerPruebasEvaluado(String usuario, BigInteger secEmplConvo);
 
-    public boolean cerrarConvocatoria(BigInteger secConvocatoria);
+    public boolean cerrarConvocatoria(BigDecimal secConvocatoria);
 
     public List<Convocatorias> obtenerConvocatoriasAlcance(String usuario);
 

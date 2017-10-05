@@ -3,7 +3,12 @@ package co.com.designer.eval.entidades;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
-import javax.persistence.*;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Temporal;
+//import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**

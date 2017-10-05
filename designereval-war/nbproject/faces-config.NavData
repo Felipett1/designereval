@@ -7,16 +7,12 @@
         <Node id="index.xhtml" x="159" y="16" zoom="true"/>
         <Node id="Kiosko/informacionBasica.xhtml" x="150" y="450" zoom="true"/>
         <Node id="Ingreso/ingreso.xhtml" x="399" y="335" zoom="true"/>
-        <Node id="Kiosko/kio_datopersonal.xhtml" x="129" y="165" zoom="true"/>
         <Node id="Kiosko/generarReporte.xhtml" x="400" y="450" zoom="true"/>
         <Node id="Ingreso/primerIngreso.xhtml" x="650" y="150" zoom="true"/>
         <Node id="Movil/ingreso.xhtml" x="455" y="67" zoom="true"/>
-        <Node id="Ingreso/cambiarClave.xhtml" x="400" y="600" zoom="true"/>
         <Node id="Movil/inicioEval.xhtml" x="699" y="47" zoom="true"/>
         <Node id="Kiosko/opcionesKiosko.xhtml" x="150" y="750" zoom="true"/>
         <Node id="Ingreso/olvidoClave.xhtml" x="400" y="150" zoom="true"/>
-        <Node id="Plantilla/menu.xhtml" x="900" y="300" zoom="true"/>
-        <Node id="Pruebas/paginaPruebas.xhtml" x="150" y="600" zoom="true"/>
         <Node id="Plantilla/plantilla.xhtml" x="150" y="300" zoom="true"/>
     </Scope>
     <Scope Scope="All Faces Configurations"/>

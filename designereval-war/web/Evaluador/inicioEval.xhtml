@@ -37,13 +37,17 @@
                     <h:outputText value="#{convocatoria.codigo}"/>
                 </p:column>
 
-                <p:column headerText="Enfoque" width="120">
+                <p:column headerText="Enfoque" width="115">
                     <h:outputText value="#{convocatoria.enfoque}"/>
                 </p:column>
 
-                <p:column width="70" style="display: #{controladorInicioEval.estadoConvocatoria == 1 ? 'none' : ''}">
+                <p:column headerText="Acción" width="85" >
                     <p:commandButton value="Cerrar" actionListener="#{controladorInicioEval.obtenerSecuenciaConvocatoria(convocatoria.secuencia)}"
+                                     style="display: #{controladorInicioEval.estadoConvocatoria == 1 ? 'none' : ''}"
                                      onclick="PF('alertaCerrar').show()"/>
+                    <p:commandButton value="Reporte" actionListener="#{controladorInicioEval.obtenerSecuenciaConvocatoria(convocatoria.secuencia)}"
+                                     style="display: #{controladorInicioEval.estadoConvocatoria == 1 ? '' : 'none'}"
+                                     onclick="PF('alertaReporteHisto').show()"/>
                 </p:column>
             </p:dataTable>
         </p:column>
@@ -168,6 +172,30 @@
                                  update=":principalForm:dtbConvocatorias, :principalForm:dtbEvaluados, 
                                  :principalForm:informacion,
                                  :principalForm:dtbPruebas"
+                                 process="@this" />
+            </p:column>
+        </p:panelGrid>
+    </p:dialog>
+    <p:dialog id="alertaReporteHisto" header="Atención" widgetVar="alertaReporteHisto"  resizable="false" 
+              draggable="false" modal="true" closable="false" closeOnEscape="true">  
+        <p:panelGrid columns="1" styleClass="noBorders">
+            <p:column>
+                <h:outputText value="Se va a volver a generar el reporte para luego enviarlo por correo."
+                              escape="false"/>
+                <br/>
+                <br/>
+                <center>
+                    <h:outputText value="¿Está seguro(a) de continuar?"
+                                  style="font-weight: bold"/>
+                </center>
+            </p:column>
+            <p:column>
+                <p:commandButton value="No" style="float: right;"
+                                 onclick="PF('alertaReporteHisto').hide();"
+                                 process="@this"/>
+                <p:commandButton value="Si" style="float: right;" 
+                                 actionListener="#{controladorInicioEval.cerrarConvocatoria()}"
+                                 onclick="PF('alertaReporteHisto').hide();"
                                  process="@this" />
             </p:column>
         </p:panelGrid>
