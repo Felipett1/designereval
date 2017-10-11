@@ -2,6 +2,7 @@ package co.com.designer.eval.controlador.ingreso;
 
 import co.com.designer.eval.administrar.interfaz.IAdministrarIngreso;
 import co.com.designer.eval.clasesAyuda.CadenasConexion;
+import co.com.designer.eval.clasesAyuda.ExtraeCausaExcepcion;
 import co.com.designer.eval.clasesAyuda.LeerArchivoXML;
 import co.com.designer.eval.controlador.autenticacion.Util;
 import co.com.designer.eval.entidades.Conexiones;
@@ -16,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.EJBTransactionRolledbackException;
@@ -47,9 +50,13 @@ public class ControladorIngreso implements Serializable {
     private String grupoSeleccionado;
     private Personas persona;
     private Conexiones conexion;
+    private String pass;
+    private String passCnf;
 
     public ControladorIngreso() {
         logo = "logonominadesignertrans.png";
+        pass = "";
+        passCnf = "";
     }
 
     @PostConstruct
@@ -112,22 +119,22 @@ public class ControladorIngreso implements Serializable {
                     nit = cadena.getNit();
                     if (administrarIngreso.conexionIngreso(cadena.getCadena())) {
                         //if (administrarIngreso.validarUsuario(usuario)) {
-                            persona = administrarIngreso.conexionUsuario(cadena.getCadena(), usuario, clave);
-                            if (persona != null) {
-                                administrarIngreso.adicionarConexionUsuario(ses.getId());
-                                conexion = administrarIngreso.ultimaConexionUsuario(usuario);
-                                ultimaConexion = conexion.getUltimaEntrada();
-                                guardarUltimaConexion();
-                                ingresoExitoso = true;
-                                HttpSession session = Util.getSession();
-                                session.setAttribute("idUsuario", usuario);
-                                imprimir("Conectado a: " + session.getId());
-                                retorno = "plantilla";
-                            } else {
-                                //CONTRASEÑA INVALIDA.
-                                MensajesUI.error("Contraseña invalida.");
-                                ingresoExitoso = false;
-                            }
+                        persona = administrarIngreso.conexionUsuario(cadena.getCadena(), usuario, clave);
+                        if (persona != null) {
+                            administrarIngreso.adicionarConexionUsuario(ses.getId());
+                            conexion = administrarIngreso.ultimaConexionUsuario(usuario);
+                            ultimaConexion = conexion.getUltimaEntrada();
+                            guardarUltimaConexion();
+                            ingresoExitoso = true;
+                            HttpSession session = Util.getSession();
+                            session.setAttribute("idUsuario", usuario);
+                            imprimir("Conectado a: " + session.getId());
+                            retorno = "plantilla";
+                        } else {
+                            //CONTRASEÑA INVALIDA.
+                            MensajesUI.error("Contraseña invalida.");
+                            ingresoExitoso = false;
+                        }
                         /*} else {
                             //EL USUARIO NO EXISTE O ESTA INACTIVO.
                             MensajesUI.error("El usuario " + usuario + " no existe o esta inactivo, por favor contactar al área de soporte.");
@@ -159,6 +166,8 @@ public class ControladorIngreso implements Serializable {
                     System.out.println("ExternalContext vacio");
                 }
                 administrarIngreso.cerrarSession(ses.getId());
+                this.pass = "";
+                this.passCnf = "";
                 if (grupoSeleccionado != null) {
                     ec.redirect(ec.getRequestContextPath() + "/" + "?grupo=" + grupoSeleccionado);
                 } else {
@@ -235,6 +244,23 @@ public class ControladorIngreso implements Serializable {
         registroConexion.setUsuarioBD(usuario);
         registroConexion.setSid(BigInteger.ZERO);
         administrarIngreso.insertarUltimaConexion(registroConexion);
+    }
+
+    public void cambiarPassword() {
+        String msj;
+        if (this.pass == null || this.passCnf == null
+                || this.pass.isEmpty() || this.passCnf.isEmpty()) {
+            MensajesUI.error("Los campos de contraseña no deben estar en blanco.");
+        } else if (!this.pass.equals(this.passCnf)) {
+            MensajesUI.error("El campo de nueva contraseña y la confirmación deben ser iguales.");
+        } else {
+            msj = administrarIngreso.cambiarPassword(usuario, pass);
+            if (msj != null && !"".equals(msj)) {
+                MensajesUI.error(msj);
+            } else {
+                PrimefacesContextUI.ejecutar("PF('notifiCambio').show();");
+            }
+        }
     }
 
     //GETTER AND SETTER
@@ -318,6 +344,22 @@ public class ControladorIngreso implements Serializable {
 
     public Personas getPersona() {
         return persona;
+    }
+
+    public String getPass() {
+        return pass;
+    }
+
+    public void setPass(String pass) {
+        this.pass = pass;
+    }
+
+    public String getPassCnf() {
+        return passCnf;
+    }
+
+    public void setPassCnf(String passCnf) {
+        this.passCnf = passCnf;
     }
 
 }

@@ -62,8 +62,9 @@
             <h:outputText value="Observación:" style="font-weight: bold"/>
             <br/>
             <p:inputTextarea value="#{controladorEvaluacion.observacionEvaluador}"
-                             style="width: 50%; height: 150px">
+                             style="width: 50%; height: 150px;">
                 <p:ajax update="@this"/>
+                <f:validateLength maximum="500"/>
             </p:inputTextarea>
         </p:column>
         <p:column>

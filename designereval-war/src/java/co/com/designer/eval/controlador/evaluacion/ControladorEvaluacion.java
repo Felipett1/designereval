@@ -107,6 +107,10 @@ public class ControladorEvaluacion implements Serializable {
                     break;
                 }
             }
+            if (observacionEvaluador != null && observacionEvaluador.length()<500 ){
+                MensajesUI.error("La observación es obligatoria y no debe ser mayor a 500 letras.");
+                error = true;
+            }
             if (!error) {
                 if (administrarEvaluacion.actualizarPorcentaje(secIndigacion, observacionEvaluador, porcentaje)
                         && administrarEvaluacion.actualizarPorcentaje(secConvocatoria, secEvaluado, agrupado)) {
@@ -206,7 +210,11 @@ public class ControladorEvaluacion implements Serializable {
     }
 
     public void setObservacionEvaluador(String observacionEvaluador) {
-        this.observacionEvaluador = observacionEvaluador;
+        if (observacionEvaluador.length() <= 500) {
+            this.observacionEvaluador = observacionEvaluador;
+        }else{
+            MensajesUI.error("La observación debe ser menor a 500 letras.");
+        }
     }
 
     public boolean isTieneRespuestas() {
