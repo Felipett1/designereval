@@ -4,7 +4,7 @@ package co.com.designer.eval.clasesAyuda;
  *
  * @author Felipe Triviño
  */
-public class CadenasConexion implements Comparable{
+public class CadenasConexion implements Comparable {
 
     private String id;
     private String descripcion;
@@ -12,14 +12,16 @@ public class CadenasConexion implements Comparable{
     private String nit;
     private String fondo;
     private String grupo;
+    private boolean observacion;
 
-    public CadenasConexion(String id, String descripcion, String cadena, String nit, String fondo, String grupo) {
+    public CadenasConexion(String id, String descripcion, String cadena, String nit, String fondo, String grupo, boolean observacion) {
         this.id = id;
         this.descripcion = descripcion;
         this.cadena = cadena;
         this.nit = nit;
         this.fondo = fondo;
         this.grupo = grupo;
+        this.observacion = observacion;
     }
 
     public String getCadena() {
@@ -70,18 +72,26 @@ public class CadenasConexion implements Comparable{
         this.grupo = grupo;
     }
 
+    public boolean isObservacion() {
+        return observacion;
+    }
+
+    public void setObservacion(boolean observacion) {
+        this.observacion = observacion;
+    }
+
     @Override
     public int compareTo(Object o) {
         int resultado;
         CadenasConexion ck = (CadenasConexion) o;
-        if (this.getId().equalsIgnoreCase(ck.getId())){
+        if (this.getId().equalsIgnoreCase(ck.getId())) {
             resultado = 0;
-        } else if (Integer.parseInt(this.getId()) < Integer.parseInt(ck.getId())){
-            resultado=-1;
+        } else if (Integer.parseInt(this.getId()) < Integer.parseInt(ck.getId())) {
+            resultado = -1;
         } else {
             resultado = 1;
         }
         return resultado;
     }
-    
+
 }

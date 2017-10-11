@@ -1,6 +1,7 @@
 package co.com.designer.eval.controlador.evaluacion;
 
 import co.com.designer.eval.administrar.interfaz.IAdministrarEvaluacion;
+import co.com.designer.eval.controlador.ingreso.ControladorIngreso;
 import co.com.designer.eval.entidades.Convocatorias;
 import co.com.designer.eval.entidades.Evaluados;
 import co.com.designer.eval.entidades.Preguntas;
@@ -39,7 +40,7 @@ public class ControladorEvaluacion implements Serializable {
     private Convocatorias convocatoriaActual;
     private Evaluados evaluadoActual;
     private Integer agrupado;
-    private boolean tieneRespuestas;
+    private boolean tieneRespuestas, observacionObligatoria;
     private int puntaje;
     private double porcentaje;
 
@@ -68,6 +69,7 @@ public class ControladorEvaluacion implements Serializable {
         convocatoriaActual = (Convocatorias) ((ControladorInicioEval) x.getApplication().evaluateExpressionGet(x, "#{controladorInicioEval}", ControladorInicioEval.class)).obtenerInformacion(2);
         convocatoria = convocatoriaActual.getCodigo() + " - " + convocatoriaActual.getEnfoque();
         pruebaActual = ((Pruebas) ((ControladorInicioEval) x.getApplication().evaluateExpressionGet(x, "#{controladorInicioEval}", ControladorInicioEval.class)).obtenerInformacion(3));
+        observacionObligatoria = ((ControladorIngreso) x.getApplication().evaluateExpressionGet(x, "#{controladorIngreso}", ControladorIngreso.class)).getCadena().isObservacion();
         prueba = pruebaActual.getPrueba();
         observacionEvaluador = pruebaActual.getObsEvaluador();
         secIndigacion = pruebaActual.getSecuencia();
@@ -95,26 +97,29 @@ public class ControladorEvaluacion implements Serializable {
             }
         }
         if (todas) {
-            boolean error = false;
-            for (Preguntas pregunta : preguntas) {
-                if (pregunta.isNuevo()
-                        && administrarEvaluacion.registrarRespuesta(secIndigacion, pregunta.getSecuencia(), pregunta.getRespuesta())) {
-                } else if (!pregunta.isNuevo()
-                        && administrarEvaluacion.actualizarRespuesta(secIndigacion, pregunta.getSecuencia(), pregunta.getRespuesta())) {
-                } else {
-                    MensajesUI.error("No fue posible registrar las respuesta.");
-                    error = true;
-                    break;
+            if (!observacionObligatoria || (observacionObligatoria && (observacionEvaluador != null && !observacionEvaluador.isEmpty()))) {
+                boolean error = false;
+                for (Preguntas pregunta : preguntas) {
+                    if (pregunta.isNuevo()
+                            && administrarEvaluacion.registrarRespuesta(secIndigacion, pregunta.getSecuencia(), pregunta.getRespuesta())) {
+                    } else if (!pregunta.isNuevo()
+                            && administrarEvaluacion.actualizarRespuesta(secIndigacion, pregunta.getSecuencia(), pregunta.getRespuesta())) {
+                    } else {
+                        MensajesUI.error("No fue posible registrar las respuesta.");
+                        error = true;
+                        break;
+                    }
                 }
-            }
-            if (!error) {
-                if (administrarEvaluacion.actualizarPorcentaje(secIndigacion, observacionEvaluador, porcentaje)
-                        && administrarEvaluacion.actualizarPorcentaje(secConvocatoria, secEvaluado, agrupado)) {
-                    PrimefacesContextUI.ejecutar("PF('envioExitoso').show()");
-                } else {
-                    MensajesUI.error("No fue posible registrar el puntaje, ni la observación en la prueba.");
+                if (!error) {
+                    if (administrarEvaluacion.actualizarPorcentaje(secIndigacion, observacionEvaluador, porcentaje)
+                            && administrarEvaluacion.actualizarPorcentaje(secConvocatoria, secEvaluado, agrupado)) {
+                        PrimefacesContextUI.ejecutar("PF('envioExitoso').show()");
+                    } else {
+                        MensajesUI.error("No fue posible registrar el puntaje, ni la observación en la prueba.");
+                    }
                 }
-                //MensajesUI.info("Respuestas guardadas exitosamente.");
+            } else {
+                MensajesUI.error("La observación es obligatoria.");
             }
         } else {
             MensajesUI.error("Antes de enviar la evaluación debe responder todas las preguntas.");
@@ -202,10 +207,12 @@ public class ControladorEvaluacion implements Serializable {
     }
 
     public String getObservacionEvaluador() {
+        System.out.println("GET");
         return observacionEvaluador;
     }
 
     public void setObservacionEvaluador(String observacionEvaluador) {
+        System.out.println("SET");
         this.observacionEvaluador = observacionEvaluador;
     }
 
@@ -219,6 +226,10 @@ public class ControladorEvaluacion implements Serializable {
 
     public double getPorcentaje() {
         return porcentaje;
+    }
+
+    public boolean isObservacionObligatoria() {
+        return observacionObligatoria;
     }
 
 }

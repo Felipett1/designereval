@@ -47,6 +47,7 @@ public class ControladorIngreso implements Serializable {
     private String grupoSeleccionado;
     private Personas persona;
     private Conexiones conexion;
+    private CadenasConexion cadena;
 
     public ControladorIngreso() {
         logo = "logonominadesignertrans.png";
@@ -103,7 +104,6 @@ public class ControladorIngreso implements Serializable {
         HttpSession ses = (HttpSession) contexto.getExternalContext().getSession(false);
         try {
             if (!ingresoExitoso) {
-                CadenasConexion cadena;
                 cadena = validarUnidadPersistencia(unidadPersistenciaIngreso);
                 usuario = usuario.trim();
                 if (usuario != null && !usuario.isEmpty()
@@ -112,22 +112,22 @@ public class ControladorIngreso implements Serializable {
                     nit = cadena.getNit();
                     if (administrarIngreso.conexionIngreso(cadena.getCadena())) {
                         //if (administrarIngreso.validarUsuario(usuario)) {
-                            persona = administrarIngreso.conexionUsuario(cadena.getCadena(), usuario, clave);
-                            if (persona != null) {
-                                administrarIngreso.adicionarConexionUsuario(ses.getId());
-                                conexion = administrarIngreso.ultimaConexionUsuario(usuario);
-                                ultimaConexion = conexion.getUltimaEntrada();
-                                guardarUltimaConexion();
-                                ingresoExitoso = true;
-                                HttpSession session = Util.getSession();
-                                session.setAttribute("idUsuario", usuario);
-                                imprimir("Conectado a: " + session.getId());
-                                retorno = "plantilla";
-                            } else {
-                                //CONTRASEÑA INVALIDA.
-                                MensajesUI.error("Contraseña invalida.");
-                                ingresoExitoso = false;
-                            }
+                        persona = administrarIngreso.conexionUsuario(cadena.getCadena(), usuario, clave);
+                        if (persona != null) {
+                            administrarIngreso.adicionarConexionUsuario(ses.getId());
+                            conexion = administrarIngreso.ultimaConexionUsuario(usuario);
+                            ultimaConexion = conexion.getUltimaEntrada();
+                            guardarUltimaConexion();
+                            ingresoExitoso = true;
+                            HttpSession session = Util.getSession();
+                            session.setAttribute("idUsuario", usuario);
+                            imprimir("Conectado a: " + session.getId());
+                            retorno = "plantilla";
+                        } else {
+                            //CONTRASEÑA INVALIDA.
+                            MensajesUI.error("Contraseña invalida.");
+                            ingresoExitoso = false;
+                        }
                         /*} else {
                             //EL USUARIO NO EXISTE O ESTA INACTIVO.
                             MensajesUI.error("El usuario " + usuario + " no existe o esta inactivo, por favor contactar al área de soporte.");
@@ -320,4 +320,11 @@ public class ControladorIngreso implements Serializable {
         return persona;
     }
 
+    public CadenasConexion getCadena() {
+        return cadena;
+    }
+
+    public void setCadena(CadenasConexion cadena) {
+        this.cadena = cadena;
+    }
 }

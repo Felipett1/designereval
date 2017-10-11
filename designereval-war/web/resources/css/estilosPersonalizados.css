@@ -105,8 +105,17 @@ html {
 }
 
 .ui-datatable-hor-scroll .ui-datatable-tablewrapper,.scrolling-div .ui-datatable-tablewrapper{
-     overflow: auto;
-     width: 100%;
-     padding-bottom: 5px;
-     height: 160px;
+    overflow: auto;
+    width: 100%;
+    padding-bottom: 5px;
+    height: 160px;
+}
+
+* {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+}
+
+textarea {
+    -webkit-user-select: auto;
 }

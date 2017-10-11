@@ -35,7 +35,7 @@
                         <p:menuitem value="Inicio" icon="ui-icon-home" outcome="pm:uno?transition=flip" iconPos="top"/>
                         <p:menuitem value="Convocatorias" icon="ui-icon-gear" outcome="pm:convocatorias?transition=flip" iconPos="top"/>
                     </p:tabMenu>
-                </pm:header>|
+                </pm:header>
                 <pm:content>
                     <center> 
                         <h3>BIENVENIDO(A)</h3>
@@ -207,8 +207,9 @@
 
                         <h:outputText value="Observación:" style="font-weight: bold"/>
                         <br/>
-                        <p:inputTextarea value="#{controladorEvaluacion.observacionEvaluador}"/>
-
+                        <p:inputTextarea value="#{controladorEvaluacion.observacionEvaluador}">
+                            <p:ajax update="@this"/>
+                        </p:inputTextarea>
                         <br/>
 
                         <center><p:commandButton value="Enviar" onclick="PF('alerta').show();"
@@ -253,6 +254,23 @@
                             <p:commandButton value="No"
                                              onclick="PF('alertaEliminar').hide();"
                                              process="@this"/>
+                        </p:panelGrid>
+                    </p:dialog>
+
+                    <p:dialog id="envioExitoso" header="Información" widgetVar="envioExitoso"  resizable="false" 
+                              draggable="false" modal="true" closable="false" closeOnEscape="true">  
+                        <p:panelGrid columns="1" styleClass="noBorders">
+                            <p:column>
+                                <center>
+                                    <h:outputText value="Respuestas enviadas con éxito."/>
+                                </center>
+                            </p:column>
+                            <p:column>
+                                <center>
+                                    <p:button value="Volver" outcome="pm:pruebas?transition=flip"
+                                              onclick="PF('envioExitoso').hide();"/>
+                                </center>
+                            </p:column>
                         </p:panelGrid>
                     </p:dialog>
                 </pm:content>

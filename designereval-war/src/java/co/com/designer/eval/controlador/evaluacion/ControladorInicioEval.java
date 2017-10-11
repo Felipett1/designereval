@@ -8,6 +8,11 @@ import co.com.designer.eval.entidades.Evaluados;
 import co.com.designer.eval.entidades.Pruebas;
 import co.com.designer.eval.utilidadesUI.MensajesUI;
 import co.com.designer.eval.utilidadesUI.PrimefacesContextUI;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 //import java.io.*;
 import java.math.BigDecimal;
@@ -20,6 +25,7 @@ import javax.ejb.EJB;
 import javax.el.ELException;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
@@ -152,7 +158,6 @@ public class ControladorInicioEval implements Serializable {
         try {
             if (administrarInicio.cerrarConvocatoria(secConvocatoria)) {
                 MensajesUI.info("Convocatoria cerrada exitosamente.");
-                envioCorreoCierreConvocatoria();
                 convocatoria = null;
                 convocatorias = administrarInicio.obtenerConvocatorias(usuario);
                 evaluados = null;
@@ -161,6 +166,7 @@ public class ControladorInicioEval implements Serializable {
                 empleadosAsignados = null;
                 empleadosEvaluados = null;
                 pruebas = null;
+                PrimefacesContextUI.ejecutar("PF('opcionesReporteCerrar').show()");
             } else {
                 MensajesUI.error("Error al cerrar la convocatoria.");
             }
@@ -225,6 +231,25 @@ public class ControladorInicioEval implements Serializable {
         }
     }
 
+    public void descargarReporte() throws IOException {
+        if (secConvocatoria != null) {
+            Convocatorias c = null;
+            for (Convocatorias cvc : convocatorias) {
+                if (new BigDecimal(cvc.getSecuencia()).compareTo(secConvocatoria) == 0) {
+                    c = cvc;
+                }
+            }
+            if (c != null) {
+                generarReporte(c);
+                if (pathReporteGenerado != null) {
+                    descarga();
+                };
+            } else {
+                MensajesUI.error("Error al intentar obtener la convocatoria, por favor comuníquese con soporte.");
+            }
+        }
+    }
+
     public void generarReporte(Convocatorias c) {
         Map parametros = new HashMap();
         parametros.put("secuenciaconvocatoria", secConvocatoria);
@@ -236,6 +261,30 @@ public class ControladorInicioEval implements Serializable {
 
     public void cambiarEstado(BigInteger secPrueba, String estado) {
         administrarInicio.actualizarEstado(secPrueba, estado);
+    }
+
+    public void descarga() throws IOException {
+        FacesContext fc = FacesContext.getCurrentInstance();
+        ExternalContext ec = fc.getExternalContext();
+        File f = new File(pathReporteGenerado);
+        ec.responseReset();
+        ec.setResponseContentType("application/pdf"); // Check http://www.iana.org/assignments/media-types for all types. Use if necessary ExternalContext#getMimeType() for auto-detection based on filename.
+        ec.setResponseHeader("Content-Disposition", "attachment; filename=\"" + f.getName() + "\""); // The Save As popup magic is done here. You can give it any file name you want, this only won't work in MSIE, it will use current request URL as file name instead.
+        OutputStream output = ec.getResponseOutputStream();
+
+        byte[] buf = new byte[2048];
+        InputStream is = new FileInputStream(f);
+        int c = 0;
+
+        while ((c = is.read(buf, 0, buf.length)) > 0) {
+            output.write(buf, 0, c);
+            output.flush();
+        }
+
+        output.close();
+        is.close();
+
+        fc.responseComplete(); // Important! Otherwise JSF will attempt to render the response which obviously will fail since it's already written with a file and closed.
     }
 
     //GETTER AND SETTER

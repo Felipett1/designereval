@@ -47,7 +47,7 @@
                                      onclick="PF('alertaCerrar').show()"/>
                     <p:commandButton value="Reporte" actionListener="#{controladorInicioEval.obtenerSecuenciaConvocatoria(convocatoria.secuencia)}"
                                      style="display: #{controladorInicioEval.estadoConvocatoria == 1 ? '' : 'none'}"
-                                     onclick="PF('alertaReporteHisto').show()"/>
+                                     onclick="PF('opcionesReporteHistorico').show()"/>
                 </p:column>
             </p:dataTable>
         </p:column>
@@ -197,6 +197,43 @@
                                  actionListener="#{controladorInicioEval.cerrarConvocatoria()}"
                                  onclick="PF('alertaReporteHisto').hide();"
                                  process="@this" />
+            </p:column>
+        </p:panelGrid>
+    </p:dialog>
+
+    <p:dialog id="opcionesReporteCerrar" header="Información" widgetVar="opcionesReporteCerrar"  resizable="false" 
+              draggable="false" modal="true" closable="true" closeOnEscape="true">  
+        <p:panelGrid columns="1" styleClass="noBorders">
+            <p:column>
+                <h:outputText value="Por favor seleccione si quiere descargar o enviar por correo &lt;br/&gt; el reporte consolidado de la convocatoria que acabo de cerrar."
+                              escape="false"/>
+                <br/>
+            </p:column>
+            <p:column>
+                <p:commandButton value="Enviar por correo" style="float: right"
+                                 actionListener="#{controladorInicioEval.envioCorreoCierreConvocatoria()}"
+                                 process="@this" onclick="PF('opcionesReporteCerrar').hide()"/>
+                <p:commandButton value="Descargar" style="float: right" 
+                                 actionListener="#{controladorInicioEval.descargarReporte()}" ajax="false"
+                                 process="@this" onclick="PF('opcionesReporteCerrar').hide()"/>
+            </p:column>
+        </p:panelGrid>
+    </p:dialog>
+    <p:dialog id="opcionesReporteHistorico" header="Información" widgetVar="opcionesReporteHistorico"  resizable="false" 
+              draggable="false" modal="true" closable="true" closeOnEscape="true">  
+        <p:panelGrid columns="1" styleClass="noBorders">
+            <p:column>
+                <h:outputText value="Por favor seleccione si quiere descargar o enviar por correo &lt;br/&gt; el reporte consolidado de la convocatoria cerrada."
+                              escape="false"/>
+                <br/>
+            </p:column>
+            <p:column>
+                <p:commandButton value="Enviar por correo" style="float: right"
+                                 actionListener="#{controladorInicioEval.envioCorreoCierreConvocatoria()}"
+                                 process="@this" onclick="PF('opcionesReporteHistorico').hide()"/>
+                <p:commandButton value="Descargar" style="float: right" 
+                                 actionListener="#{controladorInicioEval.descargarReporte()}" ajax="false"
+                                 process="@this" onclick="PF('opcionesReporteHistorico').hide()"/>
             </p:column>
         </p:panelGrid>
     </p:dialog>
