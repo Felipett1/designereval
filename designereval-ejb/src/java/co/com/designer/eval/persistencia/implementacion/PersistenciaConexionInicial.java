@@ -183,4 +183,26 @@ public class PersistenciaConexionInicial implements IPersistenciaConexionInicial
         }
         return null;
     }
+    
+    @Override
+    public void cambiarPassword(EntityManager em, String usuario, String password) throws Exception{
+        System.out.println(this.getClass().getName()+".cambiarPassword()");
+        System.out.println("cambiarPassword:usuario: "+usuario);
+        System.out.println("cambiarPassword:password: "+password);
+//        String consulta = "alter user ? identified by ? ";
+        String consulta = "alter user "+usuario+" identified by "+password+" ";
+//        String usuario = "";
+        try {
+            em.clear();
+            em.getTransaction().begin();
+            Query query = em.createNativeQuery(consulta);
+//            query.setParameter(1, usuario);
+//            query.setParameter(2, password);
+            query.executeUpdate();
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            System.out.println("cambiarPassword:Exception: "+e.getCause());
+            throw e;
+        }
+    }
 }

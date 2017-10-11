@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <p:remoteCommand name="pantallaDinamica" actionListener="#{controlNavegacion.pantallaDinamica('/Evaluador/cuestionario.xhtml')}"
+                     process="@this" update=":principalForm"/>
+    <p:panel header="Cambiar contraseña">
+        <p:panelGrid id="pnlCambiarClave" columns="2" styleClass="noBorders2">
+            <h:outputLabel for="pwd1" value="Digite la nueva contraseña: *" />
+            <p:password id="pwd1" value="#{controladorIngreso.pass}" />
+            <h:outputLabel for="pwd2" value="Confirme la contraseña: *" />
+            <p:password id="pwd2" value="#{controladorIngreso.passCnf}" />
+        </p:panelGrid>
+        <p:commandButton value="Volver" actionListener="#{controlNavegacion.pantallaDinamica('/Evaluador/inicioEval.xhtml')}"
+                         update=":principalForm" process="@this"/>
+        <p:commandButton update="pnlCambiarClave" value="Cambiar contraseña" onclick="PF('alertaCambiar').show()" />
+    </p:panel>
+    <p:dialog id="alertaCambiar" header="Atención" widgetVar="alertaCambiar"  resizable="false" 
+              draggable="false" modal="true" closable="false" closeOnEscape="true">  
+        <p:panelGrid columns="1" styleClass="noBorders">
+            <p:column>
+                <center>
+                    <h:outputText value="¿Está seguro(a) de cambiar la contraseña?"
+                                  style="font-weight: bold"/>
+                </center>
+            </p:column>
+            <p:column>
+                <p:commandButton value="No" style="float: right"
+                                 onclick="PF('alertaCambiar').hide();"
+                                 process="@this"/>
+                <p:commandButton value="Si" style="float: right;" 
+                                 actionListener="#{controladorIngreso.cambiarPassword()}"
+                                 onclick="PF('alertaCambiar').hide();"
+                                 update=":principalForm"
+                                 process="@this" />
+            </p:column>
+        </p:panelGrid>
+    </p:dialog>
+    <p:dialog id="notifiCambio" header="Atención" widgetVar="notifiCambio"  resizable="false" 
+              draggable="false" modal="true" closable="false" closeOnEscape="true">  
+        <p:panelGrid columns="1" styleClass="noBorders">
+            <p:column>
+                <center>
+                    <h:outputText value="El cambio de contraseña ser realizo correctamente."
+                                  style="font-weight: bold"/>
+                </center>
+            </p:column>
+            <p:column>
+                <p:commandButton value="Ok" style="float: right;" 
+                                 actionListener="#{controladorIngreso.ingresar()}"
+                                 onclick="PF('notifiCambio').hide();"
+                                 update=":principalForm"
+                                 process="@this" />
+            </p:column>
+        </p:panelGrid>
+    </p:dialog>
+</ui:composition>

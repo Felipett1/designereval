@@ -59,7 +59,7 @@
         </p:column>
 
         <p:column>
-            <h:outputText value="Observación:" style="font-weight: bold"/>
+            <h:outputText value="#{controladorEvaluacion.observacionObligatoria ? '*Observación:' : 'Observación:' }" style="font-weight: bold"/>
             <br/>
             <p:inputTextarea value="#{controladorEvaluacion.observacionEvaluador}"
                              style="width: 50%; height: 150px;">
@@ -135,7 +135,7 @@
         <p:panelGrid columns="1" styleClass="noBorders">
             <p:column>
                 <center>
-                    <h:outputText value="Respuestas envidas con éxito."/>
+                    <h:outputText value="Respuestas enviadas con éxito."/>
                 </center>
             </p:column>
             <p:column>

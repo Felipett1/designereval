@@ -40,7 +40,8 @@ public class LeerArchivoXML {
                             eElement.getElementsByTagName("cadena").item(0).getTextContent(),
                             eElement.getElementsByTagName("nit").item(0).getTextContent(),
                             eElement.getElementsByTagName("fondo").item(0).getTextContent(),
-                            eElement.getElementsByTagName("grupo").item(0).getTextContent()
+                            eElement.getElementsByTagName("grupo").item(0).getTextContent(),
+                            Boolean.valueOf(eElement.getElementsByTagName("observacion").item(0).getTextContent())
                     ));
                 }
             }

@@ -24,5 +24,7 @@ public interface IAdministrarIngreso {
     public Conexiones ultimaConexionUsuario(String usuario);
 
     public boolean insertarUltimaConexion(Conexiones conexion);
+    
+    public String cambiarPassword(String usuario, String password);
 
 }

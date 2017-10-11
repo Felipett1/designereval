@@ -2,6 +2,7 @@ package co.com.designer.eval.administrar.implementacion;
 
 import co.com.designer.eval.administrar.interfaz.IAdministrarIngreso;
 import co.com.designer.eval.administrar.interfaz.IAdministrarSesiones;
+import co.com.designer.eval.clasesAyuda.ExtraeCausaExcepcion;
 import co.com.designer.eval.clasesAyuda.SessionEntityManager;
 import co.com.designer.eval.conexionFuente.implementacion.SesionEntityManagerFactory;
 import co.com.designer.eval.conexionFuente.interfaz.ISesionEntityManagerFactory;
@@ -181,4 +182,25 @@ public class AdministrarIngreso implements IAdministrarIngreso {
         return persona;
     }
 
+    @Override
+    public String cambiarPassword(String usuario, String password) {
+        System.out.println(this.getClass().getName() + ".cambiarPassword()");
+        EntityManager em = null;
+        String res = "";
+        try {
+            em = emf.createEntityManager();
+            persistenciaConexionInicial.cambiarPassword(em, usuario, password);
+        } catch (Exception e) {
+            System.out.println("Error AdministrarIngreso:cambiarPassword: " + e);
+            res = ExtraeCausaExcepcion.obtenerMensajeSQLException(e);
+            if (em == null || !em.isOpen()) {
+                em = emf.createEntityManager();
+            }
+            setearRol();
+        }
+        if (em != null && em.isOpen()) {
+            em.close();
+        }
+        return res;
+    }
 }//Fin de la clase.

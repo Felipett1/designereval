@@ -2,7 +2,6 @@ package co.com.designer.eval.controlador.ingreso;
 
 import co.com.designer.eval.administrar.interfaz.IAdministrarIngreso;
 import co.com.designer.eval.clasesAyuda.CadenasConexion;
-import co.com.designer.eval.clasesAyuda.ExtraeCausaExcepcion;
 import co.com.designer.eval.clasesAyuda.LeerArchivoXML;
 import co.com.designer.eval.controlador.autenticacion.Util;
 import co.com.designer.eval.entidades.Conexiones;
@@ -17,8 +16,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.EJBTransactionRolledbackException;
@@ -50,6 +47,7 @@ public class ControladorIngreso implements Serializable {
     private String grupoSeleccionado;
     private Personas persona;
     private Conexiones conexion;
+    private CadenasConexion cadena;
     private String pass;
     private String passCnf;
 
@@ -110,7 +108,6 @@ public class ControladorIngreso implements Serializable {
         HttpSession ses = (HttpSession) contexto.getExternalContext().getSession(false);
         try {
             if (!ingresoExitoso) {
-                CadenasConexion cadena;
                 cadena = validarUnidadPersistencia(unidadPersistenciaIngreso);
                 usuario = usuario.trim();
                 if (usuario != null && !usuario.isEmpty()
@@ -360,6 +357,14 @@ public class ControladorIngreso implements Serializable {
 
     public void setPassCnf(String passCnf) {
         this.passCnf = passCnf;
+    }
+
+    public CadenasConexion getCadena() {
+        return cadena;
+    }
+
+    public void setCadena(CadenasConexion cadena) {
+        this.cadena = cadena;
     }
 
 }

@@ -24,5 +24,12 @@ public interface IPersistenciaConexionInicial {
     public Personas obtenerPersona(EntityManager eManager, String usuarioBD);
 
     public Conexiones conexionUsuario(EntityManager eManager, String usuario);
-
+    /**
+     * Metodo para la modificacion del password de determinado usuario.
+     * @param em
+     * @param usuario
+     * @param password
+     * @throws Exception 
+     */
+    public void cambiarPassword(EntityManager em, String usuario, String password) throws Exception;
 }

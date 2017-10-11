@@ -5,6 +5,8 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core">
     <h:body style="font-size: 14px;">
+        <p:remoteCommand name="cambioClave" actionListener="#{controlNavegacion.pantallaDinamica('/Kiosko/cambiarClave.xhtml')}"
+                     process="@this" update=":principalForm"/>
         <p:panelGrid id="gridSuperior" columns="3" styleClass="noBorders" style="width: 100%;">
             <p:column id="supleft" width="50%">
                 <p:panelGrid id="gridSupInt1" columns="1" styleClass="noBorders">
@@ -30,6 +32,9 @@
                             <f:convertDateTime pattern="dd/MM/yyyy  -  hh:mm a"/>
                         </h:outputText>
                     </p:column>
+                    <p:commandLink value=" Cambiar contraseña" actionListener="#{controlNavegacion.pantallaDinamica('/Kiosko/cambiarClave.xhtml')}"
+                                   process="@this" style="color: #013ADF; float: right;"
+                                   update=":principalForm"/>
                     <p:commandLink value=" Salir" actionListener="#{controladorIngreso.ingresar()}"
                                    process="@this" style="color: #B40404; float: right;"/>
                     <div id="online" style="display: none; color: Green; font-weight: bold;">
