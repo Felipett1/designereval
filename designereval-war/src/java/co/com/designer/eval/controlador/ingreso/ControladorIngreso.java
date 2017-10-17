@@ -48,9 +48,13 @@ public class ControladorIngreso implements Serializable {
     private Personas persona;
     private Conexiones conexion;
     private CadenasConexion cadena;
+    private String pass;
+    private String passCnf;
 
     public ControladorIngreso() {
         logo = "logonominadesignertrans.png";
+        pass = "";
+        passCnf = "";
     }
 
     @PostConstruct
@@ -159,6 +163,8 @@ public class ControladorIngreso implements Serializable {
                     System.out.println("ExternalContext vacio");
                 }
                 administrarIngreso.cerrarSession(ses.getId());
+                this.pass = "";
+                this.passCnf = "";
                 if (grupoSeleccionado != null) {
                     ec.redirect(ec.getRequestContextPath() + "/" + "?grupo=" + grupoSeleccionado);
                 } else {
@@ -235,6 +241,23 @@ public class ControladorIngreso implements Serializable {
         registroConexion.setUsuarioBD(usuario);
         registroConexion.setSid(BigInteger.ZERO);
         administrarIngreso.insertarUltimaConexion(registroConexion);
+    }
+
+    public void cambiarPassword() {
+        String msj;
+        if (this.pass == null || this.passCnf == null
+                || this.pass.isEmpty() || this.passCnf.isEmpty()) {
+            MensajesUI.error("Los campos de contraseña no deben estar en blanco.");
+        } else if (!this.pass.equals(this.passCnf)) {
+            MensajesUI.error("El campo de nueva contraseña y la confirmación deben ser iguales.");
+        } else {
+            msj = administrarIngreso.cambiarPassword(usuario, pass);
+            if (msj != null && !"".equals(msj)) {
+                MensajesUI.error(msj);
+            } else {
+                PrimefacesContextUI.ejecutar("PF('notifiCambio').show();");
+            }
+        }
     }
 
     //GETTER AND SETTER
@@ -320,6 +343,22 @@ public class ControladorIngreso implements Serializable {
         return persona;
     }
 
+    public String getPass() {
+        return pass;
+    }
+
+    public void setPass(String pass) {
+        this.pass = pass;
+    }
+
+    public String getPassCnf() {
+        return passCnf;
+    }
+
+    public void setPassCnf(String passCnf) {
+        this.passCnf = passCnf;
+    }
+
     public CadenasConexion getCadena() {
         return cadena;
     }
@@ -327,4 +366,5 @@ public class ControladorIngreso implements Serializable {
     public void setCadena(CadenasConexion cadena) {
         this.cadena = cadena;
     }
+
 }

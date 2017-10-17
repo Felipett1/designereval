@@ -80,23 +80,26 @@ public class ControladorInicioEval implements Serializable {
     //EVENTOS
     public void seleccionConvocatoria(int tipo) {
         //1 Si - 0 No
-        if (tipo == 1) {
-            evaluados = administrarInicio.obtenerEvaluados(usuario, convocatoria.getSecuencia());
-            empleadosConvocados = administrarInicio.cantidadEvaluadosConvocatoria(convocatoria.getSecuencia());
-            empleadosAsignados = administrarInicio.totalEmpleadosEvaluadorConvocatoria(secuenciaEvaluador.toBigInteger(), convocatoria.getSecuencia());
-            empleadosEvaluados = administrarInicio.cantidadEvaluados(secuenciaEvaluador.toBigInteger(), convocatoria.getSecuencia());
-            evaluado = null;
-        } else if (tipo == 2) {
-            evaluados = administrarInicio.obtenerEvaluados(usuario, convocatoria.getSecuencia());
-            empleadosConvocados = administrarInicio.cantidadEvaluadosConvocatoria(convocatoria.getSecuencia());
-            empleadosAsignados = administrarInicio.totalEmpleadosEvaluadorConvocatoria(secuenciaEvaluador.toBigInteger(), convocatoria.getSecuencia());
-            empleadosEvaluados = administrarInicio.cantidadEvaluados(secuenciaEvaluador.toBigInteger(), convocatoria.getSecuencia());
-        } else {
-            evaluados = null;
-            evaluado = null;
-            empleadosConvocados = null;
-            empleadosAsignados = null;
-            empleadosEvaluados = null;
+        switch (tipo) {
+            case 1:
+                evaluados = administrarInicio.obtenerEvaluados(usuario, convocatoria.getSecuencia());
+                empleadosConvocados = administrarInicio.cantidadEvaluadosConvocatoria(convocatoria.getSecuencia());
+                empleadosAsignados = administrarInicio.totalEmpleadosEvaluadorConvocatoria(secuenciaEvaluador.toBigInteger(), convocatoria.getSecuencia());
+                empleadosEvaluados = administrarInicio.cantidadEvaluados(secuenciaEvaluador.toBigInteger(), convocatoria.getSecuencia());
+                evaluado = null;
+                break;
+            case 2:
+                evaluados = administrarInicio.obtenerEvaluados(usuario, convocatoria.getSecuencia());
+                empleadosConvocados = administrarInicio.cantidadEvaluadosConvocatoria(convocatoria.getSecuencia());
+                empleadosAsignados = administrarInicio.totalEmpleadosEvaluadorConvocatoria(secuenciaEvaluador.toBigInteger(), convocatoria.getSecuencia());
+                empleadosEvaluados = administrarInicio.cantidadEvaluados(secuenciaEvaluador.toBigInteger(), convocatoria.getSecuencia());
+                break;
+            default:
+                evaluados = null;
+                evaluado = null;
+                empleadosConvocados = null;
+                empleadosAsignados = null;
+                empleadosEvaluados = null;
         }
         pruebas = null;
     }
@@ -117,16 +120,21 @@ public class ControladorInicioEval implements Serializable {
         2 - Convocatoria
         3 - Prueba
          */
-        if (opcion == 0) {
-            return evaluado;
-        } else if (opcion == 1) {
-            FacesContext x = FacesContext.getCurrentInstance();
-            HttpSession ses = (HttpSession) x.getExternalContext().getSession(false);
-            return ((ControladorInformacionBasica) x.getApplication().evaluateExpressionGet(x, "#{controladorInformacionBasica}", ControladorInformacionBasica.class)).getPersona().getNombreCompleto();
-        } else if (opcion == 2) {
-            return convocatoria;
-        } else {
-            return prueba;
+        switch (opcion) {
+            case 0:
+                return evaluado;
+//            break:
+            case 1:
+                FacesContext x = FacesContext.getCurrentInstance();
+                HttpSession ses = (HttpSession) x.getExternalContext().getSession(false);
+                return ((ControladorInformacionBasica) x.getApplication().evaluateExpressionGet(x, "#{controladorInformacionBasica}", ControladorInformacionBasica.class
+                )).getPersona().getNombreCompleto();
+//            break;
+            case 2:
+                return convocatoria;
+//            break;
+            default:
+                return prueba;
         }
     }
 
