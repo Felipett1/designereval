@@ -83,8 +83,13 @@
                               draggable="false" modal="true" closable="false" closeOnEscape="true">  
                         <p:panelGrid styleClass="noBorders">
                             <p:column>
+                                <h:outputText value="En el momento en que cierre el proceso de valoraciones &lt;br/&gt; a esta convocatoria, ya no podrá cambiar los datos."
+                                              escape="false"/>
+                                <br/>
+                                <br/>
                                 <center>
-                                    <h:outputText value="¿Esta seguro(a) de que desea cerrar la convocatoria?"/>
+                                    <h:outputText value="¿Está seguro(a) de cerrar el proceso?"
+                                                  style="font-weight: bold"/>
                                 </center>
                             </p:column>
                         </p:panelGrid>
@@ -97,6 +102,25 @@
                             <p:commandButton value="No"
                                              onclick="PF('alertaCC').hide();"
                                              process="@this"/>
+                        </p:panelGrid>
+                    </p:dialog>
+
+                    <p:dialog id="opcionesReporteCerrar" header="Información" widgetVar="opcionesReporteCerrar"  resizable="false" 
+                              draggable="false" modal="true" closable="true" closeOnEscape="true">  
+                        <p:panelGrid columns="1" styleClass="noBorders">
+                            <p:column>
+                                <h:outputText value="Por favor seleccione si quiere descargar o enviar por correo &lt;br/&gt; el reporte consolidado de la convocatoria que acabo de cerrar."
+                                              escape="false"/>
+                                <br/>
+                            </p:column>
+                            <p:column>
+                                <p:commandButton value="Enviar por correo" style="float: right"
+                                                 actionListener="#{controladorInicioEval.envioCorreoCierreConvocatoria()}"
+                                                 process="@this" onclick="PF('opcionesReporteCerrar').hide()"/>
+                                <p:commandButton value="Descargar" style="float: right" 
+                                                 actionListener="#{controladorInicioEval.descargarReporte()}" ajax="false"
+                                                 process="@this" onclick="PF('opcionesReporteCerrar').hide()"/>
+                            </p:column>
                         </p:panelGrid>
                     </p:dialog>
                 </pm:content>
