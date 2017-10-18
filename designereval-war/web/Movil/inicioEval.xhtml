@@ -71,20 +71,23 @@
 
                 <pm:content>
                     <p:dataList value="#{controladorInicioEval.convocatorias}" var="cv" rowIndexVar="indexC">
-                        <h:outputLink value="#" 
-                                      onclick="seleccion([{name: 'valor', value:#{indexC}}, {name: 'tipo', value: '0'}]);"
-                                      ondblclick="seleccion([{name: 'valor', value:#{indexC}}, {name: 'tipo', value: '3'}]);">
+                        <h:outputLink value="#"
+                                      onclick="seleccion([{name: 'valor', value:#{indexC}}, {name: 'tipo', value: '0'}]);">
                             <p>#{cv.codigo}</p>
                             <p><strong>Enfoque:</strong> #{cv.enfoque}</p>
-                        </h:outputLink>  
+                        </h:outputLink>
+                        <p:commandButton value="Cerrar" onclick="seleccion([{name: 'valor', value:#{indexC}}, {name: 'tipo', value: '3'}]);"
+                                         style="display: #{controladorInicioEval.estadoConvocatoria == 1 ? 'none' : ''}"/>
+                        <p:commandButton value="Reporte" onclick="seleccion([{name: 'valor', value:#{indexC}}, {name: 'tipo', value: '4'}]);"
+                                         style="display: #{controladorInicioEval.estadoConvocatoria == 1 ? '' : 'none'}"/>
                     </p:dataList>
 
                     <p:dialog id="alertaCC" header="Información" widgetVar="alertaCC"  resizable="false" 
                               draggable="false" modal="true" closable="false" closeOnEscape="true">  
                         <p:panelGrid styleClass="noBorders">
                             <p:column>
-                                <h:outputText value="En el momento en que cierre el proceso de valoraciones &lt;br/&gt; a esta convocatoria, ya no podrá cambiar los datos."
-                                              escape="false"/>
+                                <h:outputText value="En el momento en que cierre el proceso de valoraciones a esta convocatoria, ya no podrá cambiar los datos."
+                                              escape="false" style="text-align: justify"/>
                                 <br/>
                                 <br/>
                                 <center>
@@ -98,7 +101,7 @@
                                              actionListener="#{controladorInicioEval.cerrarConvocatoria()}"
                                              onclick="PF('alertaCC').hide();"
                                              process="@this"
-                                             update="convocatorias"/>
+                                             />
                             <p:commandButton value="No"
                                              onclick="PF('alertaCC').hide();"
                                              process="@this"/>
@@ -109,8 +112,11 @@
                               draggable="false" modal="true" closable="true" closeOnEscape="true">  
                         <p:panelGrid columns="1" styleClass="noBorders">
                             <p:column>
-                                <h:outputText value="Por favor seleccione si quiere descargar o enviar por correo &lt;br/&gt; el reporte consolidado de la convocatoria que acabo de cerrar."
-                                              escape="false"/>
+                                <center><h:outputText value="¡Convocatoria cerrada con exito!" 
+                                                      style="font-weight: bold; display: #{controladorInicioEval.estadoConvocatoria == 1 ? 'none' : ''}"/></center>
+                                <br style="font-weight: bold; display: #{controladorInicioEval.estadoConvocatoria == 1 ? 'none' : ''}"/>
+                                <h:outputText value="Por favor seleccione si quiere descargar o enviar por correo el reporte consolidado de la convocatoria que acabo de cerrar."
+                                              escape="false" style="text-align: justify"/>
                                 <br/>
                             </p:column>
                             <p:column>
@@ -148,36 +154,61 @@
         </pm:page>
 
         <pm:page id="pruebas">
-            <h:form>
-                <pm:header title="Pruebas" swatch="b"
-                           styleClass="ui-header">
-                    <p:button styleClass="ui-btn-right ui-btn-inline" value="Salir" onclick="cerrarSesion();"/>
-                    <p:button styleClass="ui-btn-left ui-btn-inline" value="Volver" icon="ui-icon-arrow-l" outcome="pm:evaluados?transition=flip"/>
-                </pm:header>
+            <pm:header title="Pruebas" swatch="b"
+                       styleClass="ui-header">
+                <p:button styleClass="ui-btn-right ui-btn-inline" value="Salir" onclick="cerrarSesion();"/>
+                <p:button styleClass="ui-btn-left ui-btn-inline" value="Volver" icon="ui-icon-arrow-l" outcome="pm:evaluados?transition=flip"/>
+            </pm:header>
 
+            <h:form id="formulario1">
                 <pm:content>
                     <p:dataList value="#{controladorInicioEval.pruebas}" var="prb" rowIndexVar="indexP">
-                        <h:outputLink value="#" onclick="seleccion([{name: 'valor', value:#{indexP}}, {name: 'tipo', value: '2'}]);">
+                        <h:outputLink value="#" onclick="seleccion([{name: 'valor', value:#{indexP}}, {name: 'tipo', value: '2'}]);"
+                                      >
                             <p>#{prb.prueba}</p>
                             <p><strong>Factor: </strong>#{prb.factor}</p>
                             <p><strong>Obsv: </strong>#{prb.obsEvaluador}</p>
                             <p><strong>#{prb.puntoObtenido != null ?
                                          prb.puntoObtenido : 0}%</strong></p>
                         </h:outputLink>
+                        <p:panelGrid columns="5">
+                            <p:column>
+                                <br style="display: #{controladorInicioEval.estadoConvocatoria == 1 ? 'none' : ''}"/>
+                                <h:outputText value=" Estado:" style="font-weight: bold"/>
+                            </p:column>
+                            <p:column>
+                                <div style="display: #{controladorInicioEval.estadoConvocatoria == 1 ? 'none' : ''}">
+                                    <p:selectOneMenu value="#{prb.estado}" >
+                                        <f:selectItem itemLabel="A" itemValue="A" />
+                                        <f:selectItem itemLabel="C" itemValue="C" />
+                                        <p:ajax listener="#{controladorInicioEval.cambiarEstadoMobil(indexP)}"/>
+                                    </p:selectOneMenu>
+                                </div>
+                                <center><h:outputText value="#{prb.estado}" style="display: #{controladorInicioEval.estadoConvocatoria == 1 ? '' : 'none'}"/></center>
+                            </p:column>
+                            <p:column/>
+                            <p:column/>
+                            <p:column/>
+                        </p:panelGrid>
                     </p:dataList>
                 </pm:content>
             </h:form>
         </pm:page>
 
         <pm:page id="preguntas">
+            <pm:header title="Preguntas" swatch="b"
+                       styleClass="ui-header">
+                <p:button styleClass="ui-btn-right ui-btn-inline" value="Salir" onclick="cerrarSesion();"/>
+                <p:button styleClass="ui-btn-left ui-btn-inline" value="Volver" icon="ui-icon-arrow-l" outcome="pm:pruebas?transition=flip"
+                          onclick="refrescarListas();"/>
+            </pm:header>
             <h:form id="formulario">
-                <pm:header title="Preguntas" swatch="b"
-                           styleClass="ui-header">
-                    <p:button styleClass="ui-btn-right ui-btn-inline" value="Salir" onclick="cerrarSesion();"/>
-                    <p:button styleClass="ui-btn-left ui-btn-inline" value="Volver" icon="ui-icon-arrow-l" outcome="pm:pruebas?transition=flip"/>
-                </pm:header>
                 <pm:content>
                     <p:growl id="growl" widgetVar="growl" showDetail="true" autoUpdate="true"/>
+                    <p:remoteCommand name="actualizarScore" actionListener="#{controladorEvaluacion.calcularPuntajePorcentaje()}"
+                                     process="@this" update="evaluacion:score"/>
+                    <p:remoteCommand name="refrescarListas" actionListener="#{controladorInicioEval.refrescarListas()}"
+                                     process="@this" update=":pruebas:formulario1"/>
                     <p:panel header="Información">
                         <center>
                             <h:outputText value="Nombre" style="font-weight: bold; color: #122AB5"/>
@@ -209,37 +240,57 @@
                             <h:outputText value="#{controladorEvaluacion.prueba}"
                                           style="font-weight: bold;"/>
                         </center>
-
                         <center><p:commandButton value="Eliminar todas las respuestas" onclick="PF('alertaEliminar').show();"
                                                  process="@this"
-                                                 style="display: #{controladorEvaluacion.tieneRespuestas ? '' : 'none'}"/></center>
+                                                 style="display: #{controladorInicioEval.estadoConvocatoria == 1 ? 'none' : 
+                                                                   controladorEvaluacion.pruebaActual.estado == 'C' ? 'none' :
+                                                                   controladorEvaluacion.tieneRespuestas ? '' : 'none'}"/></center>
                     </p:panel>
-                    <p:panel header="Evaluación">
-                        <ui:repeat var="pregunta" value="#{controladorEvaluacion.preguntas}" varStatus="status">
-                            <div style="background-color: #{pregunta.respuesta == null ? '#F8B7B7' : '#B7F8BE'}">
-                                <h:outputText value="#{pregunta.descripcion}"
-                                              style="font-weight: bold"/>
-                            </div>
-                            <p:selectOneRadio value="#{pregunta.respuesta}">
-                                <f:selectItems value="#{pregunta.respuestas}" var="r" 
-                                               itemLabel=" #{r.cuantitativo} - #{r.cualitativo}" 
-                                               itemValue="#{r.secuencia}"/>
-                                <p:ajax update=":preguntas:formulario" process="@this"/>
-                            </p:selectOneRadio>
+                    <h:form id="evaluacion">
+                        <p:panel header="Evaluación">
+                            <ui:repeat var="pregunta" value="#{controladorEvaluacion.preguntas}" varStatus="status">
+                                <div style="background-color: #{pregunta.respuesta == null ? '#F8B7B7' : '#B7F8BE'}">
+                                    <h:outputText value="#{pregunta.descripcion}"
+                                                  style="font-weight: bold"/>
+                                </div>
+                                <p:selectOneRadio value="#{pregunta.respuesta}" 
+                                                  disabled="#{controladorInicioEval.estadoConvocatoria == 1 ? 'true' : 
+                                                              controladorEvaluacion.pruebaActual.estado == 'C' ? 'true' : 'false'}">
+                                    <f:selectItems value="#{pregunta.respuestas}" var="r" 
+                                                   itemLabel=" #{r.cuantitativo} - #{r.cualitativo}" 
+                                                   itemValue="#{r.secuencia}"/>
+                                    <p:ajax update=":preguntas:formulario" process="@this" oncomplete="actualizarScore();"/>
+                                </p:selectOneRadio> 
+                                <br/>
+                            </ui:repeat>
+
+                            <h:outputText value="Observación:" style="font-weight: bold"/>
                             <br/>
-                        </ui:repeat>
+                            <p:inputTextarea value="#{controladorEvaluacion.observacionEvaluador}">
+                                <p:ajax update="@this"/>
+                            </p:inputTextarea>
+                            <br/>
 
-                        <h:outputText value="Observación:" style="font-weight: bold"/>
-                        <br/>
-                        <p:inputTextarea value="#{controladorEvaluacion.observacionEvaluador}">
-                            <p:ajax update="@this"/>
-                        </p:inputTextarea>
-                        <br/>
+                            <center>
+                                <p:panelGrid id="score" columns="4" styleClass="noBorders">
+                                    <h:outputText value="Puntaje: " style="font-weight: bold; color: #122AB5"/>
+                                    <h:outputText value="#{controladorEvaluacion.puntaje}"
+                                                  style="font-weight: bold;"/>
+                                    <h:outputText value="Porcentaje: " style="font-weight: bold; color: #122AB5"/>
+                                    <h:outputText value="#{controladorEvaluacion.porcentaje}%"
+                                                  style="font-weight: bold;"/>
+                                </p:panelGrid>
+                            </center>
+                            <br/>
 
-                        <center><p:commandButton value="Enviar" onclick="PF('alerta').show();"
-                                                 process="@this" style="font-size: 18px"/></center>
-                    </p:panel>
-
+                            <center><p:commandButton value="Enviar" onclick="PF('alerta').show();"
+                                                     process="@this" 
+                                                     style="font-size: 18px; 
+                                                     display: #{controladorInicioEval.estadoConvocatoria == 1 ? 'none' : 
+                                                                controladorEvaluacion.pruebaActual.estado == 'C' ? 'none' : ''}"/>
+                            </center>
+                        </p:panel>
+                    </h:form>
                     <p:dialog id="alerta" header="Información" widgetVar="alerta"  resizable="false" 
                               draggable="false" modal="true" closable="false" closeOnEscape="true">  
                         <p:panelGrid styleClass="noBorders">
@@ -292,7 +343,7 @@
                             <p:column>
                                 <center>
                                     <p:button value="Volver" outcome="pm:pruebas?transition=flip"
-                                              onclick="PF('envioExitoso').hide();"/>
+                                              onclick="refrescarListas(); PF('envioExitoso').hide();"/>
                                 </center>
                             </p:column>
                         </p:panelGrid>

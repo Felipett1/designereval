@@ -232,4 +232,8 @@ public class ControladorEvaluacion implements Serializable {
         return observacionObligatoria;
     }
 
+    public Pruebas getPruebaActual() {
+        return pruebaActual;
+    }
+
 }

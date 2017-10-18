@@ -150,10 +150,15 @@ public class ControladorInicioEval implements Serializable {
         } else if (i.equals("2")) {
             prueba = pruebas.get(index);
             PrimefacesContextUI.ejecutar("seleccionPrueba();");
-        } else {
-//            secConvocatoria = convocatorias.get(index).getSecuencia();
+        } else if (i.equals("3")) {
             secConvocatoria = new BigDecimal(convocatorias.get(index).getSecuencia());
             PrimefacesContextUI.ejecutar("PF('alertaCC').show();");
+        } else if (i.equals("4")) {
+            secConvocatoria = new BigDecimal(convocatorias.get(index).getSecuencia());
+            PrimefacesContextUI.ejecutar("PF('opcionesReporteCerrar').show();");
+        } else {
+            prueba = pruebas.get(index);
+            cambiarEstado(prueba.getSecuencia(), prueba.getEstado());
         }
     }
 
@@ -165,7 +170,7 @@ public class ControladorInicioEval implements Serializable {
     public void cerrarConvocatoria() {
         try {
             if (administrarInicio.cerrarConvocatoria(secConvocatoria)) {
-                MensajesUI.info("Convocatoria cerrada exitosamente.");
+                //MensajesUI.info("Convocatoria cerrada exitosamente.");
                 convocatoria = null;
                 convocatorias = administrarInicio.obtenerConvocatorias(usuario);
                 evaluados = null;
@@ -269,6 +274,11 @@ public class ControladorInicioEval implements Serializable {
 
     public void cambiarEstado(BigInteger secPrueba, String estado) {
         administrarInicio.actualizarEstado(secPrueba, estado);
+    }
+
+    public void cambiarEstadoMobil(int index) {
+        prueba = pruebas.get(index);
+        administrarInicio.actualizarEstado(prueba.getSecuencia(), prueba.getEstado());
     }
 
     public void descarga() throws IOException {
