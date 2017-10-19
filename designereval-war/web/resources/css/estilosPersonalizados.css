@@ -110,12 +110,3 @@ html {
     padding-bottom: 5px;
     height: 160px;
 }
-
-* {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-}
-
-textarea {
-    -webkit-user-select: auto;
-}

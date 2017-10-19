@@ -207,12 +207,10 @@ public class ControladorEvaluacion implements Serializable {
     }
 
     public String getObservacionEvaluador() {
-        System.out.println("GET");
         return observacionEvaluador;
     }
 
     public void setObservacionEvaluador(String observacionEvaluador) {
-        System.out.println("SET");
         this.observacionEvaluador = observacionEvaluador;
     }
 

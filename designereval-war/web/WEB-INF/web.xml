@@ -36,6 +36,7 @@
     </session-config>
     <welcome-file-list>
         <welcome-file>faces/index.xhtml</welcome-file>
+        <!--welcome-file>faces/pruebas.xhtml</welcome-file-->
         <!--welcome-file>faces/Ingreso/ingreso.xhtml</welcome-file-->
         <!-- <welcome-file>faces/Pruebas/paginaPruebas.xhtml</welcome-file> -->
     </welcome-file-list>
