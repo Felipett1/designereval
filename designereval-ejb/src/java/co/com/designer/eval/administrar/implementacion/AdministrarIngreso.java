@@ -87,26 +87,33 @@ public class AdministrarIngreso implements IAdministrarIngreso {
 
     @Override
     public Personas conexionUsuario(String baseDatos, String usuario, String clave) {
+        EntityManager em = null;
         try {
-            EntityManager em = emf.createEntityManager();
+            em = emf.createEntityManager();
             secPerfil = persistenciaConexionInicial.usuarioLogin(em, usuario);
             perfilUsuario = persistenciaConexionInicial.perfilUsuario(em, secPerfil);
             em.close();
             emf.close();
             emf = sessionEMF.crearFactoryUsuario(usuario, clave, baseDatos);
-            setearRol();
             em = emf.createEntityManager();
+            setearRol(em);
             persona = persistenciaConexionInicial.obtenerPersona(em, usuario);
             return persona;
         } catch (Exception e) {
             System.out.println("Error creando EMF AdministrarIngreso.conexionUsuario: " + e);
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
+            if (emf != null && emf.isOpen()) {
+                emf.close();
+            }
             return null;
         }
     }
 
-    public boolean setearRol() {
+    public boolean setearRol(EntityManager em) {
         try {
-            EntityManager em = emf.createEntityManager();
+            em = emf.createEntityManager();
             if (em != null) {
                 if (em.isOpen()) {
                     persistenciaConexionInicial.setearUsuario(em, perfilUsuario.getDescripcion(), perfilUsuario.getPwd());
@@ -196,7 +203,7 @@ public class AdministrarIngreso implements IAdministrarIngreso {
             if (em == null || !em.isOpen()) {
                 em = emf.createEntityManager();
             }
-            setearRol();
+            setearRol(em);
         }
         if (em != null && em.isOpen()) {
             em.close();

@@ -3,6 +3,7 @@ package co.com.designer.eval.administrar.interfaz;
 import co.com.designer.eval.entidades.Conexiones;
 import co.com.designer.eval.entidades.Personas;
 import javax.ejb.Local;
+import javax.persistence.EntityManager;
 
 /**
  *

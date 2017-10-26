@@ -8,9 +8,11 @@
     <p:remoteCommand name="pantallaDinamica" actionListener="#{controlNavegacion.pantallaDinamica('/Evaluador/cuestionario.xhtml')}"
                      process="@this" update=":principalForm"/>
     <p:panel header="Cambiar contraseña">
+        <h:outputText value="A continuación digite la nueva contraseña para el usuario." />
+        <h:outputText value="Recuerde que debe ser menor a 20 caracteres." />
         <p:panelGrid id="pnlCambiarClave" columns="2" styleClass="noBorders2">
             <h:outputLabel for="pwd1" value="Digite la nueva contraseña: *" />
-            <p:password id="pwd1" value="#{controladorIngreso.pass}" />
+            <p:password id="pwd1" value="#{controladorIngreso.pass}"/>
             <h:outputLabel for="pwd2" value="Confirme la contraseña: *" />
             <p:password id="pwd2" value="#{controladorIngreso.passCnf}" />
         </p:panelGrid>
