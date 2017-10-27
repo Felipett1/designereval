@@ -6,6 +6,7 @@ import co.com.designer.eval.entidades.Personas;
 import co.com.designer.eval.persistencia.interfaz.IPersistenciaConexionInicial;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -101,23 +102,30 @@ public class PersistenciaConexionInicial implements IPersistenciaConexionInicial
             em.getTransaction().begin();
             Query query = em.createQuery("SELECT c FROM Conexiones c WHERE c.usuarioBD = :usuario ORDER BY  c.ultimaEntrada DESC ");
             query.setParameter("usuario", usuario);
-            Conexiones conexion = (Conexiones) query.getResultList().get(0);
+            List conexion = query.getResultList();
+            Conexiones resultado = null;
+            if (conexion != null && !conexion.isEmpty()) {
+                resultado = (Conexiones) conexion.get(0);
+            }
             em.getTransaction().commit();
-            return conexion;
+            return resultado;
         } catch (Exception e) {
             System.out.println("Persistencia.PersistenciaConexionInicial.conexionUsuario() e: " + e);
+            if (em != null && em.isOpen() && em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
             return null;
         }
     }
 
     @Override
     public void setearUsuario(EntityManager eManager, String rol, String pwd) {
-        System.out.println(this.getClass().getName()+".setearUsuario()");
-        System.out.println("setearUsuario:rol: "+rol);
-        System.out.println("setearUsuario:pwd: "+pwd);
+        System.out.println(this.getClass().getName() + ".setearUsuario()");
+        System.out.println("setearUsuario:rol: " + rol);
+        System.out.println("setearUsuario:pwd: " + pwd);
         String texto = "SET ROLE " + rol + " IDENTIFIED BY " + pwd;
 //        String texto = "SET ROLE ? IDENTIFIED BY ? ";
-        System.out.println("setearUsuario:texto: "+texto);
+        System.out.println("setearUsuario:texto: " + texto);
         em = eManager;
         try {
             em.getTransaction().begin();
@@ -183,14 +191,14 @@ public class PersistenciaConexionInicial implements IPersistenciaConexionInicial
         }
         return null;
     }
-    
+
     @Override
-    public void cambiarPassword(EntityManager em, String usuario, String password) throws Exception{
-        System.out.println(this.getClass().getName()+".cambiarPassword()");
-        System.out.println("cambiarPassword:usuario: "+usuario);
-        System.out.println("cambiarPassword:password: "+password);
+    public void cambiarPassword(EntityManager em, String usuario, String password) throws Exception {
+        System.out.println(this.getClass().getName() + ".cambiarPassword()");
+        System.out.println("cambiarPassword:usuario: " + usuario);
+        System.out.println("cambiarPassword:password: " + password);
 //        String consulta = "alter user ? identified by ? ";
-        String consulta = "alter user "+usuario+" identified by "+password+" ";
+        String consulta = "alter user " + usuario + " identified by " + password + " ";
 //        String usuario = "";
         try {
             em.clear();
@@ -201,7 +209,7 @@ public class PersistenciaConexionInicial implements IPersistenciaConexionInicial
             query.executeUpdate();
             em.getTransaction().commit();
         } catch (Exception e) {
-            System.out.println("cambiarPassword:Exception: "+e.getCause());
+            System.out.println("cambiarPassword:Exception: " + e.getCause());
             throw e;
         }
     }

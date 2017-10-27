@@ -120,7 +120,11 @@ public class ControladorIngreso implements Serializable {
                         if (persona != null) {
                             administrarIngreso.adicionarConexionUsuario(ses.getId());
                             conexion = administrarIngreso.ultimaConexionUsuario(usuario);
-                            ultimaConexion = conexion.getUltimaEntrada();
+                            if (conexion != null) {
+                                ultimaConexion = conexion.getUltimaEntrada();
+                            } else {
+                                ultimaConexion = new Date();
+                            }
                             guardarUltimaConexion();
                             ingresoExitoso = true;
                             HttpSession session = Util.getSession();

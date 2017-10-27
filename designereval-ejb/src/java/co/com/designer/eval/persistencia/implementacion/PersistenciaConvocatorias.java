@@ -99,11 +99,22 @@ public class PersistenciaConvocatorias implements IPersistenciaConvocatorias {
 
     @Override
     public boolean cerrarConvocatoria(EntityManager em, BigDecimal secConvocatoria) {
-        em.getTransaction().begin();
-        Query q = em.createNativeQuery("CALL EVALCONVOCATORIAS_PKG.CERRAREVALUACION(?) ");
-        q.setParameter(1, secConvocatoria);
-        q.executeUpdate();
-        em.getTransaction().commit();
-        return true;
+        try {
+            em.getTransaction().begin();
+            System.out.println("co.com.designer.eval.persistencia.implementacion.PersistenciaConvocatorias.cerrarConvocatoria() ENTRO");
+            Query q = em.createNativeQuery("CALL EVALCONVOCATORIAS_PKG.CERRAREVALUACION(?) ");
+            q.setParameter(1, secConvocatoria);
+            q.executeUpdate();
+            System.out.println("co.com.designer.eval.persistencia.implementacion.PersistenciaConvocatorias.cerrarConvocatoria() YA EJECUTO EVALCONVOCATORIAS_PKG.CERRAREVALUACION(" + secConvocatoria + ")");
+            em.getTransaction().commit();
+            System.out.println("co.com.designer.eval.persistencia.implementacion.PersistenciaConvocatorias.cerrarConvocatoria() YA COMMIT");
+            return true;
+        } catch (Exception ex) {
+            System.out.println("Error PersistenciaConvocatorias.cerrarConvocatoria: " + ex);
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            return false;
+        }
     }
 }
