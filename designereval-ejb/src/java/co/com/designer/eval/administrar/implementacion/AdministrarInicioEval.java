@@ -7,7 +7,6 @@ import javax.ejb.EJB;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import co.com.designer.eval.administrar.interfaz.IAdministrarInicioEval;
-//import co.com.designer.eval.persistencia.interfaz.IPersistenciaConfiguracionCorreo;
 import javax.ejb.Stateful;
 
 /**

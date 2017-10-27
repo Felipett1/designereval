@@ -31,7 +31,7 @@ public class PersistenciaConfiguracionCorreo implements IPersistenciaConfiguraci
             }
         } catch (IllegalStateException ise) {
             System.out.println("ERROR: " + ise.getMessage());
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             System.out.println("Error PersistenciaConfiguracionCorreo.consultarConfiguracionServidorCorreo: " + e);
         }
         return cc;

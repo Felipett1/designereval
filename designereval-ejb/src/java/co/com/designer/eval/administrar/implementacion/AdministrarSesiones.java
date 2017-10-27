@@ -2,8 +2,6 @@ package co.com.designer.eval.administrar.implementacion;
 
 import co.com.designer.eval.administrar.interfaz.IAdministrarSesiones;
 import co.com.designer.eval.clasesAyuda.SessionEntityManager;
-import co.com.designer.eval.conexionFuente.implementacion.SesionEntityManagerFactory;
-import co.com.designer.eval.conexionFuente.interfaz.ISesionEntityManagerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Singleton;
@@ -17,11 +15,9 @@ import javax.persistence.EntityManagerFactory;
 public class AdministrarSesiones implements IAdministrarSesiones {
 
     private final List<SessionEntityManager> sessionesActivas;
-    private final ISesionEntityManagerFactory sessionEMF;
 
     public AdministrarSesiones() {
         sessionesActivas = new ArrayList<>();
-        sessionEMF = new SesionEntityManagerFactory();
     }
 
     @Override

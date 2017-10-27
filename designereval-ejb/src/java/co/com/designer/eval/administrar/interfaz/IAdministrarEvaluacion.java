@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  *
- * @author Familia Triviño Amad
+ * @author Felipe Triviño
  */
 public interface IAdministrarEvaluacion {
 

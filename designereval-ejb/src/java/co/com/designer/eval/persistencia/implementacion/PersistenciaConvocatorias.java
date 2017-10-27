@@ -3,7 +3,6 @@ package co.com.designer.eval.persistencia.implementacion;
 import co.com.designer.eval.entidades.Convocatorias;
 import co.com.designer.eval.persistencia.interfaz.IPersistenciaConvocatorias;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
