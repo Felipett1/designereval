@@ -18,6 +18,7 @@ public class PersistenciaPruebas implements IPersistenciaPruebas {
     @Override
     public List<Pruebas> obtenerPruebasEvaluado(EntityManager em, String usuario, BigInteger secEmplConvo) {
         try {
+            em.clear();
             em.getTransaction().begin();
             Query q = em.createNativeQuery("SELECT EI.SECUENCIA, EI.EVALRESULTADOCONV, EI.PUNTOOBTENIDO,\n"
                     + "EI.OBSEVALUADOR, EI.OBSEVALUADO, EI.EMPLEADOEVALUADOR, \n"
