@@ -72,6 +72,7 @@ public class PersistenciaPruebas implements IPersistenciaPruebas {
     @Override
     public boolean actualizarEstado(EntityManager em, BigInteger secPrueba, String estado) {
         try {
+            em.clear();
             em.getTransaction().begin();
             Query q = em.createNativeQuery("UPDATE EVALINDAGACIONES SET ESTADOPRUEBA = ? WHERE SECUENCIA = ? ");
             q.setParameter(1, estado);
