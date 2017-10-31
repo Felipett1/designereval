@@ -42,7 +42,7 @@ public class PersistenciaEvaluados implements IPersistenciaEvaluados {
             return lst;
         } catch (Exception ex) {
             System.out.println("Error PersistenciaConvocatorias.obtenerEvaluados: " + ex);
-            em.getTransaction().rollback();
+            terminarTransaccionException(em);
             return null;
         }
     }
@@ -82,8 +82,14 @@ public class PersistenciaEvaluados implements IPersistenciaEvaluados {
             return true;
         } catch (Exception ex) {
             System.out.println("Error PersistenciaEvaluados.actualizarPorcentaje: " + ex);
-            em.getTransaction().rollback();
+            terminarTransaccionException(em);
             return false;
+        }
+    }
+
+    public void terminarTransaccionException(EntityManager em) {
+        if (em != null && em.isOpen() && em.getTransaction().isActive()) {
+            em.getTransaction().rollback();
         }
     }
 }

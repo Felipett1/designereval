@@ -33,7 +33,15 @@ public class PersistenciaConfiguracionCorreo implements IPersistenciaConfiguraci
             System.out.println("ERROR: " + ise.getMessage());
         } catch (NumberFormatException e) {
             System.out.println("Error PersistenciaConfiguracionCorreo.consultarConfiguracionServidorCorreo: " + e);
+        } finally {
+            terminarTransaccionException(eManager);
         }
         return cc;
+    }
+
+    public void terminarTransaccionException(EntityManager em) {
+        if (em != null && em.isOpen() && em.getTransaction().isActive()) {
+            em.getTransaction().rollback();
+        }
     }
 }

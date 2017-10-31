@@ -46,6 +46,7 @@ public class PersistenciaPruebas implements IPersistenciaPruebas {
             return lst;
         } catch (Exception ex) {
             System.out.println("Error PersistenciaPruebas.obtenerPruebasEvalaudo: " + ex);
+            terminarTransaccionException(em);
             return null;
         }
     }
@@ -63,15 +64,16 @@ public class PersistenciaPruebas implements IPersistenciaPruebas {
             return true;
         } catch (Exception ex) {
             System.out.println("Error PersistenciaPruebas.actualizarPorcentaje: " + ex);
+            terminarTransaccionException(em);
             return false;
         }
     }
-    
+
     @Override
     public boolean actualizarEstado(EntityManager em, BigInteger secPrueba, String estado) {
         try {
             em.getTransaction().begin();
-            Query q = em.createNativeQuery("UPDATE EVALINDAGACIONES A SET A.ESTADOPRUEBA = ? WHERE A.SECUENCIA = ? ");
+            Query q = em.createNativeQuery("UPDATE EVALINDAGACIONES SET ESTADOPRUEBA = ? WHERE SECUENCIA = ? ");
             q.setParameter(1, estado);
             q.setParameter(2, secPrueba);
             q.executeUpdate();
@@ -79,7 +81,14 @@ public class PersistenciaPruebas implements IPersistenciaPruebas {
             return true;
         } catch (Exception ex) {
             System.out.println("Error PersistenciaPruebas.actualizarEstado: " + ex);
+            terminarTransaccionException(em);
             return false;
+        }
+    }
+
+    public void terminarTransaccionException(EntityManager em) {
+        if (em != null && em.isOpen() && em.getTransaction().isActive()) {
+            em.getTransaction().rollback();
         }
     }
 }

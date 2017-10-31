@@ -30,6 +30,7 @@ public class PersistenciaRespuestas implements IPersistenciaRespuestas {
             return lst;
         } catch (Exception ex) {
             System.out.println("Error PersistenciaRespuestas.obtenerRespuestas: " + ex);
+            terminarTransaccionException(em);
             return null;
         }
     }
@@ -54,6 +55,7 @@ public class PersistenciaRespuestas implements IPersistenciaRespuestas {
             return true;
         } catch (Exception ex) {
             System.out.println("Error PersistenciaRespuestas.registrarRespuesta: " + ex);
+            terminarTransaccionException(em);
             return false;
         }
     }
@@ -79,6 +81,7 @@ public class PersistenciaRespuestas implements IPersistenciaRespuestas {
             return true;
         } catch (Exception ex) {
             System.out.println("Error PersistenciaRespuestas.registrarRespuesta: " + ex);
+            terminarTransaccionException(em);
             return false;
         }
     }
@@ -99,7 +102,7 @@ public class PersistenciaRespuestas implements IPersistenciaRespuestas {
             return resultado.toBigInteger();
         } catch (Exception ex) {
             System.out.println("Error PersistenciaRespuestas.consultarRespuesta: " + ex);
-            em.getTransaction().rollback();
+            terminarTransaccionException(em);
             return null;
         }
     }
@@ -116,7 +119,14 @@ public class PersistenciaRespuestas implements IPersistenciaRespuestas {
             return true;
         } catch (Exception ex) {
             System.out.println("Error PersistenciaRespuestas.eliminarRespuestas: " + ex);
+            terminarTransaccionException(em);
             return false;
+        }
+    }
+
+    public void terminarTransaccionException(EntityManager em) {
+        if (em != null && em.isOpen() && em.getTransaction().isActive()) {
+            em.getTransaction().rollback();
         }
     }
 }

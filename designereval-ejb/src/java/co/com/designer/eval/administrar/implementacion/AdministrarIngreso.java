@@ -35,6 +35,7 @@ public class AdministrarIngreso implements IAdministrarIngreso {
     private final ISesionEntityManagerFactory sessionEMF;
 
     private EntityManagerFactory emf;
+    private EntityManager em;
     private BigInteger secPerfil;
     private Perfiles perfilUsuario;
     private Personas persona;
@@ -63,57 +64,49 @@ public class AdministrarIngreso implements IAdministrarIngreso {
         }
         if (resul) {
             this.unidadPersistencia = unidadPersistencia;
+            if (emf != null && emf.isOpen()) {
+                em = emf.createEntityManager();
+            }
             System.out.println("Unid. Pesistencia asignada.");
         }
         return resul;
     }
 
     @Override
-    public boolean validarUsuario(String usuario) {
-        System.out.println(this.getClass().getName() + ".validarUsuario()");
-        boolean resul = false;
-        try {
-            if (emf != null) {
-                EntityManager em = emf.createEntityManager();
-                resul = persistenciaConexionInicial.validarUsuario(em, usuario);
-                em.close();
-            }
-        } catch (Exception e) {
-            System.out.println("Error general: " + e);
-            resul = false;
-        }
-        return resul;
-    }
-
-    @Override
     public Personas conexionUsuario(String baseDatos, String usuario, String clave) {
-        EntityManager em = null;
         try {
-            em = emf.createEntityManager();
+            persona = null;
             secPerfil = persistenciaConexionInicial.usuarioLogin(em, usuario);
-            perfilUsuario = persistenciaConexionInicial.perfilUsuario(em, secPerfil);
-            em.close();
-            emf.close();
-            emf = sessionEMF.crearFactoryUsuario(usuario, clave, baseDatos);
-            em = emf.createEntityManager();
-            setearRol(em);
-            persona = persistenciaConexionInicial.obtenerPersona(em, usuario);
+            if (secPerfil != null) {
+                perfilUsuario = persistenciaConexionInicial.perfilUsuario(em, secPerfil);
+                if (perfilUsuario != null) {
+                    cerrarConexiones();
+                    emf = sessionEMF.crearFactoryUsuario(usuario, clave, baseDatos);
+                    em = emf.createEntityManager();
+                    if (setearRol()) {
+                        persona = persistenciaConexionInicial.obtenerPersona(em, usuario);
+                    } else {
+                        System.out.println("Error creando EMF AdministrarIngreso.conexionUsuario: Error seteando el rol.");
+                        cerrarConexiones();
+                    }
+                } else {
+                    System.out.println("Error creando EMF AdministrarIngreso.conexionUsuario: perfilUsuario es nulo.");
+                    cerrarConexiones();
+                }
+            } else {
+                System.out.println("Error creando EMF AdministrarIngreso.conexionUsuario: secPerfil es nulo.");
+                cerrarConexiones();
+            }
             return persona;
         } catch (Exception e) {
             System.out.println("Error creando EMF AdministrarIngreso.conexionUsuario: " + e);
-            if (em != null && em.isOpen()) {
-                em.close();
-            }
-            if (emf != null && emf.isOpen()) {
-                emf.close();
-            }
+            cerrarConexiones();
             return null;
         }
     }
 
-    public boolean setearRol(EntityManager em) {
+    public boolean setearRol() {
         try {
-            em = emf.createEntityManager();
             if (em != null) {
                 if (em.isOpen()) {
                     persistenciaConexionInicial.setearUsuario(em, perfilUsuario.getDescripcion(), perfilUsuario.getPwd());
@@ -130,7 +123,6 @@ public class AdministrarIngreso implements IAdministrarIngreso {
     @Override
     public Conexiones ultimaConexionUsuario(String usuario) {
         try {
-            EntityManager em = emf.createEntityManager();
             if (em != null) {
                 if (em.isOpen()) {
                     return persistenciaConexionInicial.conexionUsuario(em, usuario);
@@ -146,7 +138,6 @@ public class AdministrarIngreso implements IAdministrarIngreso {
     @Override
     public boolean insertarUltimaConexion(Conexiones conexion) {
         try {
-            EntityManager em = emf.createEntityManager();
             if (em != null) {
                 if (em.isOpen()) {
                     return persistenciaConexiones.insertarUltimaConexion(em, conexion);
@@ -192,10 +183,8 @@ public class AdministrarIngreso implements IAdministrarIngreso {
     @Override
     public String cambiarPassword(String usuario, String password) {
         System.out.println(this.getClass().getName() + ".cambiarPassword()");
-        EntityManager em = null;
         String res = "";
         try {
-            em = emf.createEntityManager();
             persistenciaConexionInicial.cambiarPassword(em, usuario, password);
         } catch (Exception e) {
             System.out.println("Error AdministrarIngreso:cambiarPassword: " + e);
@@ -203,11 +192,20 @@ public class AdministrarIngreso implements IAdministrarIngreso {
             if (em == null || !em.isOpen()) {
                 em = emf.createEntityManager();
             }
-            setearRol(em);
+            setearRol();
         }
         if (em != null && em.isOpen()) {
             em.close();
         }
         return res;
+    }
+
+    public void cerrarConexiones() {
+        if (em != null && em.isOpen()) {
+            em.close();
+        }
+        if (emf != null && emf.isOpen()) {
+            emf.close();
+        }
     }
 }//Fin de la clase.

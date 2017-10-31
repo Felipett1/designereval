@@ -55,7 +55,7 @@ public class AdministrarSesiones implements IAdministrarSesiones {
 
     @Override
     public void borrarSesion(String idSesion) {
-        System.out.println(this.getClass().getName() + "." + "borrarSesion" + "()");
+        System.out.println(this.getClass().getName() + "." + "borrarSesion()");
         if (!sessionesActivas.isEmpty()) {
             for (int i = 0; i < sessionesActivas.size(); i++) {
                 if (sessionesActivas.get(i).getIdSession().equals(idSesion)) {

@@ -1,7 +1,6 @@
 package co.com.designer.eval.administrar.interfaz;
 
 import co.com.designer.eval.clasesAyuda.SessionEntityManager;
-//import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 /**

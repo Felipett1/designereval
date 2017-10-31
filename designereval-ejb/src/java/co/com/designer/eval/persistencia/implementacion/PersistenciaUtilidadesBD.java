@@ -57,10 +57,11 @@ public class PersistenciaUtilidadesBD implements IPersistenciaUtilidadesBD {
             return resultado;
         } catch (Exception ex) {
             System.out.println("Error PersistenciaConvocatorias.obtenerEvaluados: " + ex);
+            terminarTransaccionException(em);
             return null;
         }
     }
-    
+
     @Override
     public BigDecimal cantidadEvaluadosConvocatoria(EntityManager em, BigInteger secConvocatoria) {
         try {
@@ -72,10 +73,11 @@ public class PersistenciaUtilidadesBD implements IPersistenciaUtilidadesBD {
             return resultado;
         } catch (Exception ex) {
             System.out.println("Error PersistenciaConvocatorias.obtenerEvaluados: " + ex);
+            terminarTransaccionException(em);
             return null;
         }
     }
-    
+
     @Override
     public BigDecimal totalEmpleadosEvaluadorConvocatoria(EntityManager em, BigInteger secuenciaEvaluador, BigInteger secConvocatoria) {
         try {
@@ -88,10 +90,11 @@ public class PersistenciaUtilidadesBD implements IPersistenciaUtilidadesBD {
             return resultado;
         } catch (Exception ex) {
             System.out.println("Error PersistenciaConvocatorias.obtenerEvaluados: " + ex);
+            terminarTransaccionException(em);
             return null;
         }
     }
-    
+
     @Override
     public BigDecimal cantidadEvaluados(EntityManager em, BigInteger secuenciaEvaluador, BigInteger secConvocatoria) {
         try {
@@ -104,7 +107,14 @@ public class PersistenciaUtilidadesBD implements IPersistenciaUtilidadesBD {
             return resultado;
         } catch (Exception ex) {
             System.out.println("Error PersistenciaConvocatorias.obtenerEvaluados: " + ex);
+            terminarTransaccionException(em);
             return null;
+        }
+    }
+
+    public void terminarTransaccionException(EntityManager em) {
+        if (em != null && em.getTransaction().isActive()) {
+            em.getTransaction().rollback();
         }
     }
 }

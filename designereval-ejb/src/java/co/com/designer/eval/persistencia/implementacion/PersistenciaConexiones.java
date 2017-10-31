@@ -21,7 +21,14 @@ public class PersistenciaConexiones implements IPersistenciaConexiones {
             return true;
         } catch (Exception ex) {
             System.out.println("Error PersistenciaConexiones.insertarUltimaConexion: " + ex);
+            terminarTransaccionException(em);
             return false;
+        }
+    }
+
+    public void terminarTransaccionException(EntityManager em) {
+        if (em != null && em.isOpen() && em.getTransaction().isActive()) {
+            em.getTransaction().rollback();
         }
     }
 }

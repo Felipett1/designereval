@@ -24,6 +24,7 @@ public class PersistenciaGenerales implements IPersistenciaGenerales {
             return g;
         } catch (Exception e) {
             System.out.println("Error PersistenciaGenerales.consultarRutasGenerales: " + e);
+            terminarTransaccionException(eManager);
             return null;
         }
     }
@@ -40,7 +41,14 @@ public class PersistenciaGenerales implements IPersistenciaGenerales {
             return logo;
         } catch (Exception e) {
             System.out.println("Error PersistenciaGenerales.consultarRutasGenerales: " + e);
+            terminarTransaccionException(eManager);
             return null;
+        }
+    }
+
+    public void terminarTransaccionException(EntityManager em) {
+        if (em != null && em.isOpen() && em.getTransaction().isActive()) {
+            em.getTransaction().rollback();
         }
     }
 }

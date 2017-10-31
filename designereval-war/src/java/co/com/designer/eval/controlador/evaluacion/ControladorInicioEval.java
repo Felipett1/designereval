@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
-//import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashMap;
@@ -44,7 +43,6 @@ public class ControladorInicioEval implements Serializable {
     private List<Evaluados> evaluados;
     private List<Pruebas> pruebas;
     private BigDecimal secuenciaEvaluador, totalEmpleadosAsignados, empleadosConvocados, empleadosAsignados, empleadosEvaluados;
-//    private BigInteger secConvocatoria;
     private BigDecimal secConvocatoria;
     private int estadoConvocatoria = 2;
 
@@ -67,13 +65,15 @@ public class ControladorInicioEval implements Serializable {
             usuario = ((ControladorIngreso) x.getApplication().evaluateExpressionGet(x, "#{controladorIngreso}", ControladorIngreso.class)).getUsuario();
             convocatorias = administrarInicio.obtenerConvocatorias(usuario);
             secuenciaEvaluador = administrarInicio.obtenerSecuenciaEvaluador(usuario);
-            totalEmpleadosAsignados = administrarInicio.totalEmpleadosEvaluador(secuenciaEvaluador.toBigInteger());
+            if (secuenciaEvaluador != null) {
+                totalEmpleadosAsignados = administrarInicio.totalEmpleadosEvaluador(secuenciaEvaluador.toBigInteger());
+            }
             nitEmpresa = ((ControladorIngreso) x.getApplication().evaluateExpressionGet(x, "#{controladorIngreso}", ControladorIngreso.class)).getNit();
             email = ((ControladorIngreso) x.getApplication().evaluateExpressionGet(x, "#{controladorIngreso}", ControladorIngreso.class)).getPersona().getEmail();
-            System.out.println("Inicializado");
+            System.out.println("INICIALIZADO!!!!  " + ses.getId());
         } catch (ELException e) {
             System.out.println("Error postconstruct " + this.getClass().getName() + ": " + e);
-            System.out.println("Causa: " + e.getCause());
+            System.out.println("Causa: " + e);
         }
     }
 
@@ -100,13 +100,14 @@ public class ControladorInicioEval implements Serializable {
                 empleadosConvocados = null;
                 empleadosAsignados = null;
                 empleadosEvaluados = null;
+                break;
         }
         pruebas = null;
     }
 
     public void seleccionEvaluado(int tipo) {
         //1 Si - 0 No
-        if (tipo == 1) {
+        if (tipo == 1 && evaluado != null) {
             pruebas = administrarInicio.obtenerPruebasEvaluado(usuario, evaluado.getSecuencia());
         } else {
             pruebas = null;
@@ -119,20 +120,17 @@ public class ControladorInicioEval implements Serializable {
         1 - Evaluador
         2 - Convocatoria
         3 - Prueba
-         */
+        */
         switch (opcion) {
             case 0:
                 return evaluado;
-//            break:
             case 1:
                 FacesContext x = FacesContext.getCurrentInstance();
                 HttpSession ses = (HttpSession) x.getExternalContext().getSession(false);
                 return ((ControladorInformacionBasica) x.getApplication().evaluateExpressionGet(x, "#{controladorInformacionBasica}", ControladorInformacionBasica.class
                 )).getPersona().getNombreCompleto();
-//            break;
             case 2:
                 return convocatoria;
-//            break;
             default:
                 return prueba;
         }

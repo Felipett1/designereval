@@ -49,70 +49,64 @@ public class AdministrarInicio implements IAdministrarInicio {
     @EJB
     private IniciarReporteInterface reporte;
     private EntityManagerFactory emf;
+    private EntityManager em;
 
     @Override
     public void obtenerConexion(String idSesion) {
         emf = administrarSesiones.obtenerConexionSesion(idSesion);
+        if (emf != null && emf.isOpen()) {
+            em = emf.createEntityManager();
+        }
     }
 
     @Override
     public List<Convocatorias> obtenerConvocatorias(String usuario) {
-        EntityManager em = emf.createEntityManager();
         return persistenciaConvocatorias.obtenerConvocatorias(em, usuario);
     }
 
     @Override
     public List<Convocatorias> obtenerConvocatoriasAlcance(String usuario) {
-        EntityManager em = emf.createEntityManager();
         return persistenciaConvocatorias.obtenerConvocatoriasAlcance(em, usuario);
     }
 
     @Override
     public List<Evaluados> obtenerEvaluados(String usuario, BigInteger secConvocatoria) {
-        EntityManager em = emf.createEntityManager();
         return persistenciaEvaluados.obtenerEvaluados(em, usuario, secConvocatoria);
     }
 
     @Override
     public BigDecimal totalEmpleadosEvaluador(BigInteger secuenciaEvaluador) {
-        EntityManager em = emf.createEntityManager();
         return persistenciaUtilidadesBD.totalEmpleadosEvaluador(em, secuenciaEvaluador);
 
     }
 
     @Override
     public BigDecimal cantidadEvaluadosConvocatoria(BigInteger secConvocatoria) {
-        EntityManager em = emf.createEntityManager();
         return persistenciaUtilidadesBD.cantidadEvaluadosConvocatoria(em, secConvocatoria);
     }
 
     @Override
     public BigDecimal totalEmpleadosEvaluadorConvocatoria(BigInteger secuenciaEvaluador, BigInteger secConvocatoria) {
-        EntityManager em = emf.createEntityManager();
         return persistenciaUtilidadesBD.totalEmpleadosEvaluadorConvocatoria(em, secuenciaEvaluador, secConvocatoria);
     }
 
     @Override
     public BigDecimal cantidadEvaluados(BigInteger secuenciaEvaluador, BigInteger secConvocatoria) {
-        EntityManager em = emf.createEntityManager();
         return persistenciaUtilidadesBD.cantidadEvaluados(em, secuenciaEvaluador, secConvocatoria);
     }
 
     @Override
     public BigDecimal obtenerSecuenciaEvaluador(String usuario) {
-        EntityManager em = emf.createEntityManager();
         return persistenciaConvocatorias.obtenerSecuenciaEvaluador(em, usuario);
     }
 
     @Override
     public List<Pruebas> obtenerPruebasEvaluado(String usuario, BigInteger secEmplConvo) {
-        EntityManager em = emf.createEntityManager();
         return persistenciaPruebas.obtenerPruebasEvaluado(em, usuario, secEmplConvo);
     }
 
     @Override
     public boolean cerrarConvocatoria(BigDecimal secConvocatoria) {
-        EntityManager em = emf.createEntityManager();
         return persistenciaConvocatorias.cerrarConvocatoria(em, secConvocatoria);
     }
 
@@ -121,9 +115,7 @@ public class AdministrarInicio implements IAdministrarInicio {
         System.out.println(this.getClass().getName() + ".enviarCorreo()");
         boolean resul = false;
         try {
-            EntityManager em = emf.createEntityManager();
             ConfiguracionCorreo cc = persistenciaConfiguracionCorreo.consultarConfiguracionServidorCorreo(em, nitEmpresa);
-            em.close();
             resul = EnvioCorreo.enviarCorreo(cc, destinatario, asunto, mensaje, pathAdjunto);
         } catch (Exception e) {
             System.out.println("enviarCorreo: " + e);
@@ -135,15 +127,12 @@ public class AdministrarInicio implements IAdministrarInicio {
     public String generarReporte(String nombreReporte, String tipoReporte, Map parametros, String nombreConvocatoria) {
         System.out.println(this.getClass().getName() + ".generarReporte()");
         try {
-            EntityManager em = emf.createEntityManager();
             Generales general = persistenciaGenerales.consultarRutasGenerales(em);
-            em.close();
             Calendar fecha = Calendar.getInstance();
             String pathReporteGenerado = null;
             String nombreArchivo;
             if (general != null) {
-//                nombreArchivo = "EVAL - Reporte resumen convocatoria " + nombreConvocatoria ;
-                nombreArchivo = "EVAL-resumen_convocatoria_" + nombreConvocatoria + fecha.get(Calendar.YEAR)+"_"+(fecha.get(Calendar.MONTH)+1)+"_"+fecha.get(Calendar.DAY_OF_MONTH)+"_"+fecha.get(Calendar.HOUR)+"_"+fecha.get(Calendar.MINUTE)+"_"+fecha.get(Calendar.SECOND)+"_"+fecha.get(Calendar.MILLISECOND);
+                nombreArchivo = "EVAL-resumen_convocatoria_" + nombreConvocatoria + fecha.get(Calendar.YEAR) + "_" + (fecha.get(Calendar.MONTH) + 1) + "_" + fecha.get(Calendar.DAY_OF_MONTH) + "_" + fecha.get(Calendar.HOUR) + "_" + fecha.get(Calendar.MINUTE) + "_" + fecha.get(Calendar.SECOND) + "_" + fecha.get(Calendar.MILLISECOND);
                 String rutaReporte = general.getPathreportes();
                 String rutaGenerado = general.getUbicareportes();
                 if (tipoReporte.equals("PDF")) {
@@ -159,7 +148,6 @@ public class AdministrarInicio implements IAdministrarInicio {
                 } else if (tipoReporte.equals("DOCX")) {
                     nombreArchivo = nombreArchivo + ".rtf";
                 }
-
                 parametros.put("pathImagenes", rutaReporte);
                 EntityManager em2 = emf.createEntityManager();
                 pathReporteGenerado = reporte.ejecutarReporte(nombreReporte,
@@ -177,7 +165,6 @@ public class AdministrarInicio implements IAdministrarInicio {
 
     @Override
     public boolean actualizarEstado(BigInteger secPrueba, String estado) {
-        EntityManager em = emf.createEntityManager();
         return persistenciaPruebas.actualizarEstado(em, secPrueba, estado);
     }
 }

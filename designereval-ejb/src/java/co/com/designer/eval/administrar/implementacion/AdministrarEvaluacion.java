@@ -33,16 +33,19 @@ public class AdministrarEvaluacion implements IAdministrarEvaluacion {
     @EJB
     private IPersistenciaEvaluados persistenciaEvaluados;
     private EntityManagerFactory emf;
+    private EntityManager em;
 
     @Override
     public void obtenerConexion(String idSesion) {
         emf = administrarSesiones.obtenerConexionSesion(idSesion);
+        if (emf != null && emf.isOpen()) {
+            em = emf.createEntityManager();
+        }
     }
 
     @Override
     public List<Preguntas> obtenerCuestinonario(BigInteger secPrueba, BigInteger secIndagacion) {
         List<Preguntas> lst = obtenerPreguntas(secPrueba);
-        EntityManager em = emf.createEntityManager();
         if (lst != null && !lst.isEmpty()) {
             for (int i = 0; i < lst.size(); i++) {
                 lst.get(i).setRespuestas(obtenerRespuestas(lst.get(i).getSecuencia()));
@@ -58,50 +61,42 @@ public class AdministrarEvaluacion implements IAdministrarEvaluacion {
     }
 
     public List<Preguntas> obtenerPreguntas(BigInteger secPrueba) {
-        EntityManager em = emf.createEntityManager();
         return persistenciaPreguntas.obtenerPreguntas(em, secPrueba);
     }
 
     public List<Respuestas> obtenerRespuestas(BigInteger secPregunta) {
-        EntityManager em = emf.createEntityManager();
         return persistenciaRespuestas.obtenerRespuestas(em, secPregunta);
     }
 
     @Override
     public BigInteger obtenerNroPreguntas(BigInteger secPrueba) {
-        EntityManager em = emf.createEntityManager();
         return persistenciaPreguntas.obtenerNroPreguntas(em, secPrueba);
     }
 
     @Override
     public boolean registrarRespuesta(BigInteger secIndagacion,
             BigInteger secPregunta, BigInteger secRespuesta) {
-        EntityManager em = emf.createEntityManager();
         return persistenciaRespuestas.registrarRespuesta(em, secIndagacion, secPregunta, secRespuesta);
     }
 
     @Override
     public boolean actualizarRespuesta(BigInteger secIndagacion,
             BigInteger secPregunta, BigInteger secRespuesta) {
-        EntityManager em = emf.createEntityManager();
         return persistenciaRespuestas.actualizarRespuesta(em, secIndagacion, secPregunta, secRespuesta);
     }
 
     @Override
     public boolean eliminarRespuestas(BigInteger secIndagacion) {
-        EntityManager em = emf.createEntityManager();
         return persistenciaRespuestas.eliminarRespuestas(em, secIndagacion);
     }
 
     @Override
     public boolean actualizarPorcentaje(BigInteger secPrueba, String observacion, double porcentaje) {
-        EntityManager em = emf.createEntityManager();
         return persistenciaPruebas.actualizarPorcentaje(em, secPrueba, observacion, porcentaje);
     }
 
     @Override
     public boolean actualizarPorcentaje(BigInteger secConvocatoria, BigInteger secEvaluado, Integer agrupado) {
-        EntityManager em = emf.createEntityManager();
         return persistenciaEvaluados.actualizarPorcentaje(em, secConvocatoria, secEvaluado, agrupado);
     }
 

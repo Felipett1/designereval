@@ -34,6 +34,7 @@ public class PersistenciaPreguntas implements IPersistenciaPreguntas {
             return lst;
         } catch (Exception ex) {
             System.out.println("Error PersistenciaPreguntas.obtenerPreguntas: " + ex);
+            terminarTransaccionException(em);
             return null;
         }
     }
@@ -52,7 +53,14 @@ public class PersistenciaPreguntas implements IPersistenciaPreguntas {
             return resultado.toBigInteger();
         } catch (Exception ex) {
             System.out.println("Error PersistenciaPreguntas.obtenerPreguntas: " + ex);
+            terminarTransaccionException(em);
             return null;
+        }
+    }
+
+    public void terminarTransaccionException(EntityManager em) {
+        if (em != null && em.isOpen() && em.getTransaction().isActive()) {
+            em.getTransaction().rollback();
         }
     }
 }

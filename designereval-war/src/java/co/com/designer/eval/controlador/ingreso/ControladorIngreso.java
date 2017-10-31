@@ -115,7 +115,6 @@ public class ControladorIngreso implements Serializable {
                         && cadena != null) {
                     nit = cadena.getNit();
                     if (administrarIngreso.conexionIngreso(cadena.getCadena())) {
-                        //if (administrarIngreso.validarUsuario(usuario)) {
                         persona = administrarIngreso.conexionUsuario(cadena.getCadena(), usuario, clave);
                         if (persona != null) {
                             administrarIngreso.adicionarConexionUsuario(ses.getId());
@@ -136,11 +135,6 @@ public class ControladorIngreso implements Serializable {
                             MensajesUI.error("Contraseña invalida.");
                             ingresoExitoso = false;
                         }
-                        /*} else {
-                            //EL USUARIO NO EXISTE O ESTA INACTIVO.
-                            MensajesUI.error("El usuario " + usuario + " no existe o esta inactivo, por favor contactar al área de soporte.");
-                            ingresoExitoso = false;
-                        }*/
                     } else {
                         //UNIDAD DE PERSISTENCIA INVALIDA - REVISAR ARCHIVO DE CONFIGURACION
                         MensajesUI.fatal("Unidad de persistencia inválida, por favor contactar al área de soporte.");
@@ -152,23 +146,21 @@ public class ControladorIngreso implements Serializable {
                 }
             } else {
                 usuario = "";
-                HttpSession session = Util.getSession();
-                System.out.println("la session con " + session.getAttribute("idUsuario") + " termino.");
-                session.setAttribute("idUsuario", "");
-                session.removeAttribute("idUsuario");
                 ingresoExitoso = false;
                 nit = null;
-                FacesContext context = FacesContext.getCurrentInstance();
-                ExternalContext ec = context.getExternalContext();
-
+                administrarIngreso.cerrarSession(ses.getId());
+                this.pass = "";
+                this.passCnf = "";
+                /*HttpSession session = Util.getSession();
+                System.out.println("la session con " + session.getAttribute("idUsuario") + " termino.");
+                session.setAttribute("idUsuario", "");
+                session.removeAttribute("idUsuario");*/
+                ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
                 try {
                     ec.invalidateSession();
                 } catch (Exception npe) {
                     System.out.println("ExternalContext vacio");
                 }
-                administrarIngreso.cerrarSession(ses.getId());
-                this.pass = "";
-                this.passCnf = "";
                 if (grupoSeleccionado != null) {
                     ec.redirect(ec.getRequestContextPath() + "/" + "?grupo=" + grupoSeleccionado);
                 } else {
@@ -223,28 +215,32 @@ public class ControladorIngreso implements Serializable {
         }
     }
 
-    public void guardarUltimaConexion() throws UnknownHostException {
-        FacesContext contextoF = FacesContext.getCurrentInstance();
-        HttpServletRequest request = (HttpServletRequest) (contextoF.getExternalContext().getRequest());
-        String Ip, nombreEquipo;
-        java.net.InetAddress localMachine;
-        if (request.getRemoteAddr().startsWith("127.0.0.1")) {
-            localMachine = java.net.InetAddress.getLocalHost();
-            Ip = localMachine.getHostAddress();
-        } else {
-            Ip = request.getRemoteAddr();
+    public void guardarUltimaConexion() {
+        try {
+            FacesContext contextoF = FacesContext.getCurrentInstance();
+            HttpServletRequest request = (HttpServletRequest) (contextoF.getExternalContext().getRequest());
+            String Ip, nombreEquipo;
+            java.net.InetAddress localMachine;
+            if (request.getRemoteAddr().startsWith("127.0.0.1")) {
+                localMachine = java.net.InetAddress.getLocalHost();
+                Ip = localMachine.getHostAddress();
+            } else {
+                Ip = request.getRemoteAddr();
+            }
+            localMachine = java.net.InetAddress.getByName(Ip);
+            nombreEquipo = localMachine.getHostName();
+            Conexiones registroConexion = new Conexiones();
+            registroConexion.setDireccionIP(Ip);
+            registroConexion.setEstacion(nombreEquipo);
+            registroConexion.setSecuencia(BigInteger.valueOf(1));
+            registroConexion.setUltimaEntrada(new Date());
+            registroConexion.setUsuarioso(System.getProperty("os.name") + " / " + System.getProperty("user.name"));
+            registroConexion.setUsuarioBD(usuario);
+            registroConexion.setSid(BigInteger.ZERO);
+            administrarIngreso.insertarUltimaConexion(registroConexion);
+        } catch (UnknownHostException e) {
+            System.out.println(this.getClass().getName() + ".guardarUltimaConexion() exception" + e);
         }
-        localMachine = java.net.InetAddress.getByName(Ip);
-        nombreEquipo = localMachine.getHostName();
-        Conexiones registroConexion = new Conexiones();
-        registroConexion.setDireccionIP(Ip);
-        registroConexion.setEstacion(nombreEquipo);
-        registroConexion.setSecuencia(BigInteger.valueOf(1));
-        registroConexion.setUltimaEntrada(new Date());
-        registroConexion.setUsuarioso(System.getProperty("os.name") + " / " + System.getProperty("user.name"));
-        registroConexion.setUsuarioBD(usuario);
-        registroConexion.setSid(BigInteger.ZERO);
-        administrarIngreso.insertarUltimaConexion(registroConexion);
     }
 
     public void cambiarPassword() {

@@ -18,7 +18,6 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Generales.findAll", query = "SELECT g FROM Generales g")})
 public class Generales implements Serializable {
     private static final long serialVersionUID = 1L;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
     @Basic(optional = false)
     @NotNull
@@ -91,7 +90,6 @@ public class Generales implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof Generales)) {
             return false;
         }

@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-//import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
 /**
@@ -44,7 +43,7 @@ public class PersistenciaConvocatorias implements IPersistenciaConvocatorias {
             return lst;
         } catch (Exception ex) {
             System.out.println("Error PersistenciaConvocatorias.obtenerConvocatorias: " + ex);
-            em.getTransaction().rollback();
+            terminarTransaccionException(em);
             return null;
         }
     }
@@ -77,7 +76,7 @@ public class PersistenciaConvocatorias implements IPersistenciaConvocatorias {
             return lst;
         } catch (Exception ex) {
             System.out.println("Error PersistenciaConvocatorias.obtenerConvocatoriasAlcance: " + ex);
-            em.getTransaction().rollback();
+            terminarTransaccionException(em);
             return null;
         }
     }
@@ -93,6 +92,7 @@ public class PersistenciaConvocatorias implements IPersistenciaConvocatorias {
             return resultado;
         } catch (Exception ex) {
             System.out.println("Error PersistenciaConvocatorias.obtenerSecuenciaEvaluador: " + ex);
+            terminarTransaccionException(em);
             return null;
         }
     }
@@ -101,20 +101,24 @@ public class PersistenciaConvocatorias implements IPersistenciaConvocatorias {
     public boolean cerrarConvocatoria(EntityManager em, BigDecimal secConvocatoria) {
         try {
             em.getTransaction().begin();
-            System.out.println("co.com.designer.eval.persistencia.implementacion.PersistenciaConvocatorias.cerrarConvocatoria() ENTRO");
+            //System.out.println("co.com.designer.eval.persistencia.implementacion.PersistenciaConvocatorias.cerrarConvocatoria() ENTRO");
             Query q = em.createNativeQuery("CALL EVALCONVOCATORIAS_PKG.CERRAREVALUACION(?) ");
             q.setParameter(1, secConvocatoria);
             q.executeUpdate();
-            System.out.println("co.com.designer.eval.persistencia.implementacion.PersistenciaConvocatorias.cerrarConvocatoria() YA EJECUTO EVALCONVOCATORIAS_PKG.CERRAREVALUACION(" + secConvocatoria + ")");
+            //System.out.println("co.com.designer.eval.persistencia.implementacion.PersistenciaConvocatorias.cerrarConvocatoria() YA EJECUTO EVALCONVOCATORIAS_PKG.CERRAREVALUACION(" + secConvocatoria + ")");
             em.getTransaction().commit();
-            System.out.println("co.com.designer.eval.persistencia.implementacion.PersistenciaConvocatorias.cerrarConvocatoria() YA COMMIT");
+            //System.out.println("co.com.designer.eval.persistencia.implementacion.PersistenciaConvocatorias.cerrarConvocatoria() YA COMMIT");
             return true;
         } catch (Exception ex) {
             System.out.println("Error PersistenciaConvocatorias.cerrarConvocatoria: " + ex);
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
-            }
+            terminarTransaccionException(em);
             return false;
+        }
+    }
+
+    public void terminarTransaccionException(EntityManager em) {
+        if (em != null && em.getTransaction().isActive()) {
+            em.getTransaction().rollback();
         }
     }
 }

@@ -9,8 +9,6 @@ import javax.persistence.EntityManagerFactory;
 
 public interface IPersistenciaConexionInicial {
 
-    public boolean validarIngresoUsuarioRegistrado(EntityManager eManager, String usuario, String clave, String nitEmpresa);
-
     public EntityManager validarConexionUsuario(EntityManagerFactory emf);
 
     public boolean validarUsuario(EntityManager eManager, String usuario);
@@ -24,12 +22,13 @@ public interface IPersistenciaConexionInicial {
     public Personas obtenerPersona(EntityManager eManager, String usuarioBD);
 
     public Conexiones conexionUsuario(EntityManager eManager, String usuario);
+
     /**
      * Metodo para la modificacion del password de determinado usuario.
+     *
      * @param em
      * @param usuario
      * @param password
-     * @throws Exception 
      */
-    public void cambiarPassword(EntityManager em, String usuario, String password) throws Exception;
+    public void cambiarPassword(EntityManager em, String usuario, String password);
 }

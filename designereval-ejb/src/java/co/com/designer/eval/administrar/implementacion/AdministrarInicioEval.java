@@ -21,16 +21,19 @@ public class AdministrarInicioEval implements IAdministrarInicioEval {
     @EJB
     private IPersistenciaGenerales persistenciaGenerales;
     private EntityManagerFactory emf;
+    private EntityManager em;
 
     @Override
     public void obtenerConexion(String idSesion) {
         emf = administrarSesiones.obtenerConexionSesion(idSesion);
+        if (emf != null && emf.isOpen()) {
+            em = emf.createEntityManager();
+        }
     }
 
     @Override
     public String obtenerRutaImagenes() {
         String rutaFoto;
-        EntityManager em = emf.createEntityManager();
         Generales general = persistenciaGenerales.consultarRutasGenerales(em);
         if (general != null) {
             rutaFoto = general.getPathfoto();
@@ -42,7 +45,6 @@ public class AdministrarInicioEval implements IAdministrarInicioEval {
 
     @Override
     public String logoEmpresa(String nit) {
-        EntityManager em = emf.createEntityManager();
         return persistenciaGenerales.logoEmpresa(em, nit);
     }
 }
