@@ -53,61 +53,114 @@ public class AdministrarInicio implements IAdministrarInicio {
 
     @Override
     public void obtenerConexion(String idSesion) {
-        emf = administrarSesiones.obtenerConexionSesion(idSesion);
-        if (emf != null && emf.isOpen()) {
-            em = emf.createEntityManager();
+        try {
+            emf = administrarSesiones.obtenerConexionSesion(idSesion);
+            if (emf != null && emf.isOpen()) {
+                em = emf.createEntityManager();
+            }
+        } catch (Exception e) {
+            System.out.println("Error AdministrarInicio.obtenerConexion: " + e);
         }
     }
 
     @Override
     public List<Convocatorias> obtenerConvocatorias(String usuario) {
-        return persistenciaConvocatorias.obtenerConvocatorias(em, usuario);
+        try {
+            return persistenciaConvocatorias.obtenerConvocatorias(em, usuario);
+        } catch (Exception e) {
+            System.out.println("Error AdministrarInicio.obtenerConvocatorias: " + e);
+            return null;
+        }
     }
 
     @Override
     public List<Convocatorias> obtenerConvocatoriasAlcance(String usuario) {
-        return persistenciaConvocatorias.obtenerConvocatoriasAlcance(em, usuario);
+        try {
+            return persistenciaConvocatorias.obtenerConvocatoriasAlcance(em, usuario);
+        } catch (Exception e) {
+            System.out.println("Error AdministrarInicio.obtenerConvocatoriasAlcance: " + e);
+            return null;
+        }
     }
 
     @Override
     public List<Evaluados> obtenerEvaluados(String usuario, BigInteger secConvocatoria) {
-        return persistenciaEvaluados.obtenerEvaluados(em, usuario, secConvocatoria);
+        try {
+            return persistenciaEvaluados.obtenerEvaluados(em, usuario, secConvocatoria);
+        } catch (Exception e) {
+            System.out.println("Error AdministrarInicio.obtenerEvaluados: " + e);
+            return null;
+        }
     }
 
     @Override
     public BigDecimal totalEmpleadosEvaluador(BigInteger secuenciaEvaluador) {
-        return persistenciaUtilidadesBD.totalEmpleadosEvaluador(em, secuenciaEvaluador);
-
+        try {
+            return persistenciaUtilidadesBD.totalEmpleadosEvaluador(em, secuenciaEvaluador);
+        } catch (Exception e) {
+            System.out.println("Error AdministrarInicio.totalEmpleadosEvaluador: " + e);
+            return null;
+        }
     }
 
     @Override
     public BigDecimal cantidadEvaluadosConvocatoria(BigInteger secConvocatoria) {
-        return persistenciaUtilidadesBD.cantidadEvaluadosConvocatoria(em, secConvocatoria);
+        try {
+            return persistenciaUtilidadesBD.cantidadEvaluadosConvocatoria(em, secConvocatoria);
+        } catch (Exception e) {
+            System.out.println("Error AdministrarInicio.cantidadEvaluadosConvocatoria: " + e);
+            return null;
+        }
     }
 
     @Override
     public BigDecimal totalEmpleadosEvaluadorConvocatoria(BigInteger secuenciaEvaluador, BigInteger secConvocatoria) {
-        return persistenciaUtilidadesBD.totalEmpleadosEvaluadorConvocatoria(em, secuenciaEvaluador, secConvocatoria);
+        try {
+            return persistenciaUtilidadesBD.totalEmpleadosEvaluadorConvocatoria(em, secuenciaEvaluador, secConvocatoria);
+        } catch (Exception e) {
+            System.out.println("Error AdministrarInicio.totalEmpleadosEvaluadorConvocatoria: " + e);
+            return null;
+        }
     }
 
     @Override
     public BigDecimal cantidadEvaluados(BigInteger secuenciaEvaluador, BigInteger secConvocatoria) {
-        return persistenciaUtilidadesBD.cantidadEvaluados(em, secuenciaEvaluador, secConvocatoria);
+        try {
+            return persistenciaUtilidadesBD.cantidadEvaluados(em, secuenciaEvaluador, secConvocatoria);
+        } catch (Exception e) {
+            System.out.println("Error AdministrarInicio.cantidadEvaluados: " + e);
+            return null;
+        }
     }
 
     @Override
     public BigDecimal obtenerSecuenciaEvaluador(String usuario) {
-        return persistenciaConvocatorias.obtenerSecuenciaEvaluador(em, usuario);
+        try {
+            return persistenciaConvocatorias.obtenerSecuenciaEvaluador(em, usuario);
+        } catch (Exception e) {
+            System.out.println("Error AdministrarInicio.obtenerSecuenciaEvaluador: " + e);
+            return null;
+        }
     }
 
     @Override
     public List<Pruebas> obtenerPruebasEvaluado(String usuario, BigInteger secEmplConvo) {
-        return persistenciaPruebas.obtenerPruebasEvaluado(em, usuario, secEmplConvo);
+        try {
+            return persistenciaPruebas.obtenerPruebasEvaluado(em, usuario, secEmplConvo);
+        } catch (Exception e) {
+            System.out.println("Error AdministrarInicio.obtenerPruebasEvaluado: " + e);
+            return null;
+        }
     }
 
     @Override
     public boolean cerrarConvocatoria(BigDecimal secConvocatoria) {
-        return persistenciaConvocatorias.cerrarConvocatoria(em, secConvocatoria);
+        try {
+            return persistenciaConvocatorias.cerrarConvocatoria(em, secConvocatoria);
+        } catch (Exception e) {
+            System.out.println("Error AdministrarInicio.cerrarConvocatoria: " + e);
+            return false;
+        }
     }
 
     @Override
@@ -165,6 +218,11 @@ public class AdministrarInicio implements IAdministrarInicio {
 
     @Override
     public boolean actualizarEstado(BigInteger secPrueba, String estado) {
-        return persistenciaPruebas.actualizarEstado(em, secPrueba, estado);
+        try {
+            return persistenciaPruebas.actualizarEstado(em, secPrueba, estado);
+        } catch (Exception e) {
+            System.out.println("Error AdministrarInicio.actualizarEstado: " + e);
+            return false;
+        }
     }
 }

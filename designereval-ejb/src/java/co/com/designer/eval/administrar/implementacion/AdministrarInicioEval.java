@@ -25,26 +25,40 @@ public class AdministrarInicioEval implements IAdministrarInicioEval {
 
     @Override
     public void obtenerConexion(String idSesion) {
-        emf = administrarSesiones.obtenerConexionSesion(idSesion);
-        if (emf != null && emf.isOpen()) {
-            em = emf.createEntityManager();
+        try {
+            emf = administrarSesiones.obtenerConexionSesion(idSesion);
+            if (emf != null && emf.isOpen()) {
+                em = emf.createEntityManager();
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error AdministrarInicioEval.obtenerConexion: " + e);
         }
     }
 
     @Override
     public String obtenerRutaImagenes() {
-        String rutaFoto;
-        Generales general = persistenciaGenerales.consultarRutasGenerales(em);
-        if (general != null) {
-            rutaFoto = general.getPathfoto();
-        } else {
-            rutaFoto = null;
+        String rutaFoto = null;
+        try {
+            Generales general = persistenciaGenerales.consultarRutasGenerales(em);
+            if (general != null) {
+                rutaFoto = general.getPathfoto();
+            } else {
+                rutaFoto = null;
+            }
+        } catch (Exception e) {
+            System.out.println("Error AdministrarInicioEval.obtenerRutaImagenes: " + e);
         }
         return rutaFoto;
     }
 
     @Override
     public String logoEmpresa(String nit) {
-        return persistenciaGenerales.logoEmpresa(em, nit);
+        try {
+            return persistenciaGenerales.logoEmpresa(em, nit);
+        } catch (Exception e) {
+            System.out.println("Error AdministrarInicioEval.obtenerRutaImagenes: " + e);
+            return null;
+        }
     }
 }

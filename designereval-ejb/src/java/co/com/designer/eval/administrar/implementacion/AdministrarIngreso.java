@@ -57,17 +57,17 @@ public class AdministrarIngreso implements IAdministrarIngreso {
                 System.out.println("Error la unidad de persistencia no existe, revisar el archivo XML de persistencia.");
                 resul = false;
             }
+            if (resul) {
+                this.unidadPersistencia = unidadPersistencia;
+                if (emf != null && emf.isOpen()) {
+                    em = emf.createEntityManager();
+                }
+                System.out.println("Unid. Pesistencia asignada.");
+            }
         } catch (Exception e) {
             System.out.println("Error general: " + e);
             resul = false;
             emf = null;
-        }
-        if (resul) {
-            this.unidadPersistencia = unidadPersistencia;
-            if (emf != null && emf.isOpen()) {
-                em = emf.createEntityManager();
-            }
-            System.out.println("Unid. Pesistencia asignada.");
         }
         return resul;
     }
@@ -186,6 +186,9 @@ public class AdministrarIngreso implements IAdministrarIngreso {
         String res = "";
         try {
             persistenciaConexionInicial.cambiarPassword(em, usuario, password);
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
         } catch (Exception e) {
             System.out.println("Error AdministrarIngreso:cambiarPassword: " + e);
             res = ExtraeCausaExcepcion.obtenerMensajeSQLException(e);
@@ -193,19 +196,23 @@ public class AdministrarIngreso implements IAdministrarIngreso {
                 em = emf.createEntityManager();
             }
             setearRol();
-        }
-        if (em != null && em.isOpen()) {
-            em.close();
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
         }
         return res;
     }
 
     public void cerrarConexiones() {
-        if (em != null && em.isOpen()) {
-            em.close();
-        }
-        if (emf != null && emf.isOpen()) {
-            emf.close();
+        try {
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
+            if (emf != null && emf.isOpen()) {
+                emf.close();
+            }
+        } catch (Exception e) {
+            System.out.println("Error AdministrarIngreso.cerrarConexiones: " + e);
         }
     }
 }//Fin de la clase.
