@@ -40,11 +40,17 @@
                 <p:column headerText="Enfoque" width="115">
                     <h:outputText value="#{convocatoria.enfoque}"/>
                 </p:column>
-
-                <p:column headerText="Acción" width="85" >
+                <p:column headerText="Acción" width="85" style="display: #{controladorInicioEval.estadoConvocatoria == 1 ? 'none' : ''}">
                     <p:commandButton value="Cerrar" actionListener="#{controladorInicioEval.obtenerSecuenciaConvocatoria(convocatoria.secuencia)}"
                                      style="display: #{controladorInicioEval.estadoConvocatoria == 1 ? 'none' : ''}"
+                                     onclick="PF('alertaConvocatoria').show()"/>
+                </p:column>
+                <p:column headerText="Pruebas" width="85" style="display: #{controladorInicioEval.estadoConvocatoria == 1 ? 'none' : ''}">
+                    <p:commandButton value="Finalizar" actionListener="#{controladorInicioEval.obtenerSecuenciaConvocatoria(convocatoria.secuencia)}"
+                                     style="display: #{controladorInicioEval.estadoConvocatoria == 1 ? 'none' : ''}"
                                      onclick="PF('alertaCerrar').show()"/>
+                </p:column>
+                <p:column headerText="Evaluaciones" width="100" style="display: #{controladorInicioEval.estadoConvocatoria == 1 ? '' : 'none'}" >
                     <p:commandButton value="Reporte" actionListener="#{controladorInicioEval.obtenerSecuenciaConvocatoria(convocatoria.secuencia)}"
                                      style="display: #{controladorInicioEval.estadoConvocatoria == 1 ? '' : 'none'}"
                                      onclick="PF('opcionesReporteHistorico').show()"/>
@@ -153,12 +159,12 @@
               draggable="false" modal="true" closable="false" closeOnEscape="true">  
         <p:panelGrid columns="1" styleClass="noBorders">
             <p:column>
-                <h:outputText value="En el momento en que cierre el proceso de valoraciones &lt;br/&gt; a esta convocatoria, ya no podrá cambiar los datos."
+                <h:outputText value="Se dispone a cerrar la prueba, indicando que terminó de evaluar."
                               escape="false"/>
                 <br/>
                 <br/>
                 <center>
-                    <h:outputText value="¿Está seguro(a) de cerrar el proceso?"
+                    <h:outputText value="¿Desea continuar con el cierre de las evaluaciones &lt;br/&gt; asociadas a esta convocatoria?"
                                   style="font-weight: bold"/>
                 </center>
             </p:column>
@@ -167,8 +173,35 @@
                                  onclick="PF('alertaCerrar').hide();"
                                  process="@this"/>
                 <p:commandButton value="Si" style="float: right" 
-                                 actionListener="#{controladorInicioEval.cerrarConvocatoria()}"
+                                 actionListener="#{controladorInicioEval.cerrarEvaluaciones()}"
                                  onclick="PF('alertaCerrar').hide();"
+                                 update=":principalForm:dtbConvocatorias, :principalForm:dtbEvaluados, 
+                                 :principalForm:informacion,
+                                 :principalForm:dtbPruebas"
+                                 process="@this" />
+            </p:column>
+        </p:panelGrid>
+    </p:dialog>
+    <p:dialog id="alertaConvocatoria" header="Atención" widgetVar="alertaConvocatoria"  resizable="false" 
+              draggable="false" modal="true" closable="false" closeOnEscape="true">  
+        <p:panelGrid columns="1" styleClass="noBorders">
+            <p:column>
+                <h:outputText value="En el momento en que cierre el proceso de valoraciones &lt;br/&gt; a esta convocatoria, ya no podrá cambiar los datos. &lt;br/&gt;"
+                              escape="false"/>
+                <br/>
+                <br/>
+                <center>
+                    <h:outputText value="¿Desea continuar con el cierre de la convocatoria?"
+                                  style="font-weight: bold"/>
+                </center>
+            </p:column>
+            <p:column>
+                <p:commandButton value="No" style="float: right;"
+                                 onclick="PF('alertaConvocatoria').hide();"
+                                 process="@this"/>
+                <p:commandButton value="Si" style="float: right;" 
+                                 actionListener="#{controladorInicioEval.cerrarConvocatoria()}"
+                                 onclick="PF('alertaConvocatoria').hide();"
                                  update=":principalForm:dtbConvocatorias, :principalForm:dtbEvaluados, 
                                  :principalForm:informacion,
                                  :principalForm:dtbPruebas"

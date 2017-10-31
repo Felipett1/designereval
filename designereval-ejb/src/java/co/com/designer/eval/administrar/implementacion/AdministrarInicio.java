@@ -154,13 +154,13 @@ public class AdministrarInicio implements IAdministrarInicio {
     }
 
     @Override
-    public boolean cerrarConvocatoria(BigDecimal secConvocatoria) {
-        try {
-            return persistenciaConvocatorias.cerrarConvocatoria(em, secConvocatoria);
-        } catch (Exception e) {
-            System.out.println("Error AdministrarInicio.cerrarConvocatoria: " + e);
-            return false;
-        }
+    public boolean cerrarEvaluaciones(BigDecimal secConvocatoria) {
+        return persistenciaConvocatorias.cerrarEvaluaciones(em, secConvocatoria);
+    }
+
+    @Override
+    public String cerrarConvocatoria(BigDecimal secConvocatoria) {
+        return persistenciaConvocatorias.cerrarConvocatoria(em, secConvocatoria);
     }
 
     @Override

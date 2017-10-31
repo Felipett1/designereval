@@ -120,7 +120,7 @@ public class ControladorInicioEval implements Serializable {
         1 - Evaluador
         2 - Convocatoria
         3 - Prueba
-        */
+         */
         switch (opcion) {
             case 0:
                 return evaluado;
@@ -165,24 +165,40 @@ public class ControladorInicioEval implements Serializable {
         secConvocatoria = sec;
     }
 
-    public void cerrarConvocatoria() {
+    private void reiniciarDatos() {
+        convocatoria = null;
+        convocatorias = administrarInicio.obtenerConvocatorias(usuario);
+        evaluados = null;
+        evaluado = null;
+        empleadosConvocados = null;
+        empleadosAsignados = null;
+        empleadosEvaluados = null;
+        pruebas = null;
+    }
+
+    public void cerrarEvaluaciones() {
         try {
-            if (administrarInicio.cerrarConvocatoria(secConvocatoria)) {
+            if (administrarInicio.cerrarEvaluaciones(secConvocatoria)) {
                 //MensajesUI.info("Convocatoria cerrada exitosamente.");
-                convocatoria = null;
-                convocatorias = administrarInicio.obtenerConvocatorias(usuario);
-                evaluados = null;
-                evaluado = null;
-                empleadosConvocados = null;
-                empleadosAsignados = null;
-                empleadosEvaluados = null;
-                pruebas = null;
+                reiniciarDatos();
                 PrimefacesContextUI.ejecutar("PF('opcionesReporteCerrar').show()");
             } else {
                 MensajesUI.error("Error al cerrar la convocatoria.");
             }
         } catch (Exception e) {
             MensajesUI.error(ExtraeCausaExcepcion.obtenerMensajeSQLException(e));
+        }
+    }
+
+    public void cerrarConvocatoria() {
+        String resultado = "";
+        try {
+            resultado = administrarInicio.cerrarConvocatoria(secConvocatoria);
+            reiniciarDatos();
+            MensajesUI.info(resultado);
+            //PrimefacesContextUI.ejecutar("PF('opcionesReporteCerrar').show()");
+        } catch (Exception ex) {
+            MensajesUI.error(ExtraeCausaExcepcion.obtenerMensajeSQLException(ex));
         }
     }
 
