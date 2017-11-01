@@ -38,6 +38,8 @@ public class Evaluados implements Serializable {
     private String nombrePrueba;
     @Column(name = "ESTADOEVAL")
     private String estadoEval;
+    @Transient
+    private String consolidado;
 
     public Evaluados() {
     }
@@ -121,6 +123,15 @@ public class Evaluados implements Serializable {
     public void setEstadoEval(String estadoEval) {
         this.estadoEval = estadoEval;
     }
+
+    public String getConsolidado() {
+        return consolidado;
+    }
+
+    public void setConsolidado(String consolidado) {
+        this.consolidado = consolidado;
+    }
+    
 
     @Override
     public int hashCode() {

@@ -17,4 +17,5 @@ public interface IPersistenciaPruebas {
 
     public boolean actualizarEstado(EntityManager em, BigInteger secPrueba, String estado);
     
+    public String estaConsolidado(EntityManager em, BigInteger secConvocatoria, BigInteger secEvaluado);
 }

@@ -44,4 +44,5 @@ public interface IAdministrarInicio {
 
     public boolean actualizarEstado(BigInteger secPrueba, String estado);
 
+    public String estaConsolidado(BigInteger secConvocatoria, BigInteger secEmplConvo);
 }

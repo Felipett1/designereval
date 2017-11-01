@@ -8,7 +8,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.ParameterMode;
 import javax.persistence.Query;
-import javax.persistence.StoredProcedureParameter;
 import javax.persistence.StoredProcedureQuery;
 
 /**

@@ -40,20 +40,21 @@
                 <p:column headerText="Enfoque" width="115">
                     <h:outputText value="#{convocatoria.enfoque}"/>
                 </p:column>
-                <p:column headerText="Acción" width="85" style="display: #{controladorInicioEval.estadoConvocatoria == 1 ? 'none' : ''}">
-                    <p:commandButton value="Cerrar" actionListener="#{controladorInicioEval.obtenerSecuenciaConvocatoria(convocatoria.secuencia)}"
+                <!--<p:column headerText="Acción" width="85" style="display: #{controladorInicioEval.estadoConvocatoria == 1 ? 'none' : ''}">-->
+                <p:column headerText="Acción" width="85" style="display: none;">
+                    <p:commandButton value="Finalizar" actionListener="#{controladorInicioEval.obtenerSecuenciaConvocatoria(convocatoria.secuencia)}"
                                      style="display: #{controladorInicioEval.estadoConvocatoria == 1 ? 'none' : ''}"
                                      onclick="PF('alertaConvocatoria').show()"/>
                 </p:column>
+                <p:column headerText="Evaluacion" width="100" style="display: none;" >
+                    <p:commandButton value="Reporte" actionListener="#{controladorInicioEval.obtenerSecuenciaConvocatoria(convocatoria.secuencia)}"
+                                     style="display: #{controladorInicioEval.estadoConvocatoria == 1 ? 'none' : ''}"
+                                     onclick="PF('opcionesReporteHistorico').show()"/>
+                </p:column>
                 <p:column headerText="Pruebas" width="85" style="display: #{controladorInicioEval.estadoConvocatoria == 1 ? 'none' : ''}">
-                    <p:commandButton value="Finalizar" actionListener="#{controladorInicioEval.obtenerSecuenciaConvocatoria(convocatoria.secuencia)}"
+                    <p:commandButton value="Cerrar" actionListener="#{controladorInicioEval.obtenerSecuenciaConvocatoria(convocatoria.secuencia)}"
                                      style="display: #{controladorInicioEval.estadoConvocatoria == 1 ? 'none' : ''}"
                                      onclick="PF('alertaCerrar').show()"/>
-                </p:column>
-                <p:column headerText="Evaluaciones" width="100" style="display: #{controladorInicioEval.estadoConvocatoria == 1 ? '' : 'none'}" >
-                    <p:commandButton value="Reporte" actionListener="#{controladorInicioEval.obtenerSecuenciaConvocatoria(convocatoria.secuencia)}"
-                                     style="display: #{controladorInicioEval.estadoConvocatoria == 1 ? '' : 'none'}"
-                                     onclick="PF('opcionesReporteHistorico').show()"/>
                 </p:column>
             </p:dataTable>
         </p:column>
@@ -87,7 +88,7 @@
                          selection="#{controladorInicioEval.evaluado}" rowKey="#{evaluado.secuencia}"
                          value="#{controladorInicioEval.evaluados}"
                          styleClass="ui-datatable-hor-scroll">
-                <p:ajax event="rowSelect" listener="#{controladorInicioEval.seleccionEvaluado(1)}" update=":principalForm:dtbPruebas" />
+                <p:ajax event="rowSelect" listener="#{controladorInicioEval.seleccionEvaluado(1)}" update=":principalForm:dtbPruebas, repconsolidado" />
                 <p:ajax event="rowUnselect" listener="#{controladorInicioEval.seleccionEvaluado(0)}" update=":principalForm:dtbPruebas"/>
                 <f:facet name="header">
                     <h:outputText value="Empleados a evaluar"/>
@@ -96,10 +97,18 @@
                 <p:column headerText="Nombre">
                     <h:outputText value="#{evaluado.nombrePersona}"/>
                 </p:column>
-
-                <p:column headerText="Puntaje" width="120">
+                <p:column headerText="Puntaje" width="75">
                     <h:outputText value="#{evaluado.puntajeObtenido != null ?
                                            evaluado.puntajeObtenido : 0}"/>
+                </p:column>
+                <p:column headerText="Consolidado" width="110">
+                    <p:commandButton id="repconsolidado" value="Reporte" actionListener="#{controladorInicioEval.obtenerSecuenciaEvaluado(evaluado.secuencia)}"
+                                     onclick="PF('opcionesReporteConsolidado').show()"
+                                     disabled="#{evaluado.consolidado == 'S' ? false : true}"/>
+                </p:column>
+                <p:column headerText="Evaluador" width="100">
+                    <p:commandButton id="repevaluado" value="Reporte" actionListener="#{controladorInicioEval.obtenerSecuenciaEvaluado(evaluado.secuencia)}"
+                                     onclick="PF('opcionesReporteEvaluador').show()"/>
                 </p:column>
             </p:dataTable>
         </p:column>
@@ -164,7 +173,7 @@
                 <br/>
                 <br/>
                 <center>
-                    <h:outputText value="¿Desea continuar con el cierre de las evaluaciones &lt;br/&gt; asociadas a esta convocatoria?"
+                    <h:outputText value="¿Desea continuar con el cierre de las evaluaciones asociadas a esta convocatoria?"
                                   style="font-weight: bold"/>
                 </center>
             </p:column>
@@ -244,10 +253,10 @@
             </p:column>
             <p:column>
                 <p:commandButton value="Enviar por correo" style="float: right"
-                                 actionListener="#{controladorInicioEval.envioCorreoCierreConvocatoria()}"
+                                 actionListener="#{controladorInicioEval.envioCorreoCierreConvocatoria(1)}"
                                  process="@this" onclick="PF('opcionesReporteCerrar').hide()"/>
                 <p:commandButton value="Descargar" style="float: right" 
-                                 actionListener="#{controladorInicioEval.descargarReporte()}" ajax="false"
+                                 actionListener="#{controladorInicioEval.descargarReporte(1)}" ajax="false"
                                  process="@this" onclick="PF('opcionesReporteCerrar').hide()"/>
             </p:column>
         </p:panelGrid>
@@ -256,17 +265,53 @@
               draggable="false" modal="true" closable="true" closeOnEscape="true">  
         <p:panelGrid columns="1" styleClass="noBorders">
             <p:column>
-                <h:outputText value="Por favor seleccione si quiere descargar o enviar por correo &lt;br/&gt; el reporte consolidado de la convocatoria cerrada."
+                <h:outputText value="Por favor seleccione si quiere descargar o enviar por correo &lt;br/&gt; el reporte por evaluador de la convocatoria cerrada."
                               escape="false"/>
                 <br/>
             </p:column>
             <p:column>
                 <p:commandButton value="Enviar por correo" style="float: right"
-                                 actionListener="#{controladorInicioEval.envioCorreoCierreConvocatoria()}"
+                                 actionListener="#{controladorInicioEval.envioCorreoCierreConvocatoria(1)}"
                                  process="@this" onclick="PF('opcionesReporteHistorico').hide()"/>
                 <p:commandButton value="Descargar" style="float: right" 
-                                 actionListener="#{controladorInicioEval.descargarReporte()}" ajax="false"
+                                 actionListener="#{controladorInicioEval.descargarReporte(1)}" ajax="false"
                                  process="@this" onclick="PF('opcionesReporteHistorico').hide()"/>
+            </p:column>
+        </p:panelGrid>
+    </p:dialog>
+    <p:dialog id="opcionesReporteEvaluador" header="Atención" widgetVar="opcionesReporteEvaluador"  resizable="false" 
+              draggable="false" modal="true" closable="false" closeOnEscape="true">  
+        <p:panelGrid columns="1" styleClass="noBorders">
+            <p:column>
+                <h:outputText value="Por favor seleccione si quiere descargar o enviar por correo &lt;br/&gt; el reporte por evaluador de la persona seleccionada."
+                              escape="false"/>
+                <br/>
+            </p:column>
+            <p:column>
+                <p:commandButton value="Enviar por correo" style="float: right;"
+                                 actionListener="#{controladorInicioEval.envioCorreoCierreConvocatoria(2)}"
+                                 process="@this" onclick="PF('opcionesReporteEvaluador').hide()"/>
+                <p:commandButton value="Descargar" style="float: right;" 
+                                 actionListener="#{controladorInicioEval.descargarReporte(2)}" ajax="false"
+                                 process="@this" onclick="PF('opcionesReporteEvaluador').hide()"/>
+            </p:column>
+        </p:panelGrid>
+    </p:dialog>
+    <p:dialog id="opcionesReporteConsolidado" header="Atención" widgetVar="opcionesReporteConsolidado"  resizable="false" 
+              draggable="false" modal="true" closable="false" closeOnEscape="true">  
+        <p:panelGrid columns="1" styleClass="noBorders">
+            <p:column>
+                <h:outputText value="Por favor seleccione si quiere descargar o enviar por correo &lt;br/&gt; el reporte consolidado de la convocatoria cerrada."
+                              escape="false"/>
+                <br/>
+            </p:column>
+            <p:column>
+                <p:commandButton value="Enviar por correo" style="float: right;"
+                                 actionListener="#{controladorInicioEval.envioCorreoCierreConvocatoria(3)}"
+                                 process="@this" onclick="PF('opcionesReporteConsolidado').hide()"/>
+                <p:commandButton value="Descargar" style="float: right;" 
+                                 actionListener="#{controladorInicioEval.descargarReporte(3)}" ajax="false"
+                                 process="@this" onclick="PF('opcionesReporteConsolidado').hide()"/>
             </p:column>
         </p:panelGrid>
     </p:dialog>

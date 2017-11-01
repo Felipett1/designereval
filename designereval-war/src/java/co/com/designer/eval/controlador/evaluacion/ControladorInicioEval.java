@@ -44,7 +44,9 @@ public class ControladorInicioEval implements Serializable {
     private List<Pruebas> pruebas;
     private BigDecimal secuenciaEvaluador, totalEmpleadosAsignados, empleadosConvocados, empleadosAsignados, empleadosEvaluados;
     private BigDecimal secConvocatoria;
+    private BigDecimal secEvaluado;
     private int estadoConvocatoria = 2;
+    private boolean btnConsolidado;
 
     //SELECCION
     private Convocatorias convocatoria;
@@ -58,6 +60,7 @@ public class ControladorInicioEval implements Serializable {
     @PostConstruct
     public void inicializarAdministrador() {
         System.out.println("ControladorInicioEval.inicializarAdministrador");
+        btnConsolidado = true;
         try {
             FacesContext x = FacesContext.getCurrentInstance();
             HttpSession ses = (HttpSession) x.getExternalContext().getSession(false);
@@ -109,6 +112,7 @@ public class ControladorInicioEval implements Serializable {
         //1 Si - 0 No
         if (tipo == 1 && evaluado != null) {
             pruebas = administrarInicio.obtenerPruebasEvaluado(usuario, evaluado.getSecuencia());
+            evaluado.setConsolidado(administrarInicio.estaConsolidado(evaluado.getEvalConvocatoria(), evaluado.getSecuencia()));
         } else {
             pruebas = null;
         }
@@ -165,6 +169,13 @@ public class ControladorInicioEval implements Serializable {
         secConvocatoria = sec;
     }
 
+    public void obtenerSecuenciaEvaluado(BigDecimal sec) {
+        secConvocatoria = new BigDecimal(convocatoria.getSecuencia());
+        secEvaluado = sec;
+        System.out.println("convocatoria: " + secConvocatoria);
+        System.out.println("Evaluado: " + secEvaluado);
+    }
+
     private void reiniciarDatos() {
         convocatoria = null;
         convocatorias = administrarInicio.obtenerConvocatorias(usuario);
@@ -202,9 +213,9 @@ public class ControladorInicioEval implements Serializable {
         }
     }
 
-    public void generarReporteHistoEval() {
+    public void generarReporteHistoEval(int codReporte) {
         try {
-            envioCorreoCierreConvocatoria();
+            envioCorreoCierreConvocatoria(codReporte);
             MensajesUI.info("Convocatoria cerrada exitosamente.");
         } catch (Exception e) {
             MensajesUI.error(ExtraeCausaExcepcion.obtenerMensajeSQLException(e));
@@ -231,7 +242,7 @@ public class ControladorInicioEval implements Serializable {
         seleccionEvaluado(1);
     }
 
-    public void envioCorreoCierreConvocatoria() {
+    public void envioCorreoCierreConvocatoria(int codReporte) {
         if (secConvocatoria != null) {
             Convocatorias c = null;
             for (Convocatorias cvc : convocatorias) {
@@ -241,9 +252,9 @@ public class ControladorInicioEval implements Serializable {
             }
             if (email != null && !email.isEmpty()) {
                 if (c != null) {
-                    generarReporte(c);
+                    generarReporte(c, codReporte);
                     if (pathReporteGenerado != null && administrarInicio.enviarCorreo(nitEmpresa, email,
-                            "Reporte Convocatoria - " + c.getCodigo(), "Mensaje enviado automáticamente, por favor no responda a este correo.",
+                            "Reporte Evaluación Competencias - " + c.getCodigo(), "Mensaje enviado automáticamente, por favor no responda a este correo.",
                             pathReporteGenerado)) {
                         MensajesUI.info("Se ha enviado un reporte con los resultados de la convocatoria a su dirección de correo.");
                     } else {
@@ -258,7 +269,8 @@ public class ControladorInicioEval implements Serializable {
         }
     }
 
-    public void descargarReporte() throws IOException {
+    public void descargarReporte(int codReporte) throws IOException {
+        System.out.println("descargarReporte");
         if (secConvocatoria != null) {
             Convocatorias c = null;
             for (Convocatorias cvc : convocatorias) {
@@ -267,22 +279,47 @@ public class ControladorInicioEval implements Serializable {
                 }
             }
             if (c != null) {
-                generarReporte(c);
+                generarReporte(c, codReporte);
                 if (pathReporteGenerado != null) {
                     descarga();
-                };
+                }
             } else {
                 MensajesUI.error("Error al intentar obtener la convocatoria, por favor comuníquese con soporte.");
             }
         }
     }
 
-    public void generarReporte(Convocatorias c) {
+    public void generarReporte(Convocatorias c, int codReporte) {
         Map parametros = new HashMap();
-        parametros.put("secuenciaconvocatoria", secConvocatoria);
-        pathReporteGenerado = administrarInicio.generarReporte("evalcompetenciacerrada", "PDF", parametros, c.getCodigo());
-        if (pathReporteGenerado == null) {
-            MensajesUI.error("El reporte consolidado de la convocatoria no se pudo generar.");
+        System.out.println("generarReporte-secConvocatoria: " + secConvocatoria);
+        System.out.println("generarReporte-secEvaluado: " + secEvaluado);
+        System.out.println("generarReporte-codReporte: " + codReporte);
+        switch (codReporte) {
+            case 1: //Se usa para generar reporte por convocatoria
+                parametros.put("secuenciaconvocatoria", secConvocatoria);
+                pathReporteGenerado = administrarInicio.generarReporte("evalcompetenciacerrada", "PDF", parametros, c.getCodigo());
+                if (pathReporteGenerado == null) {
+                    MensajesUI.error("El reporte por evaluador de la convocatoria no se pudo generar.");
+                }
+                break;
+            case 2: //Se usa para generar reporte por empleado
+                parametros.put("secuenciaconvocatoria", secConvocatoria);
+                parametros.put("secEvaluado", secEvaluado);
+                pathReporteGenerado = administrarInicio.generarReporte("evalconvevaluado", "PDF", parametros, c.getCodigo());
+                if (pathReporteGenerado == null) {
+                    MensajesUI.error("El reporte por evaluador de la convocatoria no se pudo generar.");
+                }
+                break;
+            case 3: //Se usar para generar el reporte consolidado de todos los evaluadores de la convocatoria
+                parametros.put("secuenciaconvocatoria", secConvocatoria);
+                parametros.put("secEvaluado", secEvaluado);
+                pathReporteGenerado = administrarInicio.generarReporte("evalconvdetallado", "PDF", parametros, c.getCodigo());
+                if (pathReporteGenerado == null) {
+                    MensajesUI.error("El reporte consolidado por persona de la convocatoria no se pudo generar.");
+                }
+                break;
+            default:
+
         }
     }
 

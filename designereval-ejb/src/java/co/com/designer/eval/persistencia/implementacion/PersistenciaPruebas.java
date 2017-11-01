@@ -88,9 +88,26 @@ public class PersistenciaPruebas implements IPersistenciaPruebas {
         }
     }
 
-    public void terminarTransaccionException(EntityManager em) {
+    private void terminarTransaccionException(EntityManager em) {
         if (em != null && em.isOpen() && em.getTransaction().isActive()) {
             em.getTransaction().rollback();
+        }
+    }
+    
+    @Override
+    public String estaConsolidado(EntityManager em, BigInteger secConvocatoria, BigInteger secEvaluado){
+        try {
+            em.getTransaction().begin();
+            Query q = em.createNativeQuery("select EVALCONVOCATORIAS_PKG.ESTACONSOLIDADO(?,?) FROM DUAL ");
+            q.setParameter(1, secConvocatoria);
+            q.setParameter(2, secEvaluado);
+            String resul = (String) q.getSingleResult();
+            em.getTransaction().commit();
+            return resul;
+        } catch (Exception ex) {
+            System.out.println("Error PersistenciaConvocatorias.cerrarEvaluaciones: " + ex);
+            terminarTransaccionException(em);
+            return "N";
         }
     }
 }

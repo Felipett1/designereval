@@ -85,8 +85,11 @@ public class AdministrarInicio implements IAdministrarInicio {
 
     @Override
     public List<Evaluados> obtenerEvaluados(String usuario, BigInteger secConvocatoria) {
+        List<Evaluados> lista = null;
         try {
-            return persistenciaEvaluados.obtenerEvaluados(em, usuario, secConvocatoria);
+            lista = persistenciaEvaluados.obtenerEvaluados(em, usuario, secConvocatoria);
+            consultaConsolidado(lista);
+            return lista;
         } catch (Exception e) {
             System.out.println("Error AdministrarInicio.obtenerEvaluados: " + e);
             return null;
@@ -188,18 +191,27 @@ public class AdministrarInicio implements IAdministrarInicio {
                 nombreArchivo = "EVAL-resumen_convocatoria_" + nombreConvocatoria + fecha.get(Calendar.YEAR) + "_" + (fecha.get(Calendar.MONTH) + 1) + "_" + fecha.get(Calendar.DAY_OF_MONTH) + "_" + fecha.get(Calendar.HOUR) + "_" + fecha.get(Calendar.MINUTE) + "_" + fecha.get(Calendar.SECOND) + "_" + fecha.get(Calendar.MILLISECOND);
                 String rutaReporte = general.getPathreportes();
                 String rutaGenerado = general.getUbicareportes();
-                if (tipoReporte.equals("PDF")) {
-                    nombreArchivo = nombreArchivo + ".pdf";
-                } else if (tipoReporte.equals("XLSX")) {
-                    nombreArchivo = nombreArchivo + ".xlsx";
-                } else if (tipoReporte.equals("XLS")) {
-                    nombreArchivo = nombreArchivo + ".xls";
-                } else if (tipoReporte.equals("CSV")) {
-                    nombreArchivo = nombreArchivo + ".csv";
-                } else if (tipoReporte.equals("HTML")) {
-                    nombreArchivo = nombreArchivo + ".html";
-                } else if (tipoReporte.equals("DOCX")) {
-                    nombreArchivo = nombreArchivo + ".rtf";
+                switch (tipoReporte) {
+                    case "PDF":
+                        nombreArchivo = nombreArchivo + ".pdf";
+                        break;
+                    case "XLSX":
+                        nombreArchivo = nombreArchivo + ".xlsx";
+                        break;
+                    case "XLS":
+                        nombreArchivo = nombreArchivo + ".xls";
+                        break;
+                    case "CSV":
+                        nombreArchivo = nombreArchivo + ".csv";
+                        break;
+                    case "HTML":
+                        nombreArchivo = nombreArchivo + ".html";
+                        break;
+                    case "DOCX":
+                        nombreArchivo = nombreArchivo + ".rtf";
+                        break;
+                    default:
+                        break;
                 }
                 parametros.put("pathImagenes", rutaReporte);
                 EntityManager em2 = emf.createEntityManager();
@@ -224,5 +236,24 @@ public class AdministrarInicio implements IAdministrarInicio {
             System.out.println("Error AdministrarInicio.actualizarEstado: " + e);
             return false;
         }
+    }
+
+    @Override
+    public String estaConsolidado(BigInteger secConvocatoria, BigInteger secEmplConvo) {
+        try {
+            return persistenciaPruebas.estaConsolidado(em, secConvocatoria, secEmplConvo);
+        } catch (Exception e) {
+            System.out.println("Error AdministrarInicio.estaConsolidado: " + e);
+            return "N";
+        }
+    }
+
+    private List<Evaluados> consultaConsolidado(List<Evaluados> lista) {
+        if (lista != null) {
+            for (int i = 0; i < lista.size(); i++) {
+                lista.get(i).setConsolidado(estaConsolidado(lista.get(i).getEvalConvocatoria(), lista.get(i).getEmpleado()));
+            }
+        }
+        return lista;
     }
 }
