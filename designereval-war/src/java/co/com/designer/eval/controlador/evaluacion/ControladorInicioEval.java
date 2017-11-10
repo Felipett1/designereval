@@ -269,7 +269,7 @@ public class ControladorInicioEval implements Serializable {
         }
     }
 
-    public void descargarReporte(int codReporte) throws IOException {
+    public void descargarReporte(int codReporte) {
         System.out.println("descargarReporte");
         if (secConvocatoria != null) {
             Convocatorias c = null;
@@ -280,8 +280,10 @@ public class ControladorInicioEval implements Serializable {
             }
             if (c != null) {
                 generarReporte(c, codReporte);
-                if (pathReporteGenerado != null) {
-                    descarga();
+                if (pathReporteGenerado != null && !pathReporteGenerado.startsWith("Error: INICIARREPORTE")) {
+                    PrimefacesContextUI.ejecutar("document.getElementById('principalForm:descargarReporte').click();");
+                } else {
+                    MensajesUI.error("Error al generar el reporte, por favor comuníquese con soporte.");
                 }
             } else {
                 MensajesUI.error("Error al intentar obtener la convocatoria, por favor comuníquese con soporte.");

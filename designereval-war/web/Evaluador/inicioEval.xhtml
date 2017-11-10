@@ -7,6 +7,8 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
     <p:remoteCommand name="pantallaDinamica" actionListener="#{controlNavegacion.pantallaDinamica('/Evaluador/cuestionario.xhtml')}"
                      process="@this" update=":principalForm"/>
+    <p:commandButton id="descargarReporte" actionListener="#{controladorInicioEval.descarga()}"
+                     process="@this" ajax="false" style="visibility: hidden"/>
 
     <p:panelGrid columns="2" columnClasses="rp3,rp4" styleClass="noBorders2">
         <p:column>
@@ -256,7 +258,7 @@
                                  actionListener="#{controladorInicioEval.envioCorreoCierreConvocatoria(1)}"
                                  process="@this" onclick="PF('opcionesReporteCerrar').hide()"/>
                 <p:commandButton value="Descargar" style="float: right" 
-                                 actionListener="#{controladorInicioEval.descargarReporte(1)}" ajax="false"
+                                 actionListener="#{controladorInicioEval.descargarReporte(1)}"
                                  process="@this" onclick="PF('opcionesReporteCerrar').hide()"/>
             </p:column>
         </p:panelGrid>
@@ -274,7 +276,7 @@
                                  actionListener="#{controladorInicioEval.envioCorreoCierreConvocatoria(1)}"
                                  process="@this" onclick="PF('opcionesReporteHistorico').hide()"/>
                 <p:commandButton value="Descargar" style="float: right" 
-                                 actionListener="#{controladorInicioEval.descargarReporte(1)}" ajax="false"
+                                 actionListener="#{controladorInicioEval.descargarReporte(1)}"
                                  process="@this" onclick="PF('opcionesReporteHistorico').hide()"/>
             </p:column>
         </p:panelGrid>
@@ -292,7 +294,7 @@
                                  actionListener="#{controladorInicioEval.envioCorreoCierreConvocatoria(2)}"
                                  process="@this" onclick="PF('opcionesReporteEvaluador').hide()"/>
                 <p:commandButton value="Descargar" style="float: right;" 
-                                 actionListener="#{controladorInicioEval.descargarReporte(2)}" ajax="false"
+                                 actionListener="#{controladorInicioEval.descargarReporte(2)}"
                                  process="@this" onclick="PF('opcionesReporteEvaluador').hide()"/>
             </p:column>
         </p:panelGrid>
@@ -310,7 +312,7 @@
                                  actionListener="#{controladorInicioEval.envioCorreoCierreConvocatoria(3)}"
                                  process="@this" onclick="PF('opcionesReporteConsolidado').hide()"/>
                 <p:commandButton value="Descargar" style="float: right;" 
-                                 actionListener="#{controladorInicioEval.descargarReporte(3)}" ajax="false"
+                                 actionListener="#{controladorInicioEval.descargarReporte(3)}"
                                  process="@this" onclick="PF('opcionesReporteConsolidado').hide()"/>
             </p:column>
         </p:panelGrid>
