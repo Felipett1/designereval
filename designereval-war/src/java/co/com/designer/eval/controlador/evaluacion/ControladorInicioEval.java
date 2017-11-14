@@ -281,7 +281,7 @@ public class ControladorInicioEval implements Serializable {
             if (c != null) {
                 generarReporte(c, codReporte);
                 if (pathReporteGenerado != null && !pathReporteGenerado.startsWith("Error: INICIARREPORTE")) {
-                    PrimefacesContextUI.ejecutar("document.getElementById('principalForm:descargarReporte').click();");
+                    PrimefacesContextUI.ejecutar("setTimeout(function(){ document.getElementById('principalForm:descargarReporte').click(); }, 3000);");
                 } else {
                     MensajesUI.error("Error al generar el reporte, por favor comuníquese con soporte.");
                 }
