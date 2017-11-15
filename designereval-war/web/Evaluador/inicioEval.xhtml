@@ -8,7 +8,7 @@
     <p:remoteCommand name="pantallaDinamica" actionListener="#{controlNavegacion.pantallaDinamica('/Evaluador/cuestionario.xhtml')}"
                      process="@this" update=":principalForm"/>
     <p:commandButton id="descargarReporte" actionListener="#{controladorInicioEval.descarga()}"
-                     process="@this" ajax="false" style="visibility: hidden"/>
+                     process="@this" ajax="false" style="visibility: hidden" onclick="PF('estadoReporte').hide();"/>
 
     <p:panelGrid columns="2" columnClasses="rp3,rp4" styleClass="noBorders2">
         <p:column>
@@ -259,7 +259,7 @@
                                  process="@this" onclick="PF('opcionesReporteCerrar').hide()"/>
                 <p:commandButton value="Descargar" style="float: right" 
                                  actionListener="#{controladorInicioEval.descargarReporte(1)}"
-                                 process="@this" onclick="PF('opcionesReporteCerrar').hide()"/>
+                                 process="@this" onclick="PF('opcionesReporteCerrar').hide(); PF('estadoReporte').show();"/>
             </p:column>
         </p:panelGrid>
     </p:dialog>
@@ -277,7 +277,7 @@
                                  process="@this" onclick="PF('opcionesReporteHistorico').hide()"/>
                 <p:commandButton value="Descargar" style="float: right" 
                                  actionListener="#{controladorInicioEval.descargarReporte(1)}"
-                                 process="@this" onclick="PF('opcionesReporteHistorico').hide()"/>
+                                 process="@this" onclick="PF('opcionesReporteHistorico').hide(); PF('estadoReporte').show();"/>
             </p:column>
         </p:panelGrid>
     </p:dialog>
@@ -295,7 +295,7 @@
                                  process="@this" onclick="PF('opcionesReporteEvaluador').hide()"/>
                 <p:commandButton value="Descargar" style="float: right;" 
                                  actionListener="#{controladorInicioEval.descargarReporte(2)}"
-                                 process="@this" onclick="PF('opcionesReporteEvaluador').hide()"/>
+                                 process="@this" onclick="PF('opcionesReporteEvaluador').hide(); PF('estadoReporte').show();"/>
             </p:column>
         </p:panelGrid>
     </p:dialog>
@@ -313,8 +313,15 @@
                                  process="@this" onclick="PF('opcionesReporteConsolidado').hide()"/>
                 <p:commandButton value="Descargar" style="float: right;" 
                                  actionListener="#{controladorInicioEval.descargarReporte(3)}"
-                                 process="@this" onclick="PF('opcionesReporteConsolidado').hide()"/>
+                                 process="@this" onclick="PF('opcionesReporteConsolidado').hide(); PF('estadoReporte').show();"/>
             </p:column>
+        </p:panelGrid>
+    </p:dialog>
+
+    <p:dialog id="estadoReporte" header="Generando reporte" widgetVar="estadoReporte"  resizable="false" draggable="false" height="65" width="350" closable="false" >  
+        <p:panelGrid columns="2" styleClass="noBorders">
+            <h:graphicImage value="resources/imagenes/cargando.gif" width="50" height="50"/>
+            <h:outputText value="Generando reporte, por favor espere." style="width: 240px; text-align: justify; font-weight:bold;" />
         </p:panelGrid>
     </p:dialog>
 </ui:composition>

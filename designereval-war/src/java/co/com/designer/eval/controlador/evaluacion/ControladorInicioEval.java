@@ -284,10 +284,15 @@ public class ControladorInicioEval implements Serializable {
                     PrimefacesContextUI.ejecutar("setTimeout(function(){ document.getElementById('principalForm:descargarReporte').click(); }, 3000);");
                 } else {
                     MensajesUI.error("Error al generar el reporte, por favor comuníquese con soporte.");
+                    PrimefacesContextUI.ejecutar("PF('estadoReporte').hide();");
                 }
             } else {
                 MensajesUI.error("Error al intentar obtener la convocatoria, por favor comuníquese con soporte.");
+                PrimefacesContextUI.ejecutar("PF('estadoReporte').hide();");
             }
+        } else {
+            System.out.println("Secuencia de la convocatoria nula.");
+            PrimefacesContextUI.ejecutar("PF('estadoReporte').hide();");
         }
     }
 
