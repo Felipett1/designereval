@@ -110,3 +110,6 @@ html {
     padding-bottom: 5px;
     height: 160px;
 }
+.ui-widget .ui-widget {
+	font-size: 12px !important;
+}

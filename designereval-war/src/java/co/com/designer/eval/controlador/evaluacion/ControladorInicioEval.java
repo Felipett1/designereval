@@ -243,15 +243,11 @@ public class ControladorInicioEval implements Serializable {
     }
 
     public void envioCorreoCierreConvocatoria(int codReporte) {
-        if (secConvocatoria != null) {
-            Convocatorias c = null;
-            for (Convocatorias cvc : convocatorias) {
-                if (new BigDecimal(cvc.getSecuencia()).compareTo(secConvocatoria) == 0) {
-                    c = cvc;
-                }
-            }
+        if (convocatoria != null && convocatoria.getSecuencia() != null) {
+            Convocatorias c = convocatoria;
             if (email != null && !email.isEmpty()) {
                 if (c != null) {
+                    secConvocatoria = new BigDecimal(c.getSecuencia());
                     generarReporte(c, codReporte);
                     if (pathReporteGenerado != null && administrarInicio.enviarCorreo(nitEmpresa, email,
                             "Reporte Evaluación Competencias - " + c.getCodigo(), "Mensaje enviado automáticamente, por favor no responda a este correo.",
@@ -266,19 +262,18 @@ public class ControladorInicioEval implements Serializable {
             } else {
                 MensajesUI.error("No es posible enviar el correo de confirmacion, ya que no esta configurado el correo de destino.");
             }
+        } else {
+            System.out.println("Secuencia de la convocatoria nula.");
+            PrimefacesContextUI.ejecutar("PF('estadoReporte').hide();");
         }
     }
 
     public void descargarReporte(int codReporte) {
         System.out.println("descargarReporte");
-        if (secConvocatoria != null) {
-            Convocatorias c = null;
-            for (Convocatorias cvc : convocatorias) {
-                if (new BigDecimal(cvc.getSecuencia()).compareTo(secConvocatoria) == 0) {
-                    c = cvc;
-                }
-            }
+        if (convocatoria != null && convocatoria.getSecuencia() != null) {
+            Convocatorias c = convocatoria;
             if (c != null) {
+                secConvocatoria = new BigDecimal(c.getSecuencia());
                 generarReporte(c, codReporte);
                 if (pathReporteGenerado != null && !pathReporteGenerado.startsWith("Error: INICIARREPORTE")) {
                     PrimefacesContextUI.ejecutar("setTimeout(function(){ document.getElementById('principalForm:descargarReporte').click(); }, 3000);");
@@ -323,6 +318,14 @@ public class ControladorInicioEval implements Serializable {
                 pathReporteGenerado = administrarInicio.generarReporte("evalconvdetallado", "PDF", parametros, c.getCodigo());
                 if (pathReporteGenerado == null) {
                     MensajesUI.error("El reporte consolidado por persona de la convocatoria no se pudo generar.");
+                }
+                break;
+            case 4:
+                parametros.put("secuenciaconvocatoria", secConvocatoria);
+                parametros.put("secEvaluado", secEvaluado);
+                pathReporteGenerado = administrarInicio.generarReporte("evalconvresumido", "PDF", parametros, c.getCodigo());
+                if (pathReporteGenerado == null) {
+                    MensajesUI.error("El reporte resumido por persona de la convocatoria no se pudo generar.");
                 }
                 break;
             default:
