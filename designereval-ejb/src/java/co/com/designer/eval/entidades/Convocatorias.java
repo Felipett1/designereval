@@ -37,6 +37,9 @@ public class Convocatorias implements Serializable {
     @Column(name = "FECHAINICIO")
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date fechaInicio;
+    @Column(name = "FECHALIMITE")
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date fechaLimite;
     @Column(name = "OBJETIVOS")
     private String objetivos;
 
@@ -105,6 +108,14 @@ public class Convocatorias implements Serializable {
 
     public void setFechaInicio(Date fechaInicio) {
         this.fechaInicio = fechaInicio;
+    }
+
+    public Date getFechaLimite() {
+        return fechaLimite;
+    }
+
+    public void setFechaLimite(Date fechaLimite) {
+        this.fechaLimite = fechaLimite;
     }
 
     public String getObjetivos() {

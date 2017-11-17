@@ -8,7 +8,7 @@
     <p:remoteCommand name="pantallaDinamica" actionListener="#{controlNavegacion.pantallaDinamica('/Evaluador/cuestionario.xhtml')}"
                      process="@this" update=":principalForm"/>
     <p:commandButton id="descargarReporte" actionListener="#{controladorInicioEval.descarga()}"
-                     process="@this" ajax="false" style="visibility: hidden" onclick="PF('estadoReporte').hide();"/>
+                     process="@this" ajax="false" style="visibility: hidden;" onclick="PF('estadoReporte').hide();"/>
 
     <p:panelGrid columns="2" columnClasses="rp3,rp4" styleClass="noBorders2">
         <p:column>
@@ -37,6 +37,11 @@
 
                 <p:column headerText="Convocatoria">
                     <h:outputText value="#{convocatoria.codigo}"/>
+                </p:column>
+                <p:column headerText="Fecha finalización">
+                    <h:outputText value="#{convocatoria.fechaLimite}">
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </h:outputText>
                 </p:column>
 
                 <p:column headerText="Enfoque" width="115">
@@ -174,19 +179,16 @@
                 <br/>
                 <center>
                     <h:outputText value="¿Desea continuar con el cierre de las evaluaciones asociadas a esta convocatoria?"
-                                  style="font-weight: bold"/>
+                                  style="font-weight: bold;"/>
                 </center>
             </p:column>
             <p:column>
-                <p:commandButton value="No" style="float: right"
+                <p:commandButton value="No" style="float: right;"
                                  onclick="PF('alertaCerrar').hide();"
                                  process="@this"/>
-                <p:commandButton value="Si" style="float: right" 
+                <p:commandButton value="Si" style="float: right;" 
                                  actionListener="#{controladorInicioEval.cerrarEvaluaciones()}"
                                  onclick="PF('alertaCerrar').hide();"
-                                 update=":principalForm:dtbConvocatorias, :principalForm:dtbEvaluados, 
-                                 :principalForm:informacion,
-                                 :principalForm:dtbPruebas"
                                  process="@this" />
             </p:column>
         </p:panelGrid>
@@ -201,7 +203,7 @@
                 <br/>
                 <center>
                     <h:outputText value="¿Desea continuar con el cierre de la convocatoria?"
-                                  style="font-weight: bold"/>
+                                  style="font-weight: bold;"/>
                 </center>
             </p:column>
             <p:column>
@@ -218,31 +220,6 @@
             </p:column>
         </p:panelGrid>
     </p:dialog>
-    <p:dialog id="alertaReporteHisto" header="Atención" widgetVar="alertaReporteHisto"  resizable="false" 
-              draggable="false" modal="true" closable="false" closeOnEscape="true">  
-        <p:panelGrid columns="1" styleClass="noBorders">
-            <p:column>
-                <h:outputText value="Se va a volver a generar el reporte para luego enviarlo por correo."
-                              escape="false"/>
-                <br/>
-                <br/>
-                <center>
-                    <h:outputText value="¿Está seguro(a) de continuar?"
-                                  style="font-weight: bold"/>
-                </center>
-            </p:column>
-            <p:column>
-                <p:commandButton value="No" style="float: right;"
-                                 onclick="PF('alertaReporteHisto').hide();"
-                                 process="@this"/>
-                <p:commandButton value="Si" style="float: right;" 
-                                 actionListener="#{controladorInicioEval.cerrarConvocatoria()}"
-                                 onclick="PF('alertaReporteHisto').hide();"
-                                 process="@this" />
-            </p:column>
-        </p:panelGrid>
-    </p:dialog>
-
     <p:dialog id="opcionesReporteCerrar" header="Información" widgetVar="opcionesReporteCerrar"  resizable="false" 
               draggable="false" modal="true" closable="true" closeOnEscape="true">  
         <p:panelGrid columns="1" styleClass="noBorders">
@@ -252,17 +229,24 @@
                 <br/>
             </p:column>
             <p:column>
-                <p:commandButton value="Enviar por correo" style="float: right"
+                <p:commandButton value="Enviar por correo" style="float: right;"
                                  actionListener="#{controladorInicioEval.envioCorreoCierreConvocatoria(1)}"
-                                 process="@this" onclick="PF('opcionesReporteCerrar').hide()"/>
-                <p:commandButton value="Descargar" style="float: right" 
+                                 process="@this" onclick="PF('opcionesReporteCerrar').hide();  PF('estadoReporte').show();"
+                                 update=":principalForm:dtbConvocatorias, :principalForm:dtbEvaluados, 
+                                 :principalForm:informacion,
+                                 :principalForm:dtbPruebas"/>
+                <p:commandButton value="Descargar" style="float: right;" 
                                  actionListener="#{controladorInicioEval.descargarReporte(1)}"
-                                 process="@this" onclick="PF('opcionesReporteCerrar').hide(); PF('estadoReporte').show();"/>
+                                 process="@this" onclick="PF('opcionesReporteCerrar').hide(); PF('estadoReporte').show();"
+                                 update=":principalForm:dtbConvocatorias, :principalForm:dtbEvaluados, 
+                                 :principalForm:informacion,
+                                 :principalForm:dtbPruebas"
+                                 />
             </p:column>
         </p:panelGrid>
     </p:dialog>
     <p:dialog id="opcionesReporteHistorico" header="Información" widgetVar="opcionesReporteHistorico"  resizable="false" 
-              draggable="false" modal="true" closable="true" closeOnEscape="true">  
+              draggable="false" modal="true" closable="false" closeOnEscape="false">  
         <p:panelGrid columns="1" styleClass="noBorders">
             <p:column>
                 <h:outputText value="Por favor seleccione si quiere descargar o enviar por correo &lt;br/&gt; el reporte por evaluador de la convocatoria cerrada."
@@ -272,7 +256,7 @@
             <p:column>
                 <p:commandButton value="Enviar por correo" style="float: right"
                                  actionListener="#{controladorInicioEval.envioCorreoCierreConvocatoria(1)}"
-                                 process="@this" onclick="PF('opcionesReporteHistorico').hide()"/>
+                                 process="@this" onclick="PF('opcionesReporteHistorico').hide(); PF('estadoReporte').show();"/>
                 <p:commandButton value="Descargar" style="float: right" 
                                  actionListener="#{controladorInicioEval.descargarReporte(1)}"
                                  process="@this" onclick="PF('opcionesReporteHistorico').hide(); PF('estadoReporte').show();"/>
@@ -290,7 +274,7 @@
             <p:column>
                 <p:commandButton value="Enviar por correo" style="float: right;"
                                  actionListener="#{controladorInicioEval.envioCorreoCierreConvocatoria(2)}"
-                                 process="@this" onclick="PF('opcionesReporteEvaluador').hide()"/>
+                                 process="@this" onclick="PF('opcionesReporteEvaluador').hide(); PF('estadoReporte').show();"/>
                 <p:commandButton value="Descargar" style="float: right;" 
                                  actionListener="#{controladorInicioEval.descargarReporte(2)}"
                                  process="@this" onclick="PF('opcionesReporteEvaluador').hide(); PF('estadoReporte').show();"/>

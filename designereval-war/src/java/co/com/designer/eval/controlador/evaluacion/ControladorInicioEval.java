@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+//import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -166,7 +167,9 @@ public class ControladorInicioEval implements Serializable {
 
 //    public void obtenerSecuenciaConvocatoria(BigInteger sec) {
     public void obtenerSecuenciaConvocatoria(BigDecimal sec) {
+        System.out.println("obtenerSecuenciaConvocatoria");
         secConvocatoria = sec;
+        System.out.println("obtenerSecuenciaConvocatoria-sec: "+sec);
     }
 
     public void obtenerSecuenciaEvaluado(BigDecimal sec) {
@@ -188,10 +191,13 @@ public class ControladorInicioEval implements Serializable {
     }
 
     public void cerrarEvaluaciones() {
+        System.out.println(".cerrarEvaluaciones()");
         try {
+            secConvocatoria = new BigDecimal(convocatoria.getSecuencia());
+            System.out.println("Secuencia de la convocatoria: " + secConvocatoria);
             if (administrarInicio.cerrarEvaluaciones(secConvocatoria)) {
                 //MensajesUI.info("Convocatoria cerrada exitosamente.");
-                reiniciarDatos();
+//                reiniciarDatos();
                 PrimefacesContextUI.ejecutar("PF('opcionesReporteCerrar').show()");
             } else {
                 MensajesUI.error("Error al cerrar la convocatoria.");
@@ -199,6 +205,8 @@ public class ControladorInicioEval implements Serializable {
         } catch (Exception e) {
             MensajesUI.error(ExtraeCausaExcepcion.obtenerMensajeSQLException(e));
         }
+        System.out.println("cerrarEvaluaciones-convocatoria: " + convocatoria);
+        System.out.println("cerrarEvaluaciones-secConvocatoria: " + secConvocatoria);
     }
 
     public void cerrarConvocatoria() {
@@ -208,6 +216,12 @@ public class ControladorInicioEval implements Serializable {
             reiniciarDatos();
             MensajesUI.info(resultado);
             //PrimefacesContextUI.ejecutar("PF('opcionesReporteCerrar').show()");
+            /*ArrayList lista = new ArrayList();
+            lista.add(":principalForm:dtbConvocatorias");
+            lista.add(":principalForm:dtbEvaluados");
+            lista.add(":principalForm:informacion");
+            lista.add(":principalForm:dtbPruebas");
+            PrimefacesContextUI.actualizarLista(lista);*/
         } catch (Exception ex) {
             MensajesUI.error(ExtraeCausaExcepcion.obtenerMensajeSQLException(ex));
         }
@@ -270,6 +284,8 @@ public class ControladorInicioEval implements Serializable {
 
     public void descargarReporte(int codReporte) {
         System.out.println("descargarReporte");
+        System.out.println("descargarReporte-convocatoria: "+convocatoria);
+        System.out.println("descargarReporte-convocatoria: "+secConvocatoria);
         if (convocatoria != null && convocatoria.getSecuencia() != null) {
             Convocatorias c = convocatoria;
             if (c != null) {
@@ -289,6 +305,8 @@ public class ControladorInicioEval implements Serializable {
             System.out.println("Secuencia de la convocatoria nula.");
             PrimefacesContextUI.ejecutar("PF('estadoReporte').hide();");
         }
+        System.out.println("descargarReporte-convocatoria: "+convocatoria);
+        System.out.println("descargarReporte-convocatoria: "+secConvocatoria);
     }
 
     public void generarReporte(Convocatorias c, int codReporte) {
@@ -303,6 +321,7 @@ public class ControladorInicioEval implements Serializable {
                 if (pathReporteGenerado == null) {
                     MensajesUI.error("El reporte por evaluador de la convocatoria no se pudo generar.");
                 }
+                reiniciarDatos();
                 break;
             case 2: //Se usa para generar reporte por empleado
                 parametros.put("secuenciaconvocatoria", secConvocatoria);
