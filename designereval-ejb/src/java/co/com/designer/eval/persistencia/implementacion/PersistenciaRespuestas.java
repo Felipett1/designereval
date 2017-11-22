@@ -1,5 +1,6 @@
 package co.com.designer.eval.persistencia.implementacion;
 
+import co.com.designer.eval.entidades.Preguntas;
 import co.com.designer.eval.entidades.Respuestas;
 import co.com.designer.eval.persistencia.interfaz.IPersistenciaRespuestas;
 import java.math.BigDecimal;
@@ -80,7 +81,44 @@ public class PersistenciaRespuestas implements IPersistenciaRespuestas {
             em.getTransaction().commit();
             return true;
         } catch (Exception ex) {
-            System.out.println("Error PersistenciaRespuestas.registrarRespuesta: " + ex);
+            System.out.println("Error PersistenciaRespuestas.actualizarRespuesta: " + ex);
+            terminarTransaccionException(em);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean registrarActualizarRespuesta(EntityManager em, List<Preguntas> preguntas, BigInteger secIndagacion) {
+        try {
+            em.getTransaction().begin();
+            for (Preguntas pregunta : preguntas) {
+                Query q = null;
+                if (pregunta.isNuevo()) {
+                    q = em.createNativeQuery("INSERT INTO EVALRESPUESTASINDAGACIONES (EVALINDAGACION, EVALPREGUNTA, EVALRESPUESTA, CUALITATIVOASIGNADO, CUANTITATIVOASIGNADO ) "
+                            + "VALUES ( ?, ?, ?, "
+                            + "(SELECT CUALITATIVO FROM EVALRESPUESTAS WHERE SECUENCIA = ?), "
+                            + "(SELECT CUANTITATIVO FROM EVALRESPUESTAS WHERE SECUENCIA = ?) "
+                            + ") ");
+                } else {
+
+                    q = em.createNativeQuery("UPDATE EVALRESPUESTASINDAGACIONES "
+                            + "SET CUALITATIVOASIGNADO = (SELECT CUALITATIVO FROM EVALRESPUESTAS WHERE SECUENCIA = ?) , "
+                            + "CUANTITATIVOASIGNADO = (SELECT CUANTITATIVO FROM EVALRESPUESTAS WHERE SECUENCIA = ?) , "
+                            + "EVALRESPUESTA = ? "
+                            + "WHERE EVALINDAGACION = ? "
+                            + "AND EVALPREGUNTA = ? ");
+                }
+                q.setParameter(1, secIndagacion);
+                q.setParameter(2, pregunta.getSecuencia());
+                q.setParameter(3, pregunta.getRespuesta());
+                q.setParameter(4, pregunta.getRespuesta());
+                q.setParameter(5, pregunta.getRespuesta());
+                q.executeUpdate();
+            }
+            em.getTransaction().commit();
+            return true;
+        } catch (Exception ex) {
+            System.out.println("Error PersistenciaRespuestas.registrarActualizarRespuesta: " + ex);
             terminarTransaccionException(em);
             return false;
         }

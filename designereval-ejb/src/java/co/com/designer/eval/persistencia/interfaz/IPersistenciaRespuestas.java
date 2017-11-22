@@ -1,5 +1,6 @@
 package co.com.designer.eval.persistencia.interfaz;
 
+import co.com.designer.eval.entidades.Preguntas;
 import co.com.designer.eval.entidades.Respuestas;
 import java.math.BigInteger;
 import java.util.List;
@@ -20,5 +21,7 @@ public interface IPersistenciaRespuestas {
     public boolean actualizarRespuesta(EntityManager em, BigInteger secIndagacion, BigInteger secPregunta, BigInteger secRespuesta);
 
     public boolean eliminarRespuestas(EntityManager em, BigInteger secIndagacion);
+
+    public boolean registrarActualizarRespuesta(EntityManager em, List<Preguntas> preguntas, BigInteger secIndagacion);
     
 }

@@ -120,6 +120,16 @@ public class AdministrarEvaluacion implements IAdministrarEvaluacion {
     }
 
     @Override
+    public boolean registrarActualizarRespuesta(List<Preguntas> preguntas, BigInteger secIndagacion) {
+        try {
+            return persistenciaRespuestas.registrarActualizarRespuesta(em, preguntas, secIndagacion);
+        } catch (Exception e) {
+            System.out.println("Error AdministrarEvaluacion.registrarActualizarRespuesta: " + e);
+            return false;
+        }
+    }
+
+    @Override
     public boolean eliminarRespuestas(BigInteger secIndagacion) {
         try {
             return persistenciaRespuestas.eliminarRespuestas(em, secIndagacion);

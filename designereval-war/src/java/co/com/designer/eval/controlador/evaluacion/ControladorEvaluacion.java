@@ -98,17 +98,12 @@ public class ControladorEvaluacion implements Serializable {
         }
         if (todas) {
             if (!observacionObligatoria || (observacionObligatoria && (observacionEvaluador != null && !observacionEvaluador.isEmpty()))) {
-                boolean error = false;
-                for (Preguntas pregunta : preguntas) {
-                    if (pregunta.isNuevo()
-                            && administrarEvaluacion.registrarRespuesta(secIndigacion, pregunta.getSecuencia(), pregunta.getRespuesta())) {
-                    } else if (!pregunta.isNuevo()
-                            && administrarEvaluacion.actualizarRespuesta(secIndigacion, pregunta.getSecuencia(), pregunta.getRespuesta())) {
-                    } else {
-                        MensajesUI.error("No fue posible registrar las respuesta.");
-                        error = true;
-                        break;
-                    }
+                boolean error = true;
+                if (administrarEvaluacion.registrarActualizarRespuesta(preguntas, secIndigacion)) {
+                    error = false;
+                } else {
+                    MensajesUI.error("No fue posible registrar las respuesta.");
+                    error = true;
                 }
                 if (!error) {
                     if (administrarEvaluacion.actualizarPorcentaje(secIndigacion, observacionEvaluador, porcentaje)
