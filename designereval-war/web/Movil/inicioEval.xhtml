@@ -13,7 +13,7 @@
         <link rel="stylesheet" href="./resources/css/estilosPersonalizados.css"/>
     </h:head>
     <h:body>
-        <h:form>
+        <h:form id="principalForm">
             <p:remoteCommand name="seleccionConvocatoria" actionListener="#{controladorInicioEval.seleccionConvocatoria(1)}"
                              update="evaluados"
                              oncomplete="PrimeFaces.Mobile.navigate('#evaluados', {transition: 'flip'}); return false;"/>
@@ -25,6 +25,9 @@
                              oncomplete="PrimeFaces.Mobile.navigate('#preguntas', {transition: 'flip'}); return false;"/>
             <p:remoteCommand name="seleccion" actionListener="#{controladorInicioEval.seleccion}"/>
             <p:remoteCommand name="cerrarSesion" actionListener="#{controladorIngreso.ingresar()}"/>
+
+            <p:commandButton id="descargarReporte" actionListener="#{controladorInicioEval.descarga()}"
+                             process="@this" ajax="false" style="visibility: hidden;"/>
         </h:form>
         <pm:page id="uno">
             <h:form>
@@ -121,11 +124,11 @@
                             </p:column>
                             <p:column>
                                 <p:commandButton value="Enviar por correo" style="float: right"
-                                                 actionListener="#{controladorInicioEval.envioCorreoCierreConvocatoria()}"
+                                                 actionListener="#{controladorInicioEval.envioCorreoCierreConvocatoria(1)}"
                                                  process="@this" onclick="PF('opcionesReporteCerrar').hide()"/>
                                 <p:commandButton value="Descargar" style="float: right" 
-                                                 actionListener="#{controladorInicioEval.descargarReporte()}" ajax="false"
-                                                 process="@this" onclick="PF('opcionesReporteCerrar').hide()"/>
+                                                 actionListener="#{controladorInicioEval.descargarReporte(1)}"
+                                                 process="@this" onclick="PF('opcionesReporteCerrar').hide(); "/>
                             </p:column>
                         </p:panelGrid>
                     </p:dialog>
@@ -148,7 +151,84 @@
                             <p><strong>Puntaje: </strong>#{ev.puntajeObtenido != null ?
                                                            ev.puntajeObtenido : 0}</p>
                         </h:outputLink>
+                        <p:commandButton value="Reporte" onclick="seleccion([{name: 'valor', value:#{indexE}}, {name: 'tipo', value: '5'}]);"
+                                         />
                     </p:dataList>
+
+                    <p:dialog id="opcionesReporteEvaluado" header="Información" widgetVar="opcionesReporteEvaluado"  resizable="false" 
+                              draggable="false" modal="true" closable="true" closeOnEscape="true">  
+                        <p:panelGrid columns="1" styleClass="noBorders">
+                            <p:column>
+                                <center><h:outputText value="Por favor seleccione el tipo de reporte que desea descargar."/></center>
+                                <br/>
+                            </p:column>
+                            <p:column>
+                                <p:commandButton value="Resumido" style="float: right" 
+                                                 process="@this" onclick="PF('opcionesReporteEvaluado').hide(); PF('opcionesReporteResumido').show()"
+                                                 disabled="#{evaluado.consolidado == 'S' ? false : true}"/>
+                                <p:commandButton value="Consolidado" style="float: right" 
+                                                 process="@this" onclick="PF('opcionesReporteEvaluado').hide(); PF('opcionesReporteConsolidado').show()"
+                                                 disabled="#{evaluado.consolidado == 'S' ? false : true}"/>
+                                <p:commandButton value="Evaluador" style="float: right" 
+                                                 process="@this" onclick="PF('opcionesReporteEvaluado').hide(); PF('opcionesReporteEvaluador').show()"/>
+                            </p:column>
+                        </p:panelGrid>
+                    </p:dialog>
+
+                    <p:dialog id="opcionesReporteEvaluador" header="Atención" widgetVar="opcionesReporteEvaluador"  resizable="false" 
+                              draggable="false" modal="true" closable="false" closeOnEscape="true">  
+                        <p:panelGrid columns="1" styleClass="noBorders">
+                            <p:column>
+                                <h:outputText value="Por favor seleccione si quiere descargar o enviar por correo el reporte por evaluador de la persona seleccionada."
+                                              escape="false" style="text-align: justify"/>
+                                <br/>
+                            </p:column>
+                            <p:column>
+                                <p:commandButton value="Enviar por correo" style="float: right;"
+                                                 actionListener="#{controladorInicioEval.envioCorreoCierreConvocatoria(2)}"
+                                                 process="@this" onclick="PF('opcionesReporteEvaluador').hide();"/>
+                                <p:commandButton value="Descargar" style="float: right;" 
+                                                 actionListener="#{controladorInicioEval.descargarReporte(2)}"
+                                                 process="@this" onclick="PF('opcionesReporteEvaluador').hide(); "/>
+                            </p:column>
+                        </p:panelGrid>
+                    </p:dialog>
+                    <p:dialog id="opcionesReporteResumido" header="Atención" widgetVar="opcionesReporteResumido" resizable="false" 
+                              draggable="false" modal="true" closable="false" closeOnEscape="true">  
+                        <p:panelGrid columns="1" styleClass="noBorders">
+                            <p:column>
+                                <h:outputText value="Por favor seleccione si quiere descargar o enviar por correo el reporte consolidado de la convocatoria cerrada."
+                                              escape="false" style="text-align: justify"/>
+                                <br/>
+                            </p:column>
+                            <p:column>
+                                <p:commandButton value="Enviar por correo" style="float: right;"
+                                                 actionListener="#{controladorInicioEval.envioCorreoCierreConvocatoria(4)}"
+                                                 process="@this" onclick="PF('opcionesReporteResumido').hide()"/>
+                                <p:commandButton value="Descargar" style="float: right;" 
+                                                 actionListener="#{controladorInicioEval.descargarReporte(4)}" 
+                                                 process="@this" onclick="PF('opcionesReporteResumido').hide(); "/>
+                            </p:column>
+                        </p:panelGrid>
+                    </p:dialog>
+                    <p:dialog id="opcionesReporteConsolidado" header="Atención" widgetVar="opcionesReporteConsolidado"  resizable="false" 
+                              draggable="false" modal="true" closable="false" closeOnEscape="true">  
+                        <p:panelGrid columns="1" styleClass="noBorders">
+                            <p:column>
+                                <h:outputText value="Por favor seleccione si quiere descargar o enviar por correo el reporte consolidado de la convocatoria cerrada."
+                                              escape="false" style="text-align: justify"/>
+                                <br/>
+                            </p:column>
+                            <p:column>
+                                <p:commandButton value="Enviar por correo" style="float: right;"
+                                                 actionListener="#{controladorInicioEval.envioCorreoCierreConvocatoria(3)}"
+                                                 process="@this" onclick="PF('opcionesReporteConsolidado').hide()"/>
+                                <p:commandButton value="Descargar" style="float: right;" 
+                                                 actionListener="#{controladorInicioEval.descargarReporte(3)}"
+                                                 process="@this" onclick="PF('opcionesReporteConsolidado').hide(); "/>
+                            </p:column>
+                        </p:panelGrid>
+                    </p:dialog>
                 </pm:content>
             </h:form>
         </pm:page>

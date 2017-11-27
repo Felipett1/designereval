@@ -159,6 +159,10 @@ public class ControladorInicioEval implements Serializable {
         } else if (i.equals("4")) {
             secConvocatoria = new BigDecimal(convocatorias.get(index).getSecuencia());
             PrimefacesContextUI.ejecutar("PF('opcionesReporteCerrar').show();");
+        } else if (i.equals("5")) {
+            evaluado = evaluados.get(index);
+            secEvaluado = new BigDecimal(evaluado.getSecuencia());
+            PrimefacesContextUI.ejecutar("PF('opcionesReporteEvaluado').show();");
         } else {
             prueba = pruebas.get(index);
             cambiarEstado(prueba.getSecuencia(), prueba.getEstado());
@@ -169,7 +173,7 @@ public class ControladorInicioEval implements Serializable {
     public void obtenerSecuenciaConvocatoria(BigDecimal sec) {
         System.out.println("obtenerSecuenciaConvocatoria");
         secConvocatoria = sec;
-        System.out.println("obtenerSecuenciaConvocatoria-sec: "+sec);
+        System.out.println("obtenerSecuenciaConvocatoria-sec: " + sec);
     }
 
     public void obtenerSecuenciaEvaluado(BigDecimal sec) {
@@ -284,15 +288,15 @@ public class ControladorInicioEval implements Serializable {
 
     public void descargarReporte(int codReporte) {
         System.out.println("descargarReporte");
-        System.out.println("descargarReporte-convocatoria: "+convocatoria);
-        System.out.println("descargarReporte-convocatoria: "+secConvocatoria);
+        System.out.println("descargarReporte-convocatoria: " + convocatoria);
+        System.out.println("descargarReporte-convocatoria: " + secConvocatoria);
         if (convocatoria != null && convocatoria.getSecuencia() != null) {
             Convocatorias c = convocatoria;
             if (c != null) {
                 secConvocatoria = new BigDecimal(c.getSecuencia());
                 generarReporte(c, codReporte);
                 if (pathReporteGenerado != null && !pathReporteGenerado.startsWith("Error: INICIARREPORTE")) {
-                    PrimefacesContextUI.ejecutar("setTimeout(function(){ document.getElementById('principalForm:descargarReporte').click(); }, 3000);");
+                    PrimefacesContextUI.ejecutar("setTimeout(function(){ document.getElementById('principalForm:descargarReporte').click(); }, 2000);");
                 } else {
                     MensajesUI.error("Error al generar el reporte, por favor comuníquese con soporte.");
                     PrimefacesContextUI.ejecutar("PF('estadoReporte').hide();");
@@ -305,8 +309,8 @@ public class ControladorInicioEval implements Serializable {
             System.out.println("Secuencia de la convocatoria nula.");
             PrimefacesContextUI.ejecutar("PF('estadoReporte').hide();");
         }
-        System.out.println("descargarReporte-convocatoria: "+convocatoria);
-        System.out.println("descargarReporte-convocatoria: "+secConvocatoria);
+        System.out.println("descargarReporte-convocatoria: " + convocatoria);
+        System.out.println("descargarReporte-convocatoria: " + secConvocatoria);
     }
 
     public void generarReporte(Convocatorias c, int codReporte) {
