@@ -47,7 +47,6 @@ public class ControladorInicioEval implements Serializable {
     private BigDecimal secConvocatoria;
     private BigDecimal secEvaluado;
     private int estadoConvocatoria = 2;
-    private boolean btnConsolidado;
 
     //SELECCION
     private Convocatorias convocatoria;
@@ -61,7 +60,6 @@ public class ControladorInicioEval implements Serializable {
     @PostConstruct
     public void inicializarAdministrador() {
         System.out.println("ControladorInicioEval.inicializarAdministrador");
-        btnConsolidado = true;
         try {
             FacesContext x = FacesContext.getCurrentInstance();
             HttpSession ses = (HttpSession) x.getExternalContext().getSession(false);
@@ -91,12 +89,14 @@ public class ControladorInicioEval implements Serializable {
                 empleadosAsignados = administrarInicio.totalEmpleadosEvaluadorConvocatoria(secuenciaEvaluador.toBigInteger(), convocatoria.getSecuencia());
                 empleadosEvaluados = administrarInicio.cantidadEvaluados(secuenciaEvaluador.toBigInteger(), convocatoria.getSecuencia());
                 evaluado = null;
+                secConvocatoria = new BigDecimal(convocatoria.getSecuencia());
                 break;
             case 2:
                 evaluados = administrarInicio.obtenerEvaluados(usuario, convocatoria.getSecuencia());
                 empleadosConvocados = administrarInicio.cantidadEvaluadosConvocatoria(convocatoria.getSecuencia());
                 empleadosAsignados = administrarInicio.totalEmpleadosEvaluadorConvocatoria(secuenciaEvaluador.toBigInteger(), convocatoria.getSecuencia());
                 empleadosEvaluados = administrarInicio.cantidadEvaluados(secuenciaEvaluador.toBigInteger(), convocatoria.getSecuencia());
+                secConvocatoria = new BigDecimal(convocatoria.getSecuencia());
                 break;
             default:
                 evaluados = null;
@@ -104,6 +104,7 @@ public class ControladorInicioEval implements Serializable {
                 empleadosConvocados = null;
                 empleadosAsignados = null;
                 empleadosEvaluados = null;
+                secConvocatoria = null;
                 break;
         }
         pruebas = null;
@@ -113,9 +114,11 @@ public class ControladorInicioEval implements Serializable {
         //1 Si - 0 No
         if (tipo == 1 && evaluado != null) {
             pruebas = administrarInicio.obtenerPruebasEvaluado(usuario, evaluado.getSecuencia());
-            evaluado.setConsolidado(administrarInicio.estaConsolidado(evaluado.getEvalConvocatoria(), evaluado.getSecuencia()));
+            //evaluado.setConsolidado(administrarInicio.estaConsolidado(evaluado.getEvalConvocatoria(), evaluado.getSecuencia()));
+            this.secEvaluado = new BigDecimal(evaluado.getSecuencia());
         } else {
             pruebas = null;
+            this.secEvaluado = null;
         }
     }
 
@@ -177,6 +180,7 @@ public class ControladorInicioEval implements Serializable {
     }
 
     public void obtenerSecuenciaEvaluado(BigDecimal sec) {
+        System.out.println("obtenerSecuenciaEvaluado");
         secConvocatoria = new BigDecimal(convocatoria.getSecuencia());
         secEvaluado = sec;
         System.out.println("convocatoria: " + secConvocatoria);

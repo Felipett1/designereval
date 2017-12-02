@@ -38,8 +38,10 @@ public class Evaluados implements Serializable {
     private String nombrePrueba;
     @Column(name = "ESTADOEVAL")
     private String estadoEval;
-    @Transient
+    @Column(name = "CONSOLIDADO")
     private String consolidado;
+    @Transient
+    private boolean esConsolidado;
 
     public Evaluados() {
     }
@@ -130,6 +132,16 @@ public class Evaluados implements Serializable {
 
     public void setConsolidado(String consolidado) {
         this.consolidado = consolidado;
+    }
+
+    public boolean isEsConsolidado() {
+        esConsolidado = "S".equalsIgnoreCase(consolidado);
+        return esConsolidado;
+    }
+
+    public void setEsConsolidado(boolean esConsolidado) {
+        this.esConsolidado = esConsolidado;
+        consolidado = (this.esConsolidado?"S":"N");
     }
     
 

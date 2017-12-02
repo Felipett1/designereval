@@ -22,7 +22,8 @@ public class PersistenciaEvaluados implements IPersistenciaEvaluados {
             em.getTransaction().begin();
             Query q = em.createNativeQuery("SELECT R.SECUENCIA, R.EMPLEADO, CONCAT(CONCAT(CONCAT(CONCAT(PE.NOMBRE,' '),PE.PRIMERAPELLIDO),' '),PE.SEGUNDOAPELLIDO) NOMBREPERSONA, R.PUNTAJEOBTENIDO, "
                     + "R.FECHAPERIODODESDE, R.FECHAPERIODOHASTA, R.EVALCONVOCATORIA, "
-                    + "R.NOMBREPRUEBA, R.ESTADOEVAL "
+                    + "R.NOMBREPRUEBA, R.ESTADOEVAL, "
+                    + "EVALCONVOCATORIAS_PKG.ESTACONSOLIDADO(R.EVALCONVOCATORIA,R.EMPLEADO) CONSOLIDADO "
                     + "FROM EVALRESULTADOSCONV R, EMPLEADOS E, PERSONAS PE "
                     + "WHERE (EXISTS(SELECT 'X' "
                     + "              FROM EVALINDAGACIONES I "
@@ -88,8 +89,11 @@ public class PersistenciaEvaluados implements IPersistenciaEvaluados {
     }
 
     public void terminarTransaccionException(EntityManager em) {
+        System.out.println(this.getClass().getName() + ".terminarTransaccionException");
         if (em != null && em.isOpen() && em.getTransaction().isActive()) {
+            System.out.println("Antes de hacer rollback");
             em.getTransaction().rollback();
+            System.out.println("Despues de hacer rollback");
         }
     }
 }

@@ -91,7 +91,7 @@
                     <h:outputText value="Empleados a evaluar"/>
                 </f:facet>
 
-                <p:column headerText="Nombre">
+                <p:column headerText="Nombre" >
                     <h:outputText value="#{evaluado.nombrePersona}"/>
                 </p:column>
                 <p:column headerText="Puntaje" width="75">
@@ -99,21 +99,27 @@
                                            evaluado.puntajeObtenido : 0}"/>
                 </p:column>
                 <p:column headerText="Resumido" width="90" style="padding: 4px 0px;">
-                    <p:commandButton id="represumido" value="Reporte" actionListener="#{controladorInicioEval.obtenerSecuenciaEvaluado(evaluado.secuencia)}"
+                    <p:commandButton id="represumido" value="Reporte" 
+                                     actionListener="#{controladorInicioEval.obtenerSecuenciaEvaluado(evaluado.secuencia)}"
                                      onclick="PF('opcionesReporteResumido').show()"
                                      onstart="PF('dtbEvaluados').selectRow(#{indice});"
-                                     disabled="#{evaluado.consolidado == 'S' ? false : true}"/>
+                                     disabled="#{!evaluado.esConsolidado}"
+                                     />
                 </p:column>
                 <p:column headerText="Consolidado" width="90" style="padding: 4px 0px;">
-                    <p:commandButton id="repconsolidado" value="Reporte" actionListener="#{controladorInicioEval.obtenerSecuenciaEvaluado(evaluado.secuencia)}"
+                    <p:commandButton id="repconsolidado" value="Reporte" 
+                                     actionListener="#{controladorInicioEval.obtenerSecuenciaEvaluado(evaluado.secuencia)}"
                                      onclick="PF('opcionesReporteConsolidado').show()"
                                      onstart="PF('dtbEvaluados').selectRow(#{indice});"
-                                     disabled="#{evaluado.consolidado == 'S' ? false : true}"/>
+                                     disabled="#{!evaluado.esConsolidado}"
+                                     />
                 </p:column>
                 <p:column headerText="Evaluador" width="80">
-                    <p:commandButton id="repevaluado" value="Reporte" actionListener="#{controladorInicioEval.obtenerSecuenciaEvaluado(evaluado.secuencia)}"
+                    <p:commandButton id="repevaluado" value="Reporte" 
+                                     actionListener="#{controladorInicioEval.obtenerSecuenciaEvaluado(evaluado.secuencia)}"
                                      onclick="PF('opcionesReporteEvaluador').show()"
-                                     onstart="PF('dtbEvaluados').selectRow(#{indice});"/>
+                                     onstart="PF('dtbEvaluados').selectRow(#{indice});"
+                                     />
                 </p:column>
             </p:dataTable>
         </p:column>

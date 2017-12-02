@@ -64,27 +64,35 @@ public class ControladorInformacionBasica implements Serializable {
     public void obtenerLogoEmpresa() {
         String formatoFotoEmpleado = "image/png";
         String rstLogo = administrarInicioEval.logoEmpresa(nitEmpresa);
-        String logo = rstLogo.substring(0, rstLogo.length() - 4);
-        String rutaLogo = pathImagenes + logo + ".png";
-        if (rutaLogo != null) {
-            try {
-                fis = new FileInputStream(new File(rutaLogo));
-                logoEmpresa = new DefaultStreamedContent(fis, formatoFotoEmpleado, logo);
-                System.out.println("rutaLogo: " + rutaLogo);
-            } catch (FileNotFoundException e) {
+        String logo;
+        try {
+            logo = rstLogo.substring(0, rstLogo.length() - 4);
+        } catch (NullPointerException npe) {
+            System.out.println("Nombre de logo vacio: " + npe.getMessage());
+            logo = null;
+        }
+        if (logo != null && !"".equalsIgnoreCase(logo)) {
+            String rutaLogo = pathImagenes + logo + ".png";
+            if (rutaLogo != null) {
                 try {
-                    rutaLogo = pathImagenes + "sinLogo.png";
                     fis = new FileInputStream(new File(rutaLogo));
-                    logoEmpresa = new DefaultStreamedContent(fis, formatoFotoEmpleado, rutaLogo);
-                } catch (FileNotFoundException ex) {
-                    System.out.println("ERROR. No se encontro el logo de la empresa. \n");
-                    System.out.println("ruta: " + rutaLogo);
-                    System.out.println("execption: " + ex);
+                    logoEmpresa = new DefaultStreamedContent(fis, formatoFotoEmpleado, logo);
+                    System.out.println("rutaLogo: " + rutaLogo);
+                } catch (FileNotFoundException e) {
+                    try {
+                        rutaLogo = pathImagenes + "sinLogo.png";
+                        fis = new FileInputStream(new File(rutaLogo));
+                        logoEmpresa = new DefaultStreamedContent(fis, formatoFotoEmpleado, rutaLogo);
+                    } catch (FileNotFoundException ex) {
+                        System.out.println("ERROR. No se encontro el logo de la empresa. \n");
+                        System.out.println("ruta: " + rutaLogo);
+                        System.out.println("exception: " + ex);
+                    }
                 }
             }
         }
     }
-    
+
     public void obtenerFondoEmpresa() {
         for (CadenasConexion elemento : (new LeerArchivoXML()).leerArchivoEmpresasConexion()) {
             if (elemento.getNit().equals(nitEmpresa)) {

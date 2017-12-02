@@ -89,13 +89,16 @@ public class PersistenciaPruebas implements IPersistenciaPruebas {
     }
 
     private void terminarTransaccionException(EntityManager em) {
+        System.out.println(this.getClass().getName() + ".terminarTransaccionException");
         if (em != null && em.isOpen() && em.getTransaction().isActive()) {
+            System.out.println("Antes de hacer rollback");
             em.getTransaction().rollback();
+            System.out.println("Despues de hacer rollback");
         }
     }
-    
+
     @Override
-    public String estaConsolidado(EntityManager em, BigInteger secConvocatoria, BigInteger secEvaluado){
+    public String estaConsolidado(EntityManager em, BigInteger secConvocatoria, BigInteger secEvaluado) {
         try {
             em.getTransaction().begin();
             Query q = em.createNativeQuery("select EVALCONVOCATORIAS_PKG.ESTACONSOLIDADO(?,?) FROM DUAL ");

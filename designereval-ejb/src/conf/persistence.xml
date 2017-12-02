@@ -11,6 +11,7 @@
       <property name="javax.persistence.jdbc.password" value="ENTRADA"/>
       <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@www.nominas.co:1701:CONTECON"/>
       <property name="eclipselink.logging.level" value="FINE"/>
+      <property name="eclipselink.logging.parameters" value="true"/>
       <property name="eclipselink.target-database" value="Oracle"/>
       <property name="eclipselink.ddl-generation" value="none" />
       <property name="eclipselink.cache.type.default" value="NONE"/>
@@ -29,6 +30,7 @@
       <property name="javax.persistence.jdbc.password" value="ENTRADA"/>
       <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@138.117.136.59:1521:XE"/>
       <property name="eclipselink.logging.level" value="FINE"/>
+      <property name="eclipselink.logging.parameters" value="true"/>
       <property name="eclipselink.target-database" value="Oracle"/>
       <property name="eclipselink.ddl-generation" value="none" />
       <property name="eclipselink.cache.type.default" value="NONE"/>

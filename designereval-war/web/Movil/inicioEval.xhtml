@@ -165,10 +165,10 @@
                             <p:column>
                                 <p:commandButton value="Resumido" style="float: right" 
                                                  process="@this" onclick="PF('opcionesReporteEvaluado').hide(); PF('opcionesReporteResumido').show()"
-                                                 disabled="#{evaluado.consolidado == 'S' ? false : true}"/>
+                                                 disabled="#{!evaluado.esConsolidado}"/>
                                 <p:commandButton value="Consolidado" style="float: right" 
                                                  process="@this" onclick="PF('opcionesReporteEvaluado').hide(); PF('opcionesReporteConsolidado').show()"
-                                                 disabled="#{evaluado.consolidado == 'S' ? false : true}"/>
+                                                 disabled="#{!evaluado.esConsolidado}"/>
                                 <p:commandButton value="Evaluador" style="float: right" 
                                                  process="@this" onclick="PF('opcionesReporteEvaluado').hide(); PF('opcionesReporteEvaluador').show()"/>
                             </p:column>

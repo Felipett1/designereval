@@ -59,8 +59,11 @@ public class PersistenciaPreguntas implements IPersistenciaPreguntas {
     }
 
     public void terminarTransaccionException(EntityManager em) {
+        System.out.println(this.getClass().getName()+".terminarTransaccionException");
         if (em != null && em.isOpen() && em.getTransaction().isActive()) {
+            System.out.println("Antes de hacer rollback");
             em.getTransaction().rollback();
+            System.out.println("Despues de hacer rollback");
         }
     }
 }

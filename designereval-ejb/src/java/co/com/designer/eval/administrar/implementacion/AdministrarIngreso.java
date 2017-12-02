@@ -137,6 +137,16 @@ public class AdministrarIngreso implements IAdministrarIngreso {
 
     @Override
     public boolean insertarUltimaConexion(Conexiones conexion) {
+        try{
+            if (em != null) {
+                if (em.isOpen()) {
+                    conexion.setSid(persistenciaConexiones.consultarSIDActual(em));
+                }
+            }
+        }catch (Exception e){
+            System.out.println("Error consultando el SID del usuario");
+            System.out.println("exc: "+e.getMessage());
+        }
         try {
             if (em != null) {
                 if (em.isOpen()) {

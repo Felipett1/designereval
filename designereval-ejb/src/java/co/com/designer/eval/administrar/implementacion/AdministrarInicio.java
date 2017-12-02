@@ -88,7 +88,7 @@ public class AdministrarInicio implements IAdministrarInicio {
         List<Evaluados> lista = null;
         try {
             lista = persistenciaEvaluados.obtenerEvaluados(em, usuario, secConvocatoria);
-            consultaConsolidado(lista);
+            //consultaConsolidado(lista);
             return lista;
         } catch (Exception e) {
             System.out.println("Error AdministrarInicio.obtenerEvaluados: " + e);
